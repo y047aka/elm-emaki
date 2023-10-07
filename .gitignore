@@ -1,11 +1,17 @@
+#-------------------------------------------------------------------------------
+# Elm gitignore
+# see: https://github.com/github/gitignore/blob/main/Elm.gitignore
+#-------------------------------------------------------------------------------
 # elm-package generated files
 elm-stuff
 # elm-repl generated files
 repl-temp-*
 
-# for node.js environment
-# see: https://github.com/github/gitignore/blob/main/Node.gitignore
 
+#-------------------------------------------------------------------------------
+# Node gitignore
+# see: https://github.com/github/gitignore/blob/main/Nodejs.gitignore
+#-------------------------------------------------------------------------------
 # Logs
 logs
 *.log
