@@ -2,18 +2,26 @@
 
 ## Quick Start
 
-```
+### 1. `elm-emaki` をインストール
+
+```shell
 $ npm install elm-emaki
+```
+
+### 2. `Emaki.elm`を作成する
+
+```elm
+-- emaki/Emaki.elm
+
+emaki : ???
+emaki = [
+   section "button" ???
+]
+```
+
+### 3. ブラウザで確認する
+
+```shell
 $ npx elm-emaki serve
 ```
 
-# 手順
-
-1. emaki.elm を作成してください
-
-
-2. 実行
-
-```
-$ npx elm-emaki serve
-```
