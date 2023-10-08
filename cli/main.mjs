@@ -5,35 +5,33 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import child_process from "node:child_process";
 
+const ELM_EMAKI_PROJECT_ROOT = path.resolve(process.cwd(), ".emaki");
+
 main();
 
 async function main() {
-  console.debug("current working directory", process.cwd());
-  const elmEmakiProjectRoot = path.resolve(process.cwd(), ".elm-emaki");
-  console.log("create elm-emaki project dir (.emaki)");
-  generateElmEmakiProject();
+  console.log(`create emaki project dir ${ELM_EMAKI_PROJECT_ROOT}`);
+  await generateElmEmakiProject(ELM_EMAKI_PROJECT_ROOT);
 
   console.log("build elm-emaki project");
 
-  // FIXME: should fix `Error: spawn /bin/sh ENOENT`
   await promisify(child_process.exec)(
     "npx elm make src/Main.elm --output=output/index.html",
-    { cwd: elmEmakiProjectRoot }
+    { cwd: ELM_EMAKI_PROJECT_ROOT }
   );
 
   const port = parseInt(process.env.EMAKI_PORT, 10) || 8000;
 
   console.log(`serve elm-emaki project at ${port}`);
 
-  // FIXME: should fix `Error: spawn /bin/sh ENOENT`
-  const serveProcess = child_process.exec(
-    `npx serve -p ${port} .elm-emaki/output`
-  );
+  const serveProcess = child_process.exec(`npx serve -p ${port} output`, {
+    cwd: ELM_EMAKI_PROJECT_ROOT,
+  });
   serveProcess.stdout.pipe(process.stdout);
   serveProcess.stderr.pipe(process.stdin);
 }
 
-async function generateElmEmakiProject() {
+async function generateElmEmakiProject(projectRootDir) {
   const elmJson = `
 {
     "type": "application",
@@ -75,19 +73,13 @@ main =
   const gitignore = "*\n";
 
   // mkdir -p
-  await fs.mkdir(path.join(process.cwd(), ".elm-emaki", "src"), {
+  await fs.mkdir(path.resolve(projectRootDir, "src"), {
     recursive: true,
   });
 
   await Promise.all([
-    fs.writeFile(
-      path.join(process.cwd(), ".elm-emaki", ".gitignore"),
-      gitignore
-    ),
-    fs.writeFile(path.join(process.cwd(), ".elm-emaki", "elm.json"), elmJson),
-    fs.writeFile(
-      path.join(process.cwd(), ".elm-emaki", "src", "Main.elm"),
-      elmMain
-    ),
+    fs.writeFile(path.resolve(projectRootDir, ".gitignore"), gitignore),
+    fs.writeFile(path.resolve(projectRootDir, "elm.json"), elmJson),
+    fs.writeFile(path.resolve(projectRootDir, "src", "Main.elm"), elmMain),
   ]);
 }
