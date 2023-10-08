@@ -1,17 +1,19 @@
-# emaki
+# Emaki
 
 ## Quick Start
 
-### 1. `elm-emaki` をインストール
+### 1. Install `elm-emaki` cli & Emaki Package
 
 ```shell
-$ npm install elm-emaki
+$ npm install git@github.com:y047aka/emaki.git#main
+$ elm install y047aka/emaki
 ```
 
-### 2. `Emaki.elm`を作成する
+### 2. Write `Emaki.elm`
 
 ```elm
 -- emaki/Emaki.elm
+import Emaki exposing (..)
 
 emaki : ???
 emaki = [
@@ -19,8 +21,8 @@ emaki = [
 ]
 ```
 
-### 3. ブラウザで確認する
+### 3. View Emaki in browser
 
 ```shell
-$ npx elm-emaki serve
+$ npx elm-emaki
 ```
