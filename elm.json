@@ -1,0 +1,17 @@
+{
+    "type": "package",
+    "name": "y047aka/emaki",
+    "summary": " ",
+    "license": "MIT",
+    "version": "0.0.1",
+    "exposed-modules": [
+        "Emaki"
+    ],
+    "elm-version": "0.19.0 <= v < 0.20.0",
+    "dependencies": {
+        "elm/browser": "1.0.2 <= v < 2.0.0",
+        "elm/core": "1.0.0 <= v < 2.0.0",
+        "elm/html": "1.0.0 <= v < 2.0.0"
+    },
+    "test-dependencies": {}
+}
