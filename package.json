@@ -4,7 +4,7 @@
   "private": true,
   "description": "elm-emaki",
   "bin": {
-    "elm-emaki": "cli/main.mjs"
+    "elm-emaki": "dist/main.mjs"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
