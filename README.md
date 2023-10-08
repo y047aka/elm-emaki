@@ -24,4 +24,3 @@ emaki = [
 ```shell
 $ npx elm-emaki serve
 ```
-
