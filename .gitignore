@@ -10,7 +10,7 @@ repl-temp-*
 
 #-------------------------------------------------------------------------------
 # Node gitignore
-# see: https://github.com/github/gitignore/blob/main/Nodejs.gitignore
+# see: https://github.com/github/gitignore/blob/main/Node.gitignore
 #-------------------------------------------------------------------------------
 # Logs
 logs
