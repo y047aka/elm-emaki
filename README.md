@@ -6,8 +6,6 @@
 
 ```shell
 $ npm install git@github.com:y047aka/emaki.git#main
-$ npx tsc
-$ chmod a+x dist/main.mjs
 $ elm install y047aka/emaki
 ```
 
