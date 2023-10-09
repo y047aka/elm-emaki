@@ -17,5 +17,8 @@
     "elm-format": "^0.8.7",
     "elm-review": "^2.10.3",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "commander": "^11.0.0"
   }
 }
