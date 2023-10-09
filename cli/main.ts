@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env npx tsx
 
 import { promisify } from "node:util";
 import fs from "node:fs/promises";
@@ -20,7 +20,7 @@ async function main(): Promise<void> {
     { cwd: ELM_EMAKI_PROJECT_ROOT }
   );
 
-  const port = parseInt(process.env['EMAKI_PORT'] || "", 10) || 8000;
+  const port = parseInt(process.env["EMAKI_PORT"] || "", 10) || 8000;
 
   console.log(`serve elm-emaki project at ${port}`);
 
