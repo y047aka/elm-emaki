@@ -1,15 +1,15 @@
-#!/usr/bin/env node
+#!/usr/bin/env npx tsx
 
 import { promisify } from "node:util";
 import fs from "node:fs/promises";
 import path from "node:path";
 import child_process from "node:child_process";
 
-const ELM_EMAKI_PROJECT_ROOT = path.resolve(process.cwd(), ".emaki");
+const ELM_EMAKI_PROJECT_ROOT: string = path.resolve(process.cwd(), ".emaki");
 
 main();
 
-async function main() {
+async function main(): Promise<void> {
   console.log(`create emaki project dir ${ELM_EMAKI_PROJECT_ROOT}`);
   await generateElmEmakiProject(ELM_EMAKI_PROJECT_ROOT);
 
@@ -20,18 +20,18 @@ async function main() {
     { cwd: ELM_EMAKI_PROJECT_ROOT }
   );
 
-  const port = parseInt(process.env.EMAKI_PORT, 10) || 8000;
+  const port = parseInt(process.env["EMAKI_PORT"] || "", 10) || 8000;
 
   console.log(`serve elm-emaki project at ${port}`);
 
   const serveProcess = child_process.exec(`npx serve -p ${port} output`, {
     cwd: ELM_EMAKI_PROJECT_ROOT,
   });
-  serveProcess.stdout.pipe(process.stdout);
-  serveProcess.stderr.pipe(process.stdin);
+  serveProcess.stdout?.pipe(process.stdout);
+  serveProcess.stderr?.pipe(process.stdin);
 }
 
-async function generateElmEmakiProject(projectRootDir) {
+async function generateElmEmakiProject(projectRootDir: string): Promise<void> {
   const elmJson = `
 {
     "type": "application",
