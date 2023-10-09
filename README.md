@@ -5,7 +5,7 @@
 ### 1. Install `elm-emaki` cli & Emaki Package
 
 ```shell
-$ npm install git@github.com:y047aka/emaki.git#main
+$ npm install git@github.com:y047aka/elm-emaki.git#main
 $ elm install y047aka/emaki
 ```
 
