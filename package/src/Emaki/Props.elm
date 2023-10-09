@@ -1,4 +1,4 @@
-module Config exposing
+module Emaki.Props exposing
     ( Config, render
     , string, bool, select, counter
     , list, fieldset
