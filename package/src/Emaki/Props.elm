@@ -1,5 +1,5 @@
 module Emaki.Props exposing
-    ( Config, render
+    ( Props, render
     , string, bool, select, counter
     , list, fieldset
     , field
@@ -7,7 +7,7 @@ module Emaki.Props exposing
 
 {-|
 
-@docs Config, render
+@docs Props, render
 @docs string, bool, select, counter
 @docs list, fieldset
 @docs field
@@ -19,15 +19,15 @@ import Html.Attributes exposing (checked, placeholder, selected, type_, value)
 import Html.Events exposing (onInput)
 
 
-type Config msg
+type Props msg
     = String (StringProps msg)
     | Bool (BoolProps msg)
     | Select (SelectProps msg)
     | Radio (RadioProps msg)
     | Counter (CounterProps msg)
-    | List (List (Config msg))
-    | FieldSet String (List (Config msg))
-    | Field String (Config msg)
+    | List (List (Props msg))
+    | FieldSet String (List (Props msg))
+    | Field String (Props msg)
 
 
 type alias StringProps msg =
@@ -62,28 +62,28 @@ type alias CounterProps msg =
     }
 
 
-render : Config msg -> Html msg
-render config =
-    case config of
-        String props ->
+render : Props msg -> Html msg
+render props =
+    case props of
+        String ps ->
             input
                 [ type_ "text"
-                , value props.value
-                , onInput props.onInput
-                , placeholder props.placeholder
+                , value ps.value
+                , onInput ps.onInput
+                , placeholder ps.placeholder
                 ]
                 []
 
-        Bool props ->
-            input [ type_ "checkbox", checked props.value ] []
+        Bool ps ->
+            input [ type_ "checkbox", checked ps.value ] []
 
-        Select props ->
-            Html.select [ onInput props.onChange ]
-                (List.map (\option -> Html.option [ value option, selected (props.value == option) ] [ text option ])
-                    props.options
+        Select ps ->
+            Html.select [ onInput ps.onChange ]
+                (List.map (\option -> Html.option [ value option, selected (ps.value == option) ] [ text option ])
+                    ps.options
                 )
 
-        Radio props ->
+        Radio ps ->
             Html.fieldset []
                 (List.map
                     (\option ->
@@ -91,67 +91,67 @@ render config =
                             [ input
                                 [ type_ "radio"
                                 , value option
-                                , checked (props.value == option)
-                                , onInput props.onChange
+                                , checked (ps.value == option)
+                                , onInput ps.onChange
                                 ]
                                 []
                             ]
                     )
-                    props.options
+                    ps.options
                 )
 
-        Counter props ->
+        Counter ps ->
             div []
                 [ button [] [ text "-" ]
-                , text (String.fromFloat props.value)
+                , text (String.fromFloat ps.value)
                 , button [] [ text "+" ]
                 ]
 
-        List configs ->
-            div [] (List.map render configs)
+        List childProps ->
+            div [] (List.map render childProps)
 
-        FieldSet label configs ->
+        FieldSet label childProps ->
             Html.fieldset [] <|
                 legend [] [ text label ]
-                    :: List.map render configs
+                    :: List.map render childProps
 
-        Field label config_ ->
+        Field label ps ->
             div []
                 [ Html.label [] [ text label ]
-                , render config_
+                , render ps
                 ]
 
 
-string : StringProps msg -> Config msg
+string : StringProps msg -> Props msg
 string =
     String
 
 
-bool : BoolProps msg -> Config msg
+bool : BoolProps msg -> Props msg
 bool =
     Bool
 
 
-select : SelectProps msg -> Config msg
+select : SelectProps msg -> Props msg
 select =
     Select
 
 
-counter : CounterProps msg -> Config msg
+counter : CounterProps msg -> Props msg
 counter =
     Counter
 
 
-list : List (Config msg) -> Config msg
+list : List (Props msg) -> Props msg
 list =
     List
 
 
-fieldset : String -> List (Config msg) -> Config msg
+fieldset : String -> List (Props msg) -> Props msg
 fieldset =
     FieldSet
 
 
-field : String -> Config msg -> Config msg
+field : String -> Props msg -> Props msg
 field =
     Field
