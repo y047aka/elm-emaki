@@ -14,9 +14,9 @@ module Emaki.Props exposing
 
 -}
 
-import Html exposing (Html, button, div, input, legend, text)
-import Html.Attributes exposing (checked, placeholder, selected, type_, value)
-import Html.Events exposing (onInput)
+import Html.Styled as Html exposing (Html, button, div, input, legend, text)
+import Html.Styled.Attributes exposing (checked, placeholder, selected, type_, value)
+import Html.Styled.Events exposing (onInput)
 
 
 type Props msg
