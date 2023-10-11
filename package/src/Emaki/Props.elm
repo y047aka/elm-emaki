@@ -1,22 +1,28 @@
 module Emaki.Props exposing
-    ( Props, render
-    , string, bool, select, counter
+    ( Props(..)
+    , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
+    , render
+    , string, bool, select, counter, boolAndString
     , list, fieldset
     , field
+    , customize
     )
 
 {-|
 
-@docs Props, render
-@docs string, bool, select, counter
+@docs Props
+@docs StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
+@docs render
+@docs string, bool, select, counter, boolAndString
 @docs list, fieldset
 @docs field
+@docs customize
 
 -}
 
 import Html.Styled as Html exposing (Html, button, div, input, legend, text)
-import Html.Styled.Attributes exposing (checked, placeholder, selected, type_, value)
-import Html.Styled.Events exposing (onInput)
+import Html.Styled.Attributes exposing (checked, disabled, placeholder, selected, type_, value)
+import Html.Styled.Events exposing (onClick, onInput)
 
 
 type Props msg
@@ -25,9 +31,11 @@ type Props msg
     | Select (SelectProps msg)
     | Radio (RadioProps msg)
     | Counter (CounterProps msg)
+    | BoolAndString (BoolAndStringProps msg)
     | List (List (Props msg))
     | FieldSet String (List (Props msg))
-    | Field String (Props msg)
+    | Field { label : String, note : String } (Props msg)
+    | Customize (Html msg)
 
 
 type alias StringProps msg =
@@ -38,7 +46,10 @@ type alias StringProps msg =
 
 
 type alias BoolProps msg =
-    { value : Bool, onClick : msg }
+    { label : String
+    , value : Bool
+    , onClick : msg
+    }
 
 
 type alias SelectProps msg =
@@ -57,8 +68,18 @@ type alias RadioProps msg =
 
 type alias CounterProps msg =
     { value : Float
+    , toString : Float -> String
     , onClickPlus : msg
     , onClickMinus : msg
+    }
+
+
+type alias BoolAndStringProps msg =
+    { label : String
+    , id : String
+    , data : { visible : Bool, value : String }
+    , onUpdate : { visible : Bool, value : String } -> msg
+    , placeholder : String
     }
 
 
@@ -75,7 +96,10 @@ render props =
                 []
 
         Bool ps ->
-            input [ type_ "checkbox", checked ps.value ] []
+            Html.label []
+                [ input [ type_ "checkbox", checked ps.value, onClick ps.onClick ] []
+                , text ps.label
+                ]
 
         Select ps ->
             Html.select [ onInput ps.onChange ]
@@ -102,9 +126,32 @@ render props =
 
         Counter ps ->
             div []
-                [ button [] [ text "-" ]
-                , text (String.fromFloat ps.value)
-                , button [] [ text "+" ]
+                [ button [ onClick ps.onClickMinus ] [ text "-" ]
+                , text (ps.toString ps.value)
+                , button [ onClick ps.onClickPlus ] [ text "+" ]
+                ]
+
+        BoolAndString ({ data } as ps) ->
+            div []
+                [ div []
+                    [ Html.label []
+                        [ input
+                            [ type_ "checkbox"
+                            , checked data.visible
+                            , disabled False
+                            , onClick (ps.onUpdate { data | visible = not data.visible })
+                            ]
+                            []
+                        , text ps.label
+                        ]
+                    ]
+                , input
+                    [ type_ "text"
+                    , value data.value
+                    , onInput (\string_ -> ps.onUpdate { data | value = string_ })
+                    , placeholder ps.placeholder
+                    ]
+                    []
                 ]
 
         List childProps ->
@@ -115,11 +162,15 @@ render props =
                 legend [] [ text label ]
                     :: List.map render childProps
 
-        Field label ps ->
+        Field { label, note } ps ->
             div []
-                [ Html.label [] [ text label ]
+                [ div [] [ Html.label [] [ text label ] ]
                 , render ps
+                , div [] [ text note ]
                 ]
+
+        Customize view ->
+            view
 
 
 string : StringProps msg -> Props msg
@@ -142,6 +193,11 @@ counter =
     Counter
 
 
+boolAndString : BoolAndStringProps msg -> Props msg
+boolAndString =
+    BoolAndString
+
+
 list : List (Props msg) -> Props msg
 list =
     List
@@ -152,6 +208,16 @@ fieldset =
     FieldSet
 
 
-field : String -> Props msg -> Props msg
-field =
-    Field
+field :
+    { label : String
+    , props : Props msg
+    , note : String
+    }
+    -> Props msg
+field { label, note, props } =
+    Field { label = label, note = note } props
+
+
+customize : Html msg -> Props msg
+customize =
+    Customize
