@@ -20,13 +20,11 @@ jobs:
       - uses: hustcer/setup-nu@main
         with:
           version: "*"
+      - uses: actions/checkout@v4.0.0
       - uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: "npm"
-      - uses: actions/checkout@v4.0.0
-        with:
-          sparse-checkout: .
       - name: Prettify code
         uses: creyD/prettier_action@v4.3
         with:
