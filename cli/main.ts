@@ -80,6 +80,6 @@ main =
   await Promise.all([
     fs.writeFile(path.resolve(projectRootDir, ".gitignore"), gitignore),
     fs.writeFile(path.resolve(projectRootDir, "elm.json"), elmJson),
-    fs.writeFile(path.resolve(projectRootDir, "src", "Main.elm"), elmMain),
+       fs.writeFile(path.resolve(projectRootDir, "src", "Main.elm"), elmMain),
   ]);
 }
