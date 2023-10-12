@@ -7,7 +7,7 @@ defaults:
     shell: nu {0}
 
 jobs:
-  basic-usage:
+  ts-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.0.0
