@@ -17,7 +17,7 @@ async function main(): Promise<void> {
 
   await promisify(child_process.exec)(
     "npx elm make src/Main.elm --output=output/index.html",
-    { cwd: ELM_EMAKI_PROJECT_ROOT }
+    { cwd: ELM_EMAKI_PROJECT_ROOT },
   );
 
   const port = parseInt(process.env["EMAKI_PORT"] || "", 10) || 8000;
