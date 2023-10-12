@@ -81,5 +81,5 @@ main =
     fs.writeFile(path.resolve(projectRootDir, ".gitignore"), gitignore),
     fs.writeFile(path.resolve(projectRootDir, "elm.json"), elmJson),
     fs.writeFile(path.resolve(projectRootDir, "src", "Main.elm"), elmMain),
-    ]);
+  ]);
 }
