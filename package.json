@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "description": "elm-emaki",
+  "type": "module",
   "bin": {
     "elm-emaki": "cli/main.ts"
   },
@@ -13,6 +14,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/prompts": "^2.4.6",
     "elm": "^0.19.1-5",
     "elm-format": "^0.8.7",
     "elm-review": "^2.10.3",
