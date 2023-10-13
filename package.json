@@ -7,7 +7,9 @@
     "elm-emaki": "cli/main.ts"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "example": "cd example && run-pty % elm-watch hot % npm run esbuild -- --serve=9000 --servedir=example/public",
+    "esbuild": "esbuild example/app.ts --bundle --outdir=example/public/build --public-path=example/build/"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,9 @@
     "elm": "^0.19.1-5",
     "elm-format": "^0.8.7",
     "elm-review": "^2.10.3",
+    "elm-watch": "^1.2.0-beta.4",
+    "esbuild": "^0.19.4",
+    "run-pty": "^4.1.0",
     "typescript": "^5.2.2"
   }
 }
