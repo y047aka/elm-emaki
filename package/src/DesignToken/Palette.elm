@@ -1,6 +1,6 @@
-module Css.DesignToken.Palette exposing (dark, default)
+module DesignToken.Palette exposing (dark, default)
 
-import Css.DesignToken.Color exposing (black, grey050, white)
+import DesignToken.Color exposing (black, grey050, white)
 import Css.Palette exposing (Palette)
 
 

@@ -1,4 +1,4 @@
-module Css.DesignToken.Color exposing
+module DesignToken.Color exposing
     ( white, black, grey050
     , red050, green050, blue050
     )
