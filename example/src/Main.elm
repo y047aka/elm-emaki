@@ -5,22 +5,36 @@ import Html exposing (Html)
 import Html.Events exposing (onClick)
 
 
-type Msg
-    = IncrementClicked
-    | DecrementClicked
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = \_ -> Sub.none
+        }
+
+
+
+-- MODEL
 
 
 type alias Model =
-    { count : Int
-    }
+    { count : Int }
 
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { count = 0
-      }
-    , Cmd.none
-    )
+    ( { count = 0 }, Cmd.none )
+
+
+
+-- UPDATE
+
+
+type Msg
+    = IncrementClicked
+    | DecrementClicked
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -33,9 +47,8 @@ update msg model =
             ( { model | count = model.count - 1 }, Cmd.none )
 
 
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+
+-- VIEW
 
 
 view : Model -> Html Msg
@@ -47,13 +60,3 @@ view model =
         , Html.button [ onClick IncrementClicked ]
             [ Html.text "+" ]
         ]
-
-
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
