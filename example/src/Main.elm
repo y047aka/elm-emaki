@@ -1,15 +1,15 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html)
-import Html.Events exposing (onClick)
+import Html.Styled as Html exposing (Html, toUnstyled)
+import Html.Styled.Events exposing (onClick)
 
 
 main : Program () Model Msg
 main =
     Browser.element
         { init = init
-        , view = view
+        , view = view >> toUnstyled
         , update = update
         , subscriptions = \_ -> Sub.none
         }
