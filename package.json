@@ -18,7 +18,7 @@
     "elm": "^0.19.1-5",
     "elm-format": "^0.8.7",
     "elm-review": "^2.10.3",
-    "prettier": "^2.0.3",
+    "prettier": "^2.8.8",
     "typescript": "^5.2.2"
   }
 }
