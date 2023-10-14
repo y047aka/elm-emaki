@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Html.Styled as Html exposing (Html, toUnstyled)
+import Html.Styled as Html exposing (..)
 import Html.Styled.Events exposing (onClick)
 
 
@@ -53,10 +53,30 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    Html.div []
-        [ Html.button [ onClick DecrementClicked ]
-            [ Html.text "-" ]
-        , Html.text (" " ++ String.fromInt model.count ++ " ")
-        , Html.button [ onClick IncrementClicked ]
-            [ Html.text "+" ]
+    main_ []
+        [ article []
+            [ h2 [] [ text "Progress" ]
+            , playground
+                { preview = div [] [ text ("progress :" ++ String.fromInt model.count) ]
+                , props =
+                    [ button [ onClick DecrementClicked ]
+                        [ text "-" ]
+                    , text (" " ++ String.fromInt model.count ++ " ")
+                    , button [ onClick IncrementClicked ]
+                        [ text "+" ]
+                    ]
+                }
+            ]
+        ]
+
+
+playground :
+    { preview : Html msg
+    , props : List (Html msg)
+    }
+    -> Html msg
+playground { preview, props } =
+    section []
+        [ preview
+        , div [] props
         ]
