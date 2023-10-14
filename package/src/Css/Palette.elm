@@ -14,7 +14,7 @@ module Css.Palette exposing
 
 -}
 
-import Css exposing (BackgroundImage, Color, Style, backgroundColor, backgroundImage, batch, borderColor, color)
+import Css exposing (..)
 
 
 type alias Palette =
