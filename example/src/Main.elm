@@ -1,7 +1,12 @@
 module Main exposing (main)
 
 import Browser
+import Css exposing (..)
+import Css.Extra exposing (..)
+import Css.Palette exposing (palette, paletteWith)
+import DesignToken.Palette as Palette
 import Html.Styled as Html exposing (..)
+import Html.Styled.Attributes exposing (css)
 import Html.Styled.Events exposing (onClick)
 
 
@@ -53,11 +58,17 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    main_ []
+    main_
+        [ css
+            [ boxSizing borderBox
+            , fontFamily sansSerif
+            , palette Palette.default
+            ]
+        ]
         [ article []
             [ h2 [] [ text "Progress" ]
             , playground
-                { preview = div [] [ text ("progress :" ++ String.fromInt model.count) ]
+                { preview = div [] [ text ("progress: " ++ String.fromInt model.count) ]
                 , props =
                     [ button [ onClick DecrementClicked ]
                         [ text "-" ]
@@ -76,7 +87,22 @@ playground :
     }
     -> Html msg
 playground { preview, props } =
-    section []
-        [ preview
-        , div [] props
+    section
+        [ css
+            [ padding (Css.em 0.5)
+            , borderRadius (Css.em 1)
+            , display grid
+            , gridTemplateColumns [ fr 2, fr 1 ]
+            , paletteWith (border3 (px 1) solid) Palette.default
+            ]
+        ]
+        [ div [ css [ placeSelfCenter ] ] [ preview ]
+        , div
+            [ css
+                [ padding (Css.em 0.5)
+                , borderRadius (Css.em 0.5)
+                , paletteWith (border3 (px 1) solid) Palette.default
+                ]
+            ]
+            props
         ]

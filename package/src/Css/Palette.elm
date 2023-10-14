@@ -32,14 +32,14 @@ init =
 
 palette : Palette -> Style
 palette =
-    paletteWith { border = borderColor }
+    paletteWith borderColor
 
 
-paletteWith : { border : Color -> Style } -> Palette -> Style
-paletteWith options p =
+paletteWith : (Color -> Style) -> Palette -> Style
+paletteWith border p =
     [ Maybe.map backgroundColor p.background
     , Maybe.map color p.color
-    , Maybe.map options.border p.border
+    , Maybe.map border p.border
     ]
         |> List.filterMap identity
         |> batch
