@@ -23,27 +23,11 @@ light =
     }
 
 
-translucentLight : Float -> Palette
-translucentLight alpha =
-    { light
-        | background = light.background |> Maybe.map (setAlpha_fixme alpha)
-        , border = Nothing
-    }
-
-
 dark : Palette
 dark =
     { background = Just black
     , color = Just white
     , border = Just white
-    }
-
-
-translucentDark : Float -> Palette
-translucentDark alpha =
-    { dark
-        | background = dark.background |> Maybe.map (setAlpha_fixme alpha)
-        , border = Nothing
     }
 
 
@@ -53,17 +37,26 @@ translucentDark alpha =
 
 playground : Palette
 playground =
-    translucentLight 0.8
+    { light
+        | background = light.background |> Maybe.map (setAlpha_fixme 0.8)
+        , border = Nothing
+    }
 
 
 propsPanel : Palette
 propsPanel =
-    translucentDark 0.1
+    { dark
+        | background = dark.background |> Maybe.map (setAlpha_fixme 0.1)
+        , border = Nothing
+    }
 
 
 propsField : Palette
 propsField =
-    translucentLight 0.7
+    { light
+        | background = light.background |> Maybe.map (setAlpha_fixme 0.7)
+        , border = Nothing
+    }
 
 
 
