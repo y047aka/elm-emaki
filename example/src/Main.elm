@@ -5,9 +5,9 @@ import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Palette exposing (palette, paletteWith)
 import DesignToken.Palette as Palette
+import Emaki.Props as Props exposing (Props)
 import Html.Styled as Html exposing (..)
 import Html.Styled.Attributes exposing (css)
-import Html.Styled.Events exposing (onClick)
 
 
 main : Program () Model Msg
@@ -25,12 +25,12 @@ main =
 
 
 type alias Model =
-    { count : Int }
+    { progress : Float }
 
 
 init : () -> ( Model, Cmd Msg )
 init () =
-    ( { count = 0 }, Cmd.none )
+    ( { progress = 0 }, Cmd.none )
 
 
 
@@ -46,10 +46,10 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         IncrementClicked ->
-            ( { model | count = model.count + 1 }, Cmd.none )
+            ( { model | progress = model.progress + 1 }, Cmd.none )
 
         DecrementClicked ->
-            ( { model | count = model.count - 1 }, Cmd.none )
+            ( { model | progress = model.progress - 1 }, Cmd.none )
 
 
 
@@ -68,13 +68,19 @@ view model =
         [ article []
             [ h2 [] [ text "Progress" ]
             , playground
-                { preview = div [] [ text ("progress: " ++ String.fromInt model.count) ]
+                { preview = div [] [ text ("progress: " ++ String.fromFloat model.progress) ]
                 , props =
-                    [ button [ onClick DecrementClicked ]
-                        [ text "-" ]
-                    , text (" " ++ String.fromInt model.count ++ " ")
-                    , button [ onClick IncrementClicked ]
-                        [ text "+" ]
+                    [ Props.field
+                        { label = "count"
+                        , props =
+                            Props.counter
+                                { value = model.progress
+                                , toString = \progress -> " " ++ String.fromFloat progress ++ " "
+                                , onClickPlus = IncrementClicked
+                                , onClickMinus = DecrementClicked
+                                }
+                        , note = ""
+                        }
                     ]
                 }
             ]
@@ -83,7 +89,7 @@ view model =
 
 playground :
     { preview : Html msg
-    , props : List (Html msg)
+    , props : List (Props msg)
     }
     -> Html msg
 playground { preview, props } =
@@ -104,5 +110,5 @@ playground { preview, props } =
                 , paletteWith (border3 (px 1) solid) Palette.default
                 ]
             ]
-            props
+            (List.map Props.render props)
         ]
