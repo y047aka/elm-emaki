@@ -9,7 +9,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prettier": "prettier --write  **/*.{ts,md,yml}",
-    "prettier-check": "prettier --check **/*.{ts,md,yml}"
+    "prettier-check": "prettier --check **/*.{ts,md,yml}",
+    "elm-format": "elm-format --yes package/",
+    "elm-format-check": "elm-format --validate package/"
+
   },
   "keywords": [],
   "author": "",
