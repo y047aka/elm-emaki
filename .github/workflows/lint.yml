@@ -25,7 +25,5 @@ jobs:
         with:
           node-version: 16
           cache: "npm"
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.3
-        with:
-          prettier_options: --check **/*.{ts,md,yml}
+      - name: check format with prettier
+        run: npx prettier --check **/*.{ts,md,yml}

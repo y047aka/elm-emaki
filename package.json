@@ -7,7 +7,9 @@
     "elm-emaki": "cli/main.ts"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "npx prettier --write  **/*.{ts,md,yml}",
+    "prettier-check": "npx prettier --check **/*.{ts,md,yml}"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +18,7 @@
     "elm": "^0.19.1-5",
     "elm-format": "^0.8.7",
     "elm-review": "^2.10.3",
+    "prettier": "^2.0.3",
     "typescript": "^5.2.2"
   }
 }
