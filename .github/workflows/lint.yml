@@ -17,9 +17,9 @@ jobs:
   ts-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: hustcer/setup-nu@main
+      - uses: hustcer/setup-nu@v3.6
         with:
-          version: "*"
+          version: "0.85.0"
       - uses: actions/checkout@v4.0.0
       - uses: actions/setup-node@v3
         with:
