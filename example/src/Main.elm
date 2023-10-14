@@ -61,8 +61,9 @@ view : Model -> Html Msg
 view model =
     main_
         [ css
-            [ padding (Css.em 1)
-            , paletteWithBackgroundImage (linearGradient2 toBottomRight (stop (hex "FFF")) (stop <| hex "999") [])
+            [ height (vh 100)
+            , padding (Css.em 1)
+            , paletteWithBackgroundImage (linearGradient2 toBottomRight (stop (hex "F9F9F9")) (stop <| hex "999") [])
                 Palette.light
             ]
         ]
@@ -98,7 +99,7 @@ playground { preview, props } =
     section
         [ css
             [ padding (Css.em 0.5)
-            , borderRadius (Css.em 1)
+            , borderRadius (Css.em 1.5)
             , display grid
             , gridTemplateColumns [ fr 2, fr 1 ]
             , paletteWith (border3 (px 1) solid) Palette.playground
@@ -108,9 +109,15 @@ playground { preview, props } =
         , div
             [ css
                 [ padding (Css.em 0.5)
-                , borderRadius (Css.em 0.5)
+                , borderRadius (Css.em 1)
                 , paletteWith (border3 (px 1) solid) Palette.propsPanel
-                , children [ Css.Global.div [ palette Palette.propsField ] ]
+                , children
+                    [ Css.Global.div
+                        [ padding (Css.em 1)
+                        , borderRadius (Css.em 0.5)
+                        , palette Palette.propsField
+                        ]
+                    ]
                 ]
             ]
             (List.map Props.render props)
