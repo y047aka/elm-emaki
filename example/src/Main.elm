@@ -63,7 +63,7 @@ view model =
         [ css
             [ padding (Css.em 1)
             , paletteWithBackgroundImage (linearGradient2 toBottomRight (stop (hex "FFF")) (stop <| hex "999") [])
-                Palette.default
+                Palette.light
             ]
         ]
         [ resetCSS
@@ -101,7 +101,7 @@ playground { preview, props } =
             , borderRadius (Css.em 1)
             , display grid
             , gridTemplateColumns [ fr 2, fr 1 ]
-            , paletteWith (border3 (px 1) solid) Palette.default
+            , paletteWith (border3 (px 1) solid) Palette.light
             ]
         ]
         [ div [ css [ placeSelfCenter ] ] [ preview ]
@@ -109,7 +109,7 @@ playground { preview, props } =
             [ css
                 [ padding (Css.em 0.5)
                 , borderRadius (Css.em 0.5)
-                , paletteWith (border3 (px 1) solid) Palette.default
+                , paletteWith (border3 (px 1) solid) Palette.light
                 ]
             ]
             (List.map Props.render props)

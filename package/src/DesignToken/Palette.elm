@@ -1,11 +1,11 @@
-module DesignToken.Palette exposing (dark, default)
+module DesignToken.Palette exposing (dark, light)
 
 import Css.Palette exposing (Palette)
 import DesignToken.Color exposing (black, grey050, white)
 
 
-default : Palette
-default =
+light : Palette
+light =
     { background = Just white
     , color = Just black
     , border = Just grey050
