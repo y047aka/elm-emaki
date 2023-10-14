@@ -4,7 +4,7 @@ import Browser
 import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet)
-import Css.Palette exposing (palette, paletteWith)
+import Css.Palette exposing (paletteWith, paletteWithBackgroundImage)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled as Html exposing (..)
@@ -59,7 +59,13 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    main_ [ css [ padding (Css.em 1), palette Palette.default ] ]
+    main_
+        [ css
+            [ padding (Css.em 1)
+            , paletteWithBackgroundImage (linearGradient2 toBottomRight (stop (hex "FFF")) (stop <| hex "999") [])
+                Palette.default
+            ]
+        ]
         [ resetCSS
         , article []
             [ h2 [] [ text "Progress" ]
