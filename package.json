@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "npx prettier --write  **/*.{ts,md,yml}",
-    "prettier-check": "npx prettier --check **/*.{ts,md,yml}"
+    "prettier": "prettier --write  **/*.{ts,md,yml}",
+    "prettier-check": "prettier --check **/*.{ts,md,yml}"
   },
   "keywords": [],
   "author": "",
