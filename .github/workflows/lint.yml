@@ -26,4 +26,4 @@ jobs:
           node-version: 16
           cache: "npm"
       - name: check format with prettier
-        run: npx prettier --check **/*.{ts,md,yml}
+        run: npm run prettier-check
