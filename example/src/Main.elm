@@ -3,8 +3,8 @@ module Main exposing (main)
 import Browser
 import Css exposing (..)
 import Css.Extra exposing (..)
-import Css.Global exposing (Snippet)
-import Css.Palette exposing (paletteWith, paletteWithBackgroundImage)
+import Css.Global exposing (Snippet, children)
+import Css.Palette exposing (palette, paletteWith, paletteWithBackgroundImage)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled as Html exposing (..)
@@ -101,7 +101,7 @@ playground { preview, props } =
             , borderRadius (Css.em 1)
             , display grid
             , gridTemplateColumns [ fr 2, fr 1 ]
-            , paletteWith (border3 (px 1) solid) Palette.light
+            , paletteWith (border3 (px 1) solid) Palette.playground
             ]
         ]
         [ div [ css [ placeSelfCenter ] ] [ preview ]
@@ -109,7 +109,8 @@ playground { preview, props } =
             [ css
                 [ padding (Css.em 0.5)
                 , borderRadius (Css.em 0.5)
-                , paletteWith (border3 (px 1) solid) Palette.light
+                , paletteWith (border3 (px 1) solid) Palette.propsPanel
+                , children [ Css.Global.div [ palette Palette.propsField ] ]
                 ]
             ]
             (List.map Props.render props)
