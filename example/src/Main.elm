@@ -3,6 +3,7 @@ module Main exposing (main)
 import Browser
 import Css exposing (..)
 import Css.Extra exposing (..)
+import Css.Global exposing (Snippet)
 import Css.Palette exposing (palette, paletteWith)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
@@ -58,14 +59,9 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    main_
-        [ css
-            [ boxSizing borderBox
-            , fontFamily sansSerif
-            , palette Palette.default
-            ]
-        ]
-        [ article []
+    main_ [ css [ padding (Css.em 1), palette Palette.default ] ]
+        [ resetCSS
+        , article []
             [ h2 [] [ text "Progress" ]
             , playground
                 { preview = div [] [ text ("progress: " ++ String.fromFloat model.progress) ]
@@ -111,4 +107,25 @@ playground { preview, props } =
                 ]
             ]
             (List.map Props.render props)
+        ]
+
+
+
+-- RESET CSS
+
+
+resetCSS : Html msg
+resetCSS =
+    let
+        where_ : String -> List Style -> Snippet
+        where_ selector_ styles =
+            Css.Global.selector (":where(" ++ selector_ ++ ")") styles
+    in
+    Css.Global.global
+        [ Css.Global.selector "*, ::before, ::after"
+            [ boxSizing borderBox ]
+        , Css.Global.everything
+            [ margin zero ]
+        , where_ ":root"
+            [ fontFamily sansSerif ]
         ]
