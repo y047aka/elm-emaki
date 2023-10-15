@@ -14,7 +14,7 @@ defaults:
     shell: nu {0}
 
 jobs:
-  format-ts-and-elm:
+  format:
     runs-on: ubuntu-latest
     steps:
       - uses: hustcer/setup-nu@v3.6
@@ -28,6 +28,4 @@ jobs:
       - name: npm install
         run: npm install
       - name: check format with prettier
-        run: npm run prettier-check
-      - name: check elm-format
-        run: npm run elm-format-check
+        run: npm run format-check
