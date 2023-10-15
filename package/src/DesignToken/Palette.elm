@@ -38,7 +38,7 @@ dark =
 playground : Palette
 playground =
     { light
-        | background = light.background |> Maybe.map (setAlpha_fixme 0.8)
+        | background = light.background |> Maybe.map (setAlpha_fixme 0.7)
         , border = Nothing
     }
 
@@ -54,7 +54,7 @@ propsPanel =
 propsField : Palette
 propsField =
     { light
-        | background = light.background |> Maybe.map (setAlpha_fixme 0.7)
+        | background = light.background |> Maybe.map (setAlpha_fixme 0.5)
         , border = Nothing
     }
 

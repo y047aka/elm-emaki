@@ -63,8 +63,15 @@ view model =
         [ css
             [ height (vh 100)
             , padding (Css.em 1)
-            , paletteWithBackgroundImage (linearGradient2 toBottomRight (stop (hex "F9F9F9")) (stop <| hex "999") [])
+            , paletteWithBackgroundImage
+                (radialGradient
+                    [ ( "at 20% 70%", hex "#83cde7", Css.transparent )
+                    , ( "at 50% 30%", hex "#f480d5", Css.transparent )
+                    , ( "at 80% 80%", hex "#b7f179", Css.transparent )
+                    ]
+                )
                 Palette.light
+            , property "background-attachment" "fixed"
             ]
         ]
         [ resetCSS
