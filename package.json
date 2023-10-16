@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prettier": "prettier --write  **/*.{ts,md,yml}",
-    "prettier-check": "prettier --check **/*.{ts,md,yml}"
+    "format": "prettier --write  **/*.{ts,md,yml} && elm-format --yes package/",
+    "format-check": "prettier --check **/*.{ts,md,yml} && elm-format --validate package/"
   },
   "keywords": [],
   "author": "",
