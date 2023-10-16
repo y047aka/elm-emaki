@@ -14,7 +14,7 @@ defaults:
     shell: nu {0}
 
 jobs:
-  ts-lint:
+  format:
     runs-on: ubuntu-latest
     steps:
       - uses: hustcer/setup-nu@v3.6
@@ -28,4 +28,4 @@ jobs:
       - name: npm install
         run: npm install
       - name: check format with prettier
-        run: npm run prettier-check
+        run: npm run format-check

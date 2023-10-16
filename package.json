@@ -10,8 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "example": "cd example && run-pty % elm-watch hot % npm run esbuild -- --serve=9000 --servedir=example/public",
     "esbuild": "esbuild example/app.ts --bundle --outdir=example/public/build --public-path=example/build/",
-    "prettier": "prettier --write  **/*.{ts,md,yml}",
-    "prettier-check": "prettier --check **/*.{ts,md,yml}"
+    "format": "prettier --write  **/*.{ts,md,yml} && elm-format --yes package/",
+    "format-check": "prettier --check **/*.{ts,md,yml} && elm-format --validate package/"
   },
   "keywords": [],
   "author": "",
