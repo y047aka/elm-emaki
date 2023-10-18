@@ -8,8 +8,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "example": "cd example && run-pty % elm-watch hot % npm run esbuild -- --serve=9000 --servedir=example/public",
-    "esbuild": "esbuild example/app.ts --bundle --outdir=example/public/build --public-path=example/build/",
     "format": "prettier --write  **/*.{ts,md,yml} && elm-format --yes package/",
     "format-check": "prettier --check **/*.{ts,md,yml} && elm-format --validate package/"
   },
@@ -20,10 +18,7 @@
     "elm": "^0.19.1-5",
     "elm-format": "^0.8.7",
     "elm-review": "^2.10.3",
-    "elm-watch": "^1.2.0-beta.4",
-    "esbuild": "^0.19.4",
     "prettier": "^2.8.8",
-    "run-pty": "^4.1.0",
     "typescript": "^5.2.2"
   }
 }
