@@ -4,7 +4,7 @@ import Browser
 import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children)
-import Css.Palette exposing (palette, paletteWith, paletteWithBackgroundImage)
+import Css.Palette exposing (palette, paletteWith)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled as Html exposing (..)
@@ -61,17 +61,25 @@ view : Model -> Html Msg
 view model =
     main_
         [ css
-            [ height (vh 100)
-            , padding (Css.em 1)
-            , paletteWithBackgroundImage
-                (radialGradient
-                    [ ( "at 20% 70%", hex "#83cde7", Css.transparent )
-                    , ( "at 50% 30%", hex "#f480d5", Css.transparent )
-                    , ( "at 80% 80%", hex "#b7f179", Css.transparent )
-                    ]
-                )
-                Palette.light
-            , property "background-attachment" "fixed"
+            [ padding (Css.em 1)
+            , before
+                [ property "content" "''"
+                , position absolute
+                , property "inset" "0"
+                , zIndex (int -2)
+                , property "background" """
+radial-gradient(at 80% 90%, #fd6444, #fd6444 40%, transparent 40%),
+radial-gradient(at 15% 125%, #5158dd, #5158dd 35%, transparent 35%),
+radial-gradient(at 70% -5%, #fbb835, #fbb835 40%, transparent 40%),
+radial-gradient(at 5% 0%, #88077e, #88077e 50%, transparent 50%)"""
+                ]
+            , after
+                [ property "content" "''"
+                , position absolute
+                , property "inset" "0"
+                , zIndex (int -1)
+                , property "backdrop-filter" "blur(100px) contrast(1.2)"
+                ]
             ]
         ]
         [ resetCSS
@@ -110,6 +118,8 @@ playground { preview, props } =
             , display grid
             , gridTemplateColumns [ fr 2, fr 1 ]
             , paletteWith (border3 (px 1) solid) Palette.playground
+            , property "backdrop-filter" "blur(150px)"
+            , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
             ]
         ]
         [ div [ css [ placeSelfCenter ] ] [ preview ]
@@ -117,12 +127,12 @@ playground { preview, props } =
             [ css
                 [ padding (Css.em 0.5)
                 , borderRadius (Css.em 1)
-                , paletteWith (border3 (px 1) solid) Palette.propsPanel
+                , palette Palette.propsPanel
                 , children
                     [ Css.Global.div
                         [ padding (Css.em 1)
                         , borderRadius (Css.em 0.5)
-                        , palette Palette.propsField
+                        , paletteWith (border3 (px 1) solid) Palette.propsField
                         ]
                     ]
                 ]
