@@ -1,7 +1,6 @@
 module Css.Palette exposing
     ( Palette, init
     , palette, paletteWith
-    , paletteWithBackgroundImage
     , setBackground, setColor, setBorder
     )
 
@@ -9,12 +8,11 @@ module Css.Palette exposing
 
 @docs Palette, init
 @docs palette, paletteWith
-@docs paletteWithBackgroundImage
 @docs setBackground, setColor, setBorder
 
 -}
 
-import Css exposing (..)
+import Css exposing (Color, Style, backgroundColor, batch, borderColor, color)
 
 
 type alias Palette =
@@ -42,16 +40,6 @@ paletteWith fn p =
     [ Maybe.map backgroundColor p.background
     , Maybe.map color p.color
     , Maybe.map fn p.border
-    ]
-        |> List.filterMap identity
-        |> batch
-
-
-paletteWithBackgroundImage : BackgroundImage compatible -> Palette -> Style
-paletteWithBackgroundImage bgImage p =
-    [ Just (backgroundImage bgImage)
-    , Maybe.map color p.color
-    , Maybe.map borderColor p.border
     ]
         |> List.filterMap identity
         |> batch

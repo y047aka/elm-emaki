@@ -3,7 +3,6 @@ module Css.Extra exposing
     , gap, gap2, rowGap, columnGap
     , placeItemsCenter, placeContentCenter, placeSelfCenter
     , grid, gridTemplateColumns, gridTemplateRows, gridAutoColumns, gridAutoRows, gridColumn, gridRow
-    , radialGradient
     )
 
 {-|
@@ -12,11 +11,10 @@ module Css.Extra exposing
 @docs gap, gap2, rowGap, columnGap
 @docs placeItemsCenter, placeContentCenter, placeSelfCenter
 @docs grid, gridTemplateColumns, gridTemplateRows, gridAutoColumns, gridAutoRows, gridColumn, gridRow
-@docs radialGradient
 
 -}
 
-import Css exposing (..)
+import Css exposing (Compatible, Display, ExplicitLength, Length, Style, Value, property)
 
 
 
@@ -154,31 +152,3 @@ gridColumn =
 gridRow : String -> Style
 gridRow =
     property "grid-row"
-
-
-
--- RADIAL GRADIENT
-
-
-radialGradient : List ( String, ColorValue compatibleA, ColorValue compatibleB ) -> BackgroundImage (ListStyle {})
-radialGradient stops =
-    { value =
-        stops
-            |> List.map (\( at, colorA, colorB ) -> [ at, colorA.value, colorB.value ])
-            |> List.map (cssFunction "radial-gradient")
-            |> String.join ","
-    , backgroundImage = dummyCompatible
-    , listStyleTypeOrPositionOrImage = dummyCompatible
-    }
-
-
-
--- HEPERS
-
-
-cssFunction : String -> List String -> String
-cssFunction funcName args =
-    funcName
-        ++ "("
-        ++ String.join "," args
-        ++ ")"
