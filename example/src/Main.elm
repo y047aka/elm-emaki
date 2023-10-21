@@ -118,7 +118,7 @@ playground { preview, props } =
             , display grid
             , gridTemplateColumns [ fr 2, fr 1 ]
             , paletteWith (border3 (px 1) solid) Palette.playground
-            , property "backdrop-filter" "blur(150px)"
+            , property "backdrop-filter" "blur(300px)"
             , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
             ]
         ]
@@ -132,7 +132,8 @@ playground { preview, props } =
                     [ Css.Global.div
                         [ padding (Css.em 1)
                         , borderRadius (Css.em 0.5)
-                        , paletteWith (border3 (px 1) solid) Palette.propsField
+                        , palette Palette.propsField
+                        , property "backdrop-filter" "brightness(105%)"
                         ]
                     ]
                 ]

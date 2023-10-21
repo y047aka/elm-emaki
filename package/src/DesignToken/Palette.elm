@@ -11,7 +11,7 @@ module DesignToken.Palette exposing
 -}
 
 import Css exposing (Color, hsla)
-import Css.Palette exposing (Palette)
+import Css.Palette exposing (Palette, init)
 import DesignToken.Color exposing (black, grey050, white)
 
 
@@ -38,25 +38,19 @@ dark =
 playground : Palette
 playground =
     { light
-        | background = light.background |> Maybe.map (setAlpha_fixme 0.35)
+        | background = light.background |> Maybe.map (setAlpha_fixme 0.4)
         , border = Just <| hsla 0 0 1 0.1
     }
 
 
 propsPanel : Palette
 propsPanel =
-    { dark
-        | background = dark.background |> Maybe.map (setAlpha_fixme 0.05)
-        , border = Nothing
-    }
+    { init | background = dark.background |> Maybe.map (setAlpha_fixme 0.05) }
 
 
 propsField : Palette
 propsField =
-    { light
-        | background = light.background |> Maybe.map (setAlpha_fixme 0.25)
-        , border = Just <| hsla 0 0 1 0.1
-    }
+    { init | color = Just black }
 
 
 
