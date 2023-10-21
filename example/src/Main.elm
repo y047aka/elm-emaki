@@ -78,6 +78,7 @@ radial-gradient(at 5% 0%, #88077e, #88077e 50%, transparent 50%)"""
                 , position absolute
                 , property "inset" "0"
                 , zIndex (int -1)
+                , property "-webkit-backdrop-filter" "blur(100px) contrast(1.2)"
                 , property "backdrop-filter" "blur(100px) contrast(1.2)"
                 ]
             ]
@@ -118,6 +119,7 @@ playground { preview, props } =
             , display grid
             , gridTemplateColumns [ fr 2, fr 1 ]
             , paletteWith (border3 (px 1) solid) Palette.playground
+            , property "-webkit-backdrop-filter" "blur(300px)"
             , property "backdrop-filter" "blur(300px)"
             , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
             ]
@@ -133,6 +135,7 @@ playground { preview, props } =
                         [ padding (Css.em 1)
                         , borderRadius (Css.em 0.5)
                         , palette Palette.propsField
+                        , property "-webkit-backdrop-filter" "brightness(105%)"
                         , property "backdrop-filter" "brightness(105%)"
                         ]
                     ]
