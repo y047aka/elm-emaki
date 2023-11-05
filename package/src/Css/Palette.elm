@@ -36,10 +36,10 @@ palette =
 
 
 paletteWith : (Color -> Style) -> Palette -> Style
-paletteWith border p =
+paletteWith fn p =
     [ Maybe.map backgroundColor p.background
     , Maybe.map color p.color
-    , Maybe.map border p.border
+    , Maybe.map fn p.border
     ]
         |> List.filterMap identity
         |> batch
