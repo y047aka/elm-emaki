@@ -1,6 +1,7 @@
 module Css.Extra exposing
     ( fr
     , gap, gap2, rowGap, columnGap
+    , placeItemsCenter, placeContentCenter, placeSelfCenter
     , grid, gridTemplateColumns, gridTemplateRows, gridAutoColumns, gridAutoRows, gridColumn, gridRow
     )
 
@@ -8,6 +9,7 @@ module Css.Extra exposing
 
 @docs fr
 @docs gap, gap2, rowGap, columnGap
+@docs placeItemsCenter, placeContentCenter, placeSelfCenter
 @docs grid, gridTemplateColumns, gridTemplateRows, gridAutoColumns, gridAutoRows, gridColumn, gridRow
 
 -}
@@ -96,6 +98,21 @@ rowGap =
 columnGap : Length compatible units -> Style
 columnGap =
     prop1 "column-gap"
+
+
+placeItemsCenter : Style
+placeItemsCenter =
+    property "place-items" "center"
+
+
+placeContentCenter : Style
+placeContentCenter =
+    property "place-content" "center"
+
+
+placeSelfCenter : Style
+placeSelfCenter =
+    property "place-self" "center"
 
 
 
