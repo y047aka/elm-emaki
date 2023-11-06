@@ -1,4 +1,4 @@
-#!/usr/bin/env npx tsx
+#!/usr/bin/env npm exec --package=prompts@2.4 --commander@11.1 --package=tsx@3.14 -- tsx
 
 import { Command, Option } from "commander";
 import { init } from "./init.ts";
