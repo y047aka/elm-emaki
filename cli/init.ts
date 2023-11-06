@@ -17,7 +17,7 @@ export async function init(emakiRootDir: Path) {
 
 async function generateElmEmakiProject(emakiRootDir: string): Promise<void> {
   const directories = Object.keys(generateTemplates).map((path) =>
-    dirname(resolve(emakiRootDir, path))
+    dirname(resolve(emakiRootDir, path)),
   );
 
   await Promise.all(directories.map((dir) => mkdir(dir, { recursive: true })));
@@ -85,7 +85,7 @@ const delay = (ms: number = 0) =>
 async function generateFile(
   emakiRootDir: Path,
   filePath: Path,
-  content: FileContent
+  content: FileContent,
 ): Promise<void> {
   const outputPath = resolve(emakiRootDir, filePath);
   const relPath = relative(process.cwd(), outputPath);
@@ -106,7 +106,7 @@ async function generateFile(
 
       if (overwrite) {
         return writeFile(outputPath, content, { flag: "w" }).then(() =>
-          console.log(`${relPath} ... overwritten`)
+          console.log(`${relPath} ... overwritten`),
         );
       }
     });

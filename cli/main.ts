@@ -26,11 +26,11 @@ program
   .addOption(
     new Option("-p, --port <number>", "port number")
       .default(8000)
-      .argParser(intParser)
+      .argParser(intParser),
   )
   .option("--dir <path>", "emaki root directory", DEFAULT_EMAKI_RELATIVE_PATH)
   .action(({ port, dir }) =>
-    serve({ port, emakiProjectRoot: resolve(process.cwd(), dir) })
+    serve({ port, emakiProjectRoot: resolve(process.cwd(), dir) }),
   );
 
 await program.parseAsync();
