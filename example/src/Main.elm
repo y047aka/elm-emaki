@@ -224,17 +224,19 @@ playground :
 playground { preview, props } =
     section
         [ css
-            [ padding (Css.em 0.5)
+            [ padding4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 1.5)
             , borderRadius (Css.em 1.5)
             , display grid
             , gridTemplateColumns [ fr 2, fr 1 ]
+            , columnGap (Css.em 1.5)
             , paletteWith (border3 (px 1) solid) Palette.playground
             , property "-webkit-backdrop-filter" "blur(300px)"
             , property "backdrop-filter" "blur(300px)"
             , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
             ]
         ]
-        [ div [ css [ placeSelfCenter ] ] [ preview ]
+        [ div [ css [ displayFlex, flexDirection column, justifyContent center ] ]
+            [ preview ]
         , div
             [ css
                 [ padding (Css.em 0.5)
