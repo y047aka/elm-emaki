@@ -3,11 +3,13 @@
   "scripts": {
     "start": "run-pty % elm-watch hot % npm run esbuild -- --serve=9000 --servedir=public",
     "build": "elm-watch make --optimize && npm run esbuild -- --minify",
-    "esbuild": "esbuild app.ts --bundle --outdir=public/build --public-path=/build/"
+    "esbuild": "esbuild app.ts --bundle --outdir=public/build --public-path=/build/",
+    "lint": "elm-review src --config ../review"
   },
   "devDependencies": {
     "elm": "^0.19.1-5",
     "elm-format": "^0.8.7",
+    "elm-review": "^2.10.3",
     "elm-watch": "^1.2.0-beta.4",
     "esbuild": "^0.19.4",
     "run-pty": "^4.1.0"

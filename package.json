@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write  **/*.{ts,md,yml} && elm-format --yes package/",
-    "format-check": "prettier --check **/*.{ts,md,yml} && elm-format --validate package/"
+    "format-check": "prettier --check **/*.{ts,md,yml} && elm-format --validate package/",
+    "lint": "elm-review package/src/ --elmjson package/elm.json --config review"
   },
   "keywords": [],
   "author": "",
