@@ -20,8 +20,12 @@ module Emaki.Props exposing
 
 -}
 
+import Css exposing (..)
+import Css.Extra exposing (columnGap, rowGap)
+import Css.Palette exposing (palette, paletteWith)
+import DesignToken.Palette as Palette
 import Html.Styled as Html exposing (Html, button, div, input, legend, text)
-import Html.Styled.Attributes exposing (checked, disabled, placeholder, selected, type_, value)
+import Html.Styled.Attributes as Attributes exposing (css, placeholder, selected, type_, value)
 import Html.Styled.Events exposing (onClick, onInput)
 
 
@@ -92,17 +96,33 @@ render props =
                 , value ps.value
                 , onInput ps.onInput
                 , placeholder ps.placeholder
+                , css
+                    [ property "appearance" "none"
+                    , padding (em 0.75)
+                    , fontSize inherit
+                    , borderRadius (em 0.25)
+                    , paletteWith (border3 (px 1) solid) Palette.formField
+                    ]
                 ]
                 []
 
         Bool ps ->
             Html.label []
-                [ input [ type_ "checkbox", checked ps.value, onClick ps.onClick ] []
+                [ input [ type_ "checkbox", Attributes.checked ps.value, onClick ps.onClick ] []
                 , text ps.label
                 ]
 
         Select ps ->
-            Html.select [ onInput ps.onChange ]
+            Html.select
+                [ onInput ps.onChange
+                , css
+                    [ property "appearance" "none"
+                    , padding (em 0.75)
+                    , fontSize inherit
+                    , borderRadius (em 0.25)
+                    , paletteWith (border3 (px 1) solid) Palette.formField
+                    ]
+                ]
                 (List.map (\option -> Html.option [ value option, selected (ps.value == option) ] [ text option ])
                     ps.options
                 )
@@ -115,7 +135,7 @@ render props =
                             [ input
                                 [ type_ "radio"
                                 , value option
-                                , checked (ps.value == option)
+                                , Attributes.checked (ps.value == option)
                                 , onInput ps.onChange
                                 ]
                                 []
@@ -125,10 +145,21 @@ render props =
                 )
 
         Counter ps ->
-            div []
-                [ button [ onClick ps.onClickMinus ] [ text "-" ]
+            let
+                button_ attributes =
+                    button
+                        (css
+                            [ padding2 (em 0.25) (em 0.5)
+                            , borderRadius (em 0.25)
+                            , paletteWith (border3 (px 1) solid) Palette.formField
+                            ]
+                            :: attributes
+                        )
+            in
+            div [ css [ displayFlex, alignItems center, columnGap (em 0.5) ] ]
+                [ button_ [ onClick ps.onClickMinus ] [ text "-" ]
                 , text (ps.toString ps.value)
-                , button [ onClick ps.onClickPlus ] [ text "+" ]
+                , button_ [ onClick ps.onClickPlus ] [ text "+" ]
                 ]
 
         BoolAndString ({ data } as ps) ->
@@ -137,8 +168,8 @@ render props =
                     [ Html.label []
                         [ input
                             [ type_ "checkbox"
-                            , checked data.visible
-                            , disabled False
+                            , Attributes.checked data.visible
+                            , Attributes.disabled False
                             , onClick (ps.onUpdate { data | visible = not data.visible })
                             ]
                             []
@@ -158,15 +189,21 @@ render props =
             div [] (List.map render childProps)
 
         FieldSet label childProps ->
-            Html.fieldset [] <|
-                legend [] [ text label ]
+            Html.div [ css [ borderWidth zero ] ] <|
+                legend [ css [ fontWeight bold ] ] [ text label ]
                     :: List.map render childProps
 
         Field { label, note } ps ->
-            div []
+            div
+                [ css
+                    [ displayFlex
+                    , flexDirection column
+                    , rowGap (em 0.25)
+                    ]
+                ]
                 [ div [] [ Html.label [] [ text label ] ]
                 , render ps
-                , div [] [ text note ]
+                , div [ css [ palette Palette.textOptional ] ] [ text note ]
                 ]
 
         Customize view ->

@@ -3,7 +3,7 @@ module Main exposing (main)
 import Browser
 import Css exposing (..)
 import Css.Extra exposing (..)
-import Css.Global exposing (Snippet, children)
+import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWith)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
@@ -87,8 +87,14 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 70%), hsl(200, 100%, 70%) 50%, transpar
             ]
         ]
         [ resetCSS
-        , article []
-            [ h2 [] [ text "Progress" ]
+        , article
+            [ css
+                [ displayFlex
+                , flexDirection column
+                , rowGap (Css.em 0.5)
+                ]
+            ]
+            [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
             , playground
                 { preview = Progress.progressWithProps model
                 , props =
@@ -227,8 +233,9 @@ playground { preview, props } =
             [ padding4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 1.5)
             , borderRadius (Css.em 1.5)
             , display grid
-            , gridTemplateColumns [ fr 2, fr 1 ]
+            , property "grid-template-columns" "1fr 25em"
             , columnGap (Css.em 1.5)
+            , fontSize (px 14)
             , paletteWith (border3 (px 1) solid) Palette.playground
             , property "-webkit-backdrop-filter" "blur(300px)"
             , property "backdrop-filter" "blur(300px)"
@@ -240,15 +247,19 @@ playground { preview, props } =
         , div
             [ css
                 [ padding (Css.em 0.5)
+                , displayFlex
+                , flexDirection column
+                , rowGap (Css.em 0.5)
                 , borderRadius (Css.em 1)
                 , palette Palette.propsPanel
                 , children
-                    [ Css.Global.div
-                        [ padding (Css.em 1)
+                    [ everything
+                        [ padding (Css.em 0.75)
+                        , displayFlex
+                        , flexDirection column
+                        , rowGap (Css.em 0.5)
                         , borderRadius (Css.em 0.5)
                         , palette Palette.propsField
-                        , property "-webkit-backdrop-filter" "brightness(105%)"
-                        , property "backdrop-filter" "brightness(105%)"
                         ]
                     ]
                 ]
