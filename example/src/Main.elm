@@ -281,7 +281,9 @@ resetCSS =
     in
     Css.Global.global
         [ Css.Global.selector "*, ::before, ::after"
-            [ boxSizing borderBox ]
+            [ boxSizing borderBox
+            , property "-webkit-font-smoothing" "antialiased"
+            ]
         , Css.Global.everything
             [ margin zero ]
         , where_ ":root"
