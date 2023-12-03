@@ -1,25 +1,27 @@
 module DesignToken.Palette exposing
     ( light, dark
-    , playground, propsPanel, propsField
+    , textOptional
+    , playground, propsPanel, propsField, formField
     )
 
 {-|
 
 @docs light, dark
-@docs playground, propsPanel, propsField
+@docs textOptional
+@docs playground, propsPanel, propsField, formField
 
 -}
 
 import Css exposing (Color, hsla)
 import Css.Palette exposing (Palette, init)
-import DesignToken.Color exposing (black, grey050, white)
+import DesignToken.Color exposing (black, grey020, grey060, grey070, white)
 
 
 light : Palette
 light =
-    { background = Just white
-    , color = Just black
-    , border = Just grey050
+    { background = Just (white |> setAlpha_fixme 0.5)
+    , color = Just grey020
+    , border = Just grey070
     }
 
 
@@ -31,6 +33,14 @@ dark =
     }
 
 
+textOptional : Palette
+textOptional =
+    { background = Nothing
+    , color = Just grey060
+    , border = Nothing
+    }
+
+
 
 -- SPECIFIC
 
@@ -38,7 +48,7 @@ dark =
 playground : Palette
 playground =
     { light
-        | background = light.background |> Maybe.map (setAlpha_fixme 0.4)
+        | background = light.background |> Maybe.map (setAlpha_fixme 0.8)
         , border = Just <| hsla 0 0 1 0.1
     }
 
@@ -50,7 +60,12 @@ propsPanel =
 
 propsField : Palette
 propsField =
-    { init | color = Just black }
+    light
+
+
+formField : Palette
+formField =
+    { light | background = Just (hsla 0 0 0 0) }
 
 
 
