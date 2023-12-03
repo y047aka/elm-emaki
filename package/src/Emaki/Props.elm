@@ -22,7 +22,7 @@ module Emaki.Props exposing
 
 import Css exposing (..)
 import Css.Extra exposing (columnGap, rowGap)
-import Css.Palette exposing (palette, paletteWith)
+import Css.Palette exposing (palette, paletteWithBorder)
 import DesignToken.Palette as Palette
 import Html.Styled as Html exposing (Html, button, div, input, legend, text)
 import Html.Styled.Attributes as Attributes exposing (css, placeholder, selected, type_, value)
@@ -101,7 +101,7 @@ render props =
                     , padding (em 0.75)
                     , fontSize inherit
                     , borderRadius (em 0.25)
-                    , paletteWith (border3 (px 1) solid) Palette.formField
+                    , paletteWithBorder (border3 (px 1) solid) Palette.formField
                     ]
                 ]
                 []
@@ -120,7 +120,7 @@ render props =
                     , padding (em 0.75)
                     , fontSize inherit
                     , borderRadius (em 0.25)
-                    , paletteWith (border3 (px 1) solid) Palette.formField
+                    , paletteWithBorder (border3 (px 1) solid) Palette.formField
                     ]
                 ]
                 (List.map (\option -> Html.option [ value option, selected (ps.value == option) ] [ text option ])
@@ -151,7 +151,7 @@ render props =
                         (css
                             [ padding2 (em 0.25) (em 0.5)
                             , borderRadius (em 0.25)
-                            , paletteWith (border3 (px 1) solid) Palette.formField
+                            , paletteWithBorder (border3 (px 1) solid) Palette.formField
                             ]
                             :: attributes
                         )

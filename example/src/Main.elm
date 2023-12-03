@@ -4,7 +4,7 @@ import Browser
 import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
-import Css.Palette exposing (palette, paletteWith)
+import Css.Palette exposing (palette, paletteWithBorder)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
@@ -236,7 +236,7 @@ playground { preview, props } =
             , property "grid-template-columns" "1fr 25em"
             , columnGap (Css.em 1.5)
             , fontSize (px 14)
-            , paletteWith (border3 (px 1) solid) Palette.playground
+            , paletteWithBorder (border3 (px 1) solid) Palette.playground
             , property "-webkit-backdrop-filter" "blur(300px)"
             , property "backdrop-filter" "blur(300px)"
             , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
