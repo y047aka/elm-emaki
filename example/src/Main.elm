@@ -71,10 +71,9 @@ view model =
                 , property "inset" "0"
                 , zIndex (int -2)
                 , property "background" """
-radial-gradient(at 80% 90%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 40%, transparent 40%),
-radial-gradient(at 15% 125%, hsl(250, 100%, 60%), hsl(250, 100%, 60%) 35%, transparent 35%),
-radial-gradient(at 70% -5%, hsl(300, 100%, 60%), hsl(300, 100%, 60%) 30%, transparent 40%),
-radial-gradient(at 5% 0%, hsl(200, 100%, 70%), hsl(200, 100%, 70%) 50%, transparent 50%)"""
+radial-gradient(at 80% 90%, hsl(200, 100%, 90%), hsl(200, 100%, 90%) 40%, transparent 40%),
+radial-gradient(at 70% -5%, hsl(300, 100%, 90%), hsl(300, 100%, 90%) 30%, transparent 40%),
+radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transparent 50%)"""
                 ]
             , after
                 [ property "content" "''"

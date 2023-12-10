@@ -19,7 +19,7 @@ import DesignToken.Color exposing (black, grey020, grey060, grey070, white)
 
 light : Palette
 light =
-    { background = Just (white |> setAlpha_fixme 0.5)
+    { background = Just (white |> setAlpha_fixme 0.8)
     , color = Just grey020
     , border = Just grey070
     }
