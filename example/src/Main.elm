@@ -5,8 +5,7 @@ import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder)
-import Css.TextBlock as TextBlock exposing (OverflowWrap(..), TextBlock, WordBreak(..), textBlock)
-import Css.Typography as Typography exposing (TextAlign(..), Typography, WebkitFontSmoothing(..), typography)
+import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), Typography, WebkitFontSmoothing(..), WordBreak(..), typography)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
@@ -37,7 +36,6 @@ type alias Model =
 type alias TypographyModel =
     { webkitFontSmoothing : WebkitFontSmoothing
     , typography : Typography
-    , textBlock : TextBlock
     , fontSize : Float
     , textAlign : TextAlign
     , lineHeight : Float
@@ -69,10 +67,8 @@ init_TypographyModel =
             |> Typography.setLineHeight (num 1.5)
             |> Typography.setTextDecoration Css.none
             |> Typography.setTextTransform Css.none
-    , textBlock =
-        TextBlock.init
-            |> TextBlock.setWordBreak Normal_WordBreak
-            |> TextBlock.setOverflowWrap Normal_OverflowWrap
+            |> Typography.setWordBreak Normal_WordBreak
+            |> Typography.setOverflowWrap Normal_OverflowWrap
     , fontSize = 16
     , textAlign = Left
     , lineHeight = 1.5
@@ -289,7 +285,6 @@ typographyPlayground tm =
                     , flexDirection column
                     , rowGap (Css.em 1)
                     , typography tm.typography
-                    , textBlock tm.textBlock
                     , children
                         [ everything
                             [ Typography.webkitFontSmoothing tm.webkitFontSmoothing ]
@@ -344,7 +339,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                     { label = "font-family"
                     , props =
                         Props.select
-                            { value = tm.typography.fontFamilies |> String.concat
+                            { value = tm.typography.font.families |> String.concat
                             , options = [ Css.sansSerif.value, Css.serif.value ]
                             , onChange =
                                 (\fontFamily m ->
@@ -394,7 +389,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                     { label = "font-style"
                     , props =
                         Props.radio
-                            { value = tm.typography.fontStyle |> Maybe.map .value |> Maybe.withDefault "-"
+                            { value = tm.typography.font.style |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.normal.value, Css.italic.value ]
                             , onChange =
                                 (\style m ->
@@ -419,7 +414,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                     { label = "font-weight"
                     , props =
                         Props.radio
-                            { value = tm.typography.fontWeight |> Maybe.map .value |> Maybe.withDefault "-"
+                            { value = tm.typography.font.weight |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
                             , onChange =
                                 (\weight m ->
@@ -522,7 +517,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                     { label = "text-decoration"
                     , props =
                         Props.radio
-                            { value = tm.typography.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
+                            { value = tm.typography.textSetting.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.none.value, Css.underline.value ]
                             , onChange =
                                 (\decoration m ->
@@ -572,7 +567,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                     { label = "text-transform"
                     , props =
                         Props.radio
-                            { value = tm.typography.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
+                            { value = tm.typography.textSetting.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.none.value, Css.uppercase.value, Css.lowercase.value, Css.capitalize.value ]
                             , onChange =
                                 (\transform m ->
@@ -605,27 +600,27 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                     { label = "word-break"
                     , props =
                         Props.radio
-                            { value = tm.textBlock.wordBreak |> Maybe.map TextBlock.wordBreakToString |> Maybe.withDefault "-"
+                            { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
                             , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
                             , onChange =
                                 (\wordBreak m ->
                                     { m
-                                        | textBlock =
+                                        | typography =
                                             case wordBreak of
                                                 "normal" ->
-                                                    m.textBlock |> TextBlock.setWordBreak Normal_WordBreak
+                                                    m.typography |> Typography.setWordBreak Normal_WordBreak
 
                                                 "break-all" ->
-                                                    m.textBlock |> TextBlock.setWordBreak BreakAll
+                                                    m.typography |> Typography.setWordBreak BreakAll
 
                                                 "keep-all" ->
-                                                    m.textBlock |> TextBlock.setWordBreak KeepAll
+                                                    m.typography |> Typography.setWordBreak KeepAll
 
                                                 "auto-phrase" ->
-                                                    m.textBlock |> TextBlock.setWordBreak AutoPhrase
+                                                    m.typography |> Typography.setWordBreak AutoPhrase
 
                                                 _ ->
-                                                    m.textBlock
+                                                    m.typography
                                     }
                                 )
                                     >> UpdateTypography
@@ -636,24 +631,24 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                     { label = "overflow-wrap"
                     , props =
                         Props.radio
-                            { value = tm.textBlock.overflowWrap |> Maybe.map TextBlock.overflowWrapToString |> Maybe.withDefault "-"
+                            { value = tm.typography.textBlock.overflowWrap |> Maybe.map Typography.overflowWrapToString |> Maybe.withDefault "-"
                             , options = [ "normal", "break-word", "anywhere" ]
                             , onChange =
                                 (\overflowWrap m ->
                                     { m
-                                        | textBlock =
+                                        | typography =
                                             case overflowWrap of
                                                 "normal" ->
-                                                    m.textBlock |> TextBlock.setOverflowWrap Normal_OverflowWrap
+                                                    m.typography |> Typography.setOverflowWrap Normal_OverflowWrap
 
                                                 "break-word" ->
-                                                    m.textBlock |> TextBlock.setOverflowWrap BreakWord
+                                                    m.typography |> Typography.setOverflowWrap BreakWord
 
                                                 "anywhere" ->
-                                                    m.textBlock |> TextBlock.setOverflowWrap Anywhere
+                                                    m.typography |> Typography.setOverflowWrap Anywhere
 
                                                 _ ->
-                                                    m.textBlock
+                                                    m.typography
                                     }
                                 )
                                     >> UpdateTypography
