@@ -711,31 +711,7 @@ playground { preview, props } =
 
 emakiView : Model -> List { label : String, url : String } -> List (Html msg) -> List (Html msg)
 emakiView model navItems contents =
-    [ resetCSS
-    , Css.Global.global
-        [ Css.Global.selector "body"
-            [ display grid
-            , gridTemplateColumns [ fr 1, fr 4 ]
-            , before
-                [ property "content" "''"
-                , position absolute
-                , property "inset" "0"
-                , zIndex (int -2)
-                , property "background" """
-radial-gradient(at 80% 90%, hsl(200, 100%, 90%), hsl(200, 100%, 90%) 40%, transparent 40%),
-radial-gradient(at 70% -5%, hsl(300, 100%, 90%), hsl(300, 100%, 90%) 30%, transparent 40%),
-radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transparent 50%)"""
-                ]
-            , after
-                [ property "content" "''"
-                , position absolute
-                , property "inset" "0"
-                , zIndex (int -1)
-                , property "-webkit-backdrop-filter" "blur(100px) contrast(1.2)"
-                , property "backdrop-filter" "blur(100px) contrast(1.2)"
-                ]
-            ]
-        ]
+    [ Css.Global.global globalStyles
     , navigation model.url navItems
     , main_
         [ css
@@ -753,25 +729,53 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transpar
     ]
 
 
-resetCSS : Html msg
-resetCSS =
+globalStyles : List Snippet
+globalStyles =
     let
-        where_ : String -> List Style -> Snippet
-        where_ selector_ styles =
-            Css.Global.selector (":where(" ++ selector_ ++ ")") styles
+        resetCss =
+            [ Css.Global.selector "*, ::before, ::after"
+                [ boxSizing borderBox
+                , property "-webkit-font-smoothing" "antialiased"
+                ]
+            , Css.Global.everything
+                [ margin zero ]
+            ]
+
+        globalCustomize =
+            [ where_ ":root"
+                [ fontFamily sansSerif
+                , property "scroll-behavior" "smooth"
+                ]
+            , Css.Global.selector "body"
+                [ display grid
+                , gridTemplateColumns [ fr 1, fr 4 ]
+                , before
+                    [ property "content" "''"
+                    , position absolute
+                    , property "inset" "0"
+                    , zIndex (int -2)
+                    , property "background" """
+radial-gradient(at 80% 90%, hsl(200, 100%, 90%), hsl(200, 100%, 90%) 40%, transparent 40%),
+radial-gradient(at 70% -5%, hsl(300, 100%, 90%), hsl(300, 100%, 90%) 30%, transparent 40%),
+radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transparent 50%)"""
+                    ]
+                , after
+                    [ property "content" "''"
+                    , position absolute
+                    , property "inset" "0"
+                    , zIndex (int -1)
+                    , property "-webkit-backdrop-filter" "blur(100px) contrast(1.2)"
+                    , property "backdrop-filter" "blur(100px) contrast(1.2)"
+                    ]
+                ]
+            ]
     in
-    Css.Global.global
-        [ Css.Global.selector "*, ::before, ::after"
-            [ boxSizing borderBox
-            , property "-webkit-font-smoothing" "antialiased"
-            ]
-        , Css.Global.everything
-            [ margin zero ]
-        , where_ ":root"
-            [ fontFamily sansSerif
-            , property "scroll-behavior" "smooth"
-            ]
-        ]
+    resetCss ++ globalCustomize
+
+
+where_ : String -> List Style -> Snippet
+where_ selector_ styles =
+    Css.Global.selector (":where(" ++ selector_ ++ ")") styles
 
 
 navigation : Url -> List { label : String, url : String } -> Html msg
