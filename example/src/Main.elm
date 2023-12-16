@@ -135,8 +135,9 @@ view model =
     { title = "elm-emaki"
     , body =
         List.map toUnstyled
-            [ main_
-                [ css
+            [ resetCSS
+            , Css.Global.global
+                [ Css.Global.selector "body"
                     [ display grid
                     , gridTemplateColumns [ fr 1, fr 4 ]
                     , before
@@ -159,31 +160,29 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transpar
                         ]
                     ]
                 ]
-                [ resetCSS
-                , navigation model.url
-                    [ { label = "Progress", url = "#progress" }
-                    , { label = "Typography", url = "#typography" }
-                    ]
-                , article
-                    [ css
-                        [ padding (Css.em 1.5)
-                        , displayFlex
-                        , flexDirection column
-                        , rowGap (Css.em 2)
-                        , children
-                            [ everything
-                                [ target [ property "scroll-margin-top" "1em" ] ]
-                            ]
+            , navigation model.url
+                [ { label = "Progress", url = "#progress" }
+                , { label = "Typography", url = "#typography" }
+                ]
+            , main_
+                [ css
+                    [ padding (Css.em 1.5)
+                    , displayFlex
+                    , flexDirection column
+                    , rowGap (Css.em 2)
+                    , children
+                        [ everything
+                            [ target [ property "scroll-margin-top" "1em" ] ]
                         ]
                     ]
-                    [ section [ id "progress" ]
-                        [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
-                        , progressPlayground model.progressModel
-                        ]
-                    , section [ id "typography" ]
-                        [ h2 [] [ text "Typography" ]
-                        , typographyPlayground model.typographyModel
-                        ]
+                ]
+                [ section [ id "progress" ]
+                    [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
+                    , progressPlayground model.progressModel
+                    ]
+                , section [ id "typography" ]
+                    [ h2 [] [ text "Typography" ]
+                    , typographyPlayground model.typographyModel
                     ]
                 ]
             ]
