@@ -9,7 +9,7 @@ import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), T
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes exposing (css, href, id)
 import Progress exposing (State(..))
 
 
@@ -111,7 +111,8 @@ view : Model -> Html Msg
 view model =
     main_
         [ css
-            [ padding (Css.em 1)
+            [ display grid
+            , gridTemplateColumns [ fr 1, fr 4 ]
             , before
                 [ property "content" "''"
                 , position absolute
@@ -133,17 +134,30 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transpar
             ]
         ]
         [ resetCSS
+        , navigation
+            [ { label = "Progress", url = "#progress" }
+            , { label = "Typography", url = "#typography" }
+            ]
         , article
             [ css
-                [ displayFlex
+                [ padding (Css.em 1.5)
+                , displayFlex
                 , flexDirection column
-                , rowGap (Css.em 0.5)
+                , rowGap (Css.em 2)
+                , children
+                    [ everything
+                        [ target [ property "scroll-margin-top" "1em" ] ]
+                    ]
                 ]
             ]
-            [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
-            , progressPlayground model.progressModel
-            , h2 [] [ text "Typography" ]
-            , typographyPlayground model.typographyModel
+            [ section [ id "progress" ]
+                [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
+                , progressPlayground model.progressModel
+                ]
+            , section [ id "typography" ]
+                [ h2 [] [ text "Typography" ]
+                , typographyPlayground model.typographyModel
+                ]
             ]
         ]
 
@@ -704,6 +718,41 @@ playground { preview, props } =
             ]
             (List.map Props.render props)
         ]
+
+
+navigation : List { label : String, url : String } -> Html msg
+navigation items =
+    let
+        listItem { label, url } =
+            li [ css [ listStyle none ] ]
+                [ a
+                    [ href url
+                    , css
+                        [ display block
+                        , padding2 (Css.em 0.5) (Css.em 1)
+                        , borderRadius (Css.em 0.5)
+                        , fontSize (px 14)
+                        , textDecoration none
+                        , color inherit
+                        , hover [ palette Palette.propsPanel ]
+                        ]
+                    ]
+                    [ text label ]
+                ]
+    in
+    nav
+        [ css
+            [ position sticky
+            , top zero
+            , height (vh 100)
+            , padding (Css.em 0.5)
+            , palette Palette.playground
+            , property "-webkit-backdrop-filter" "blur(300px)"
+            , property "backdrop-filter" "blur(300px)"
+            , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
+            ]
+        ]
+        [ ul [ css [ padding zero ] ] (List.map listItem items) ]
 
 
 
