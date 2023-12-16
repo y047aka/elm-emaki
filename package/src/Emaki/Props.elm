@@ -2,7 +2,7 @@ module Emaki.Props exposing
     ( Props(..)
     , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
     , render
-    , string, bool, select, counter, boolAndString
+    , string, bool, select, radio, counter, boolAndString
     , list, fieldset
     , field
     , customize
@@ -13,7 +13,7 @@ module Emaki.Props exposing
 @docs Props
 @docs StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
 @docs render
-@docs string, bool, select, counter, boolAndString
+@docs string, bool, select, radio, counter, boolAndString
 @docs list, fieldset
 @docs field
 @docs customize
@@ -128,10 +128,10 @@ render props =
                 )
 
         Radio ps ->
-            Html.fieldset []
+            Html.div []
                 (List.map
                     (\option ->
-                        Html.label []
+                        Html.label [ css [ display block ] ]
                             [ input
                                 [ type_ "radio"
                                 , value option
@@ -139,6 +139,7 @@ render props =
                                 , onInput ps.onChange
                                 ]
                                 []
+                            , text option
                             ]
                     )
                     ps.options
@@ -201,7 +202,7 @@ render props =
                     , rowGap (em 0.25)
                     ]
                 ]
-                [ div [] [ Html.label [] [ text label ] ]
+                [ div [] [ Html.label [ css [ fontWeight bold ] ] [ text label ] ]
                 , render ps
                 , div [ css [ palette Palette.textOptional ] ] [ text note ]
                 ]
@@ -223,6 +224,11 @@ bool =
 select : SelectProps msg -> Props msg
 select =
     Select
+
+
+radio : RadioProps msg -> Props msg
+radio =
+    Radio
 
 
 counter : CounterProps msg -> Props msg
