@@ -1,6 +1,7 @@
 module Main exposing (main)
 
-import Browser
+import Browser exposing (Document)
+import Browser.Navigation as Navigation exposing (Key)
 import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
@@ -11,15 +12,18 @@ import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css, href, id)
 import Progress exposing (State(..))
+import Url exposing (Url)
 
 
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.application
         { init = init
-        , view = view >> toUnstyled
+        , view = view
         , update = update
         , subscriptions = \_ -> Sub.none
+        , onUrlRequest = UrlRequested
+        , onUrlChange = UrlChanged
         }
 
 
@@ -28,7 +32,9 @@ main =
 
 
 type alias Model =
-    { progressModel : Progress.Model
+    { url : Url
+    , key : Key
+    , progressModel : Progress.Model
     , typographyModel : TypographyModel
     }
 
@@ -43,13 +49,15 @@ type alias TypographyModel =
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init () =
+init : () -> Url -> Key -> ( Model, Cmd Msg )
+init () url key =
     let
         ( progressModel, progressCmd ) =
             Progress.init
     in
-    ( { progressModel = progressModel
+    ( { url = url
+      , key = key
+      , progressModel = progressModel
       , typographyModel = init_TypographyModel
       }
     , Cmd.map ProgressMsg progressCmd
@@ -81,7 +89,9 @@ init_TypographyModel =
 
 
 type Msg
-    = UpdateProgress (Progress.Model -> Progress.Model)
+    = UrlRequested Browser.UrlRequest
+    | UrlChanged Url
+    | UpdateProgress (Progress.Model -> Progress.Model)
     | UpdateTypography (TypographyModel -> TypographyModel)
     | ProgressMsg Progress.Msg
 
@@ -89,6 +99,17 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        UrlRequested urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, Navigation.pushUrl model.key (Url.toString url) )
+
+                Browser.External url ->
+                    ( model, Navigation.load url )
+
+        UrlChanged url ->
+            ( { model | url = url }, Cmd.none )
+
         UpdateProgress updater ->
             ( { model | progressModel = updater model.progressModel }, Cmd.none )
 
@@ -107,59 +128,64 @@ update msg model =
 -- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Document Msg
 view model =
-    main_
-        [ css
-            [ display grid
-            , gridTemplateColumns [ fr 1, fr 4 ]
-            , before
-                [ property "content" "''"
-                , position absolute
-                , property "inset" "0"
-                , zIndex (int -2)
-                , property "background" """
+    { title = "elm-emaki"
+    , body =
+        List.map toUnstyled
+            [ main_
+                [ css
+                    [ display grid
+                    , gridTemplateColumns [ fr 1, fr 4 ]
+                    , before
+                        [ property "content" "''"
+                        , position absolute
+                        , property "inset" "0"
+                        , zIndex (int -2)
+                        , property "background" """
 radial-gradient(at 80% 90%, hsl(200, 100%, 90%), hsl(200, 100%, 90%) 40%, transparent 40%),
 radial-gradient(at 70% -5%, hsl(300, 100%, 90%), hsl(300, 100%, 90%) 30%, transparent 40%),
 radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transparent 50%)"""
+                        ]
+                    , after
+                        [ property "content" "''"
+                        , position absolute
+                        , property "inset" "0"
+                        , zIndex (int -1)
+                        , property "-webkit-backdrop-filter" "blur(100px) contrast(1.2)"
+                        , property "backdrop-filter" "blur(100px) contrast(1.2)"
+                        ]
+                    ]
                 ]
-            , after
-                [ property "content" "''"
-                , position absolute
-                , property "inset" "0"
-                , zIndex (int -1)
-                , property "-webkit-backdrop-filter" "blur(100px) contrast(1.2)"
-                , property "backdrop-filter" "blur(100px) contrast(1.2)"
-                ]
-            ]
-        ]
-        [ resetCSS
-        , navigation
-            [ { label = "Progress", url = "#progress" }
-            , { label = "Typography", url = "#typography" }
-            ]
-        , article
-            [ css
-                [ padding (Css.em 1.5)
-                , displayFlex
-                , flexDirection column
-                , rowGap (Css.em 2)
-                , children
-                    [ everything
-                        [ target [ property "scroll-margin-top" "1em" ] ]
+                [ resetCSS
+                , navigation model.url
+                    [ { label = "Progress", url = "#progress" }
+                    , { label = "Typography", url = "#typography" }
+                    ]
+                , article
+                    [ css
+                        [ padding (Css.em 1.5)
+                        , displayFlex
+                        , flexDirection column
+                        , rowGap (Css.em 2)
+                        , children
+                            [ everything
+                                [ target [ property "scroll-margin-top" "1em" ] ]
+                            ]
+                        ]
+                    ]
+                    [ section [ id "progress" ]
+                        [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
+                        , progressPlayground model.progressModel
+                        ]
+                    , section [ id "typography" ]
+                        [ h2 [] [ text "Typography" ]
+                        , typographyPlayground model.typographyModel
+                        ]
                     ]
                 ]
             ]
-            [ section [ id "progress" ]
-                [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
-                , progressPlayground model.progressModel
-                ]
-            , section [ id "typography" ]
-                [ h2 [] [ text "Typography" ]
-                , typographyPlayground model.typographyModel
-                ]
-            ]
-        ]
+    }
 
 
 progressPlayground : Progress.Model -> Html Msg
@@ -720,8 +746,8 @@ playground { preview, props } =
         ]
 
 
-navigation : List { label : String, url : String } -> Html msg
-navigation items =
+navigation : Url -> List { label : String, url : String } -> Html msg
+navigation currentUrl items =
     let
         listItem { label, url } =
             li [ css [ listStyle none ] ]
@@ -732,6 +758,12 @@ navigation items =
                         , padding2 (Css.em 0.5) (Css.em 1)
                         , borderRadius (Css.em 0.5)
                         , fontSize (px 14)
+                        , case currentUrl.fragment |> Maybe.map ((++) "#" >> (==) url) of
+                            Just True ->
+                                fontWeight bold
+
+                            _ ->
+                                batch []
                         , textDecoration none
                         , color inherit
                         , hover [ palette Palette.propsPanel ]
