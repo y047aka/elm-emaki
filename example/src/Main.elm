@@ -102,7 +102,8 @@ update msg model =
         UrlRequested urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
-                    ( model, Navigation.pushUrl model.key (Url.toString url) )
+                    -- 現時点ではfragmentによる遷移のみを想定している
+                    ( model, Navigation.load (Url.toString url) )
 
                 Browser.External url ->
                     ( model, Navigation.load url )
