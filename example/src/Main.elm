@@ -807,5 +807,7 @@ resetCSS =
         , Css.Global.everything
             [ margin zero ]
         , where_ ":root"
-            [ fontFamily sansSerif ]
+            [ fontFamily sansSerif
+            , property "scroll-behavior" "smooth"
+            ]
         ]
