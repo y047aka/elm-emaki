@@ -136,17 +136,14 @@ view model =
     , body =
         List.map toUnstyled <|
             emakiView model
-                [ { label = "Progress", url = "#progress" }
-                , { label = "Typography", url = "#typography" }
-                ]
-                [ section [ id "progress" ]
-                    [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
-                    , progressPlayground model.progressModel
-                    ]
-                , section [ id "typography" ]
-                    [ h2 [] [ text "Typography" ]
-                    , typographyPlayground model.typographyModel
-                    ]
+                [ { id = "progress"
+                  , heading = "Progress"
+                  , sectionContents = [ progressPlayground model.progressModel ]
+                  }
+                , { id = "typography"
+                  , heading = "Typography"
+                  , sectionContents = [ typographyPlayground model.typographyModel ]
+                  }
                 ]
     }
 
@@ -709,10 +706,16 @@ playground { preview, props } =
         ]
 
 
-emakiView : Model -> List { label : String, url : String } -> List (Html msg) -> List (Html msg)
-emakiView model navItems contents =
+emakiView : Model -> List { id : String, heading : String, sectionContents : List (Html msg) } -> List (Html msg)
+emakiView model contents =
+    let
+        section_ content =
+            section [ id content.id ] <|
+                h2 [ css [ fontSize (px 20) ] ] [ text content.heading ]
+                    :: content.sectionContents
+    in
     [ Css.Global.global globalStyles
-    , navigation model.url navItems
+    , navigation model.url contents
     , main_
         [ css
             [ padding (Css.em 1.5)
@@ -725,7 +728,7 @@ emakiView model navItems contents =
                 ]
             ]
         ]
-        contents
+        (List.map section_ contents)
     ]
 
 
@@ -778,16 +781,16 @@ where_ selector_ styles =
     Css.Global.selector (":where(" ++ selector_ ++ ")") styles
 
 
-navigation : Url -> List { label : String, url : String } -> Html msg
+navigation : Url -> List { a | heading : String, id : String } -> Html msg
 navigation currentUrl items =
     let
-        isSelected url =
-            Maybe.map ((++) "#") currentUrl.fragment == Just url
+        isSelected id =
+            currentUrl.fragment == Just id
 
-        listItem { label, url } =
+        listItem { id, heading } =
             li [ css [ listStyle none ] ]
                 [ a
-                    [ href url
+                    [ href ("#" ++ id)
                     , css
                         [ display block
                         , padding2 (Css.em 0.5) (Css.em 1)
@@ -795,11 +798,11 @@ navigation currentUrl items =
                         , fontSize (px 14)
                         , textDecoration none
                         , paletteByState Palette.navItem
-                        , batchIf (isSelected url)
+                        , batchIf (isSelected id)
                             [ palette Palette.navItemSelected ]
                         ]
                     ]
-                    [ text label ]
+                    [ text heading ]
                 ]
     in
     nav
