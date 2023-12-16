@@ -1,11 +1,14 @@
 module Css.Extra exposing
-    ( fr
+    ( batchIf
+    , fr
     , gap, gap2, rowGap, columnGap
     , placeItemsCenter, placeContentCenter, placeSelfCenter
     , grid, gridTemplateColumns, gridTemplateRows, gridAutoColumns, gridAutoRows, gridColumn, gridRow
     )
 
 {-|
+
+@docs batchIf
 
 @docs fr
 @docs gap, gap2, rowGap, columnGap
@@ -15,6 +18,19 @@ module Css.Extra exposing
 -}
 
 import Css exposing (Compatible, Display, ExplicitLength, Length, Style, Value, property)
+
+
+
+-- STYLE
+
+
+batchIf : Bool -> List Style -> Style
+batchIf condition styles =
+    if condition then
+        Css.batch styles
+
+    else
+        Css.batch []
 
 
 

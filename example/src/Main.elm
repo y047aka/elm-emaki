@@ -751,6 +751,9 @@ playground { preview, props } =
 navigation : Url -> List { label : String, url : String } -> Html msg
 navigation currentUrl items =
     let
+        isSelected url =
+            Maybe.map ((++) "#") currentUrl.fragment == Just url
+
         listItem { label, url } =
             li [ css [ listStyle none ] ]
                 [ a
@@ -762,12 +765,8 @@ navigation currentUrl items =
                         , fontSize (px 14)
                         , textDecoration none
                         , paletteByState Palette.navItem
-                        , case currentUrl.fragment |> Maybe.map ((++) "#" >> (==) url) of
-                            Just True ->
-                                palette Palette.navItemSelected
-
-                            _ ->
-                                batch []
+                        , batchIf (isSelected url)
+                            [ palette Palette.navItemSelected ]
                         ]
                     ]
                     [ text label ]
