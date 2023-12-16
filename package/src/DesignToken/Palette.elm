@@ -1,6 +1,7 @@
 module DesignToken.Palette exposing
     ( light, dark
     , textOptional
+    , navigation, navItem, navItemSelected
     , playground, propsPanel, propsField, formField
     )
 
@@ -8,13 +9,15 @@ module DesignToken.Palette exposing
 
 @docs light, dark
 @docs textOptional
+
+@docs navigation, navItem, navItemSelected
 @docs playground, propsPanel, propsField, formField
 
 -}
 
-import Css exposing (Color, hsla)
-import Css.Palette exposing (Palette, init)
-import DesignToken.Color exposing (black, grey020, grey060, grey070, white)
+import Css exposing (Color, Style, hover, hsla)
+import Css.Palette exposing (Palette, init, setBackground, setColor)
+import DesignToken.Color exposing (black, grey020, grey030, grey060, grey070, grey080, white)
 
 
 light : Palette
@@ -42,7 +45,34 @@ textOptional =
 
 
 
--- SPECIFIC
+-- NAVIGATION
+
+
+navigation : Palette
+navigation =
+    { dark | background = dark.background |> Maybe.map (setAlpha_fixme 0.9) }
+
+
+navItem : ( Palette, List ( List Style -> Style, Palette ) )
+navItem =
+    let
+        default =
+            init |> setColor grey080
+    in
+    ( default
+    , [ ( hover, default |> setBackground grey030 |> setColor white ) ]
+    )
+
+
+navItemSelected : Palette
+navItemSelected =
+    Tuple.first navItem
+        |> setBackground grey020
+        |> setColor white
+
+
+
+-- PLAYGROUND
 
 
 playground : Palette

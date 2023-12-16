@@ -1,13 +1,13 @@
 module DesignToken.Color exposing
     ( white, black
-    , grey020, grey050, grey060, grey070
+    , grey020, grey030, grey050, grey060, grey070, grey080
     , red050, green050, blue050
     )
 
 {-|
 
 @docs white, black
-@docs grey020, grey050, grey060, grey070
+@docs grey020, grey030, grey050, grey060, grey070, grey080
 @docs red050, green050, blue050
 
 -}
@@ -30,6 +30,11 @@ grey020 =
     hsl 0 0 0.2
 
 
+grey030 : Color
+grey030 =
+    hsl 0 0 0.3
+
+
 grey050 : Color
 grey050 =
     hsl 0 0 0.5
@@ -43,6 +48,11 @@ grey060 =
 grey070 : Color
 grey070 =
     hsl 0 0 0.7
+
+
+grey080 : Color
+grey080 =
+    hsl 0 0 0.8
 
 
 red050 : Color

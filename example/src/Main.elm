@@ -6,6 +6,7 @@ import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder)
+import Css.Palette.Extra exposing (paletteByState)
 import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), Typography, WebkitFontSmoothing(..), WordBreak(..), typography)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
@@ -759,15 +760,14 @@ navigation currentUrl items =
                         , padding2 (Css.em 0.5) (Css.em 1)
                         , borderRadius (Css.em 0.5)
                         , fontSize (px 14)
+                        , textDecoration none
+                        , paletteByState Palette.navItem
                         , case currentUrl.fragment |> Maybe.map ((++) "#" >> (==) url) of
                             Just True ->
-                                fontWeight bold
+                                palette Palette.navItemSelected
 
                             _ ->
                                 batch []
-                        , textDecoration none
-                        , color inherit
-                        , hover [ palette Palette.propsPanel ]
                         ]
                     ]
                     [ text label ]
@@ -779,7 +779,7 @@ navigation currentUrl items =
             , top zero
             , height (vh 100)
             , padding (Css.em 0.5)
-            , palette Palette.playground
+            , palette Palette.navigation
             , property "-webkit-backdrop-filter" "blur(300px)"
             , property "backdrop-filter" "blur(300px)"
             , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
