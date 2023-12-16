@@ -134,47 +134,10 @@ view : Model -> Document Msg
 view model =
     { title = "elm-emaki"
     , body =
-        List.map toUnstyled
-            [ resetCSS
-            , Css.Global.global
-                [ Css.Global.selector "body"
-                    [ display grid
-                    , gridTemplateColumns [ fr 1, fr 4 ]
-                    , before
-                        [ property "content" "''"
-                        , position absolute
-                        , property "inset" "0"
-                        , zIndex (int -2)
-                        , property "background" """
-radial-gradient(at 80% 90%, hsl(200, 100%, 90%), hsl(200, 100%, 90%) 40%, transparent 40%),
-radial-gradient(at 70% -5%, hsl(300, 100%, 90%), hsl(300, 100%, 90%) 30%, transparent 40%),
-radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transparent 50%)"""
-                        ]
-                    , after
-                        [ property "content" "''"
-                        , position absolute
-                        , property "inset" "0"
-                        , zIndex (int -1)
-                        , property "-webkit-backdrop-filter" "blur(100px) contrast(1.2)"
-                        , property "backdrop-filter" "blur(100px) contrast(1.2)"
-                        ]
-                    ]
-                ]
-            , navigation model.url
+        List.map toUnstyled <|
+            emakiView model
                 [ { label = "Progress", url = "#progress" }
                 , { label = "Typography", url = "#typography" }
-                ]
-            , main_
-                [ css
-                    [ padding (Css.em 1.5)
-                    , displayFlex
-                    , flexDirection column
-                    , rowGap (Css.em 2)
-                    , children
-                        [ everything
-                            [ target [ property "scroll-margin-top" "1em" ] ]
-                        ]
-                    ]
                 ]
                 [ section [ id "progress" ]
                     [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
@@ -185,7 +148,6 @@ radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transpar
                     , typographyPlayground model.typographyModel
                     ]
                 ]
-            ]
     }
 
 
@@ -747,6 +709,71 @@ playground { preview, props } =
         ]
 
 
+emakiView : Model -> List { label : String, url : String } -> List (Html msg) -> List (Html msg)
+emakiView model navItems contents =
+    [ resetCSS
+    , Css.Global.global
+        [ Css.Global.selector "body"
+            [ display grid
+            , gridTemplateColumns [ fr 1, fr 4 ]
+            , before
+                [ property "content" "''"
+                , position absolute
+                , property "inset" "0"
+                , zIndex (int -2)
+                , property "background" """
+radial-gradient(at 80% 90%, hsl(200, 100%, 90%), hsl(200, 100%, 90%) 40%, transparent 40%),
+radial-gradient(at 70% -5%, hsl(300, 100%, 90%), hsl(300, 100%, 90%) 30%, transparent 40%),
+radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transparent 50%)"""
+                ]
+            , after
+                [ property "content" "''"
+                , position absolute
+                , property "inset" "0"
+                , zIndex (int -1)
+                , property "-webkit-backdrop-filter" "blur(100px) contrast(1.2)"
+                , property "backdrop-filter" "blur(100px) contrast(1.2)"
+                ]
+            ]
+        ]
+    , navigation model.url navItems
+    , main_
+        [ css
+            [ padding (Css.em 1.5)
+            , displayFlex
+            , flexDirection column
+            , rowGap (Css.em 2)
+            , children
+                [ everything
+                    [ target [ property "scroll-margin-top" "1em" ] ]
+                ]
+            ]
+        ]
+        contents
+    ]
+
+
+resetCSS : Html msg
+resetCSS =
+    let
+        where_ : String -> List Style -> Snippet
+        where_ selector_ styles =
+            Css.Global.selector (":where(" ++ selector_ ++ ")") styles
+    in
+    Css.Global.global
+        [ Css.Global.selector "*, ::before, ::after"
+            [ boxSizing borderBox
+            , property "-webkit-font-smoothing" "antialiased"
+            ]
+        , Css.Global.everything
+            [ margin zero ]
+        , where_ ":root"
+            [ fontFamily sansSerif
+            , property "scroll-behavior" "smooth"
+            ]
+        ]
+
+
 navigation : Url -> List { label : String, url : String } -> Html msg
 navigation currentUrl items =
     let
@@ -784,28 +811,3 @@ navigation currentUrl items =
             ]
         ]
         [ ul [ css [ padding zero ] ] (List.map listItem items) ]
-
-
-
--- RESET CSS
-
-
-resetCSS : Html msg
-resetCSS =
-    let
-        where_ : String -> List Style -> Snippet
-        where_ selector_ styles =
-            Css.Global.selector (":where(" ++ selector_ ++ ")") styles
-    in
-    Css.Global.global
-        [ Css.Global.selector "*, ::before, ::after"
-            [ boxSizing borderBox
-            , property "-webkit-font-smoothing" "antialiased"
-            ]
-        , Css.Global.everything
-            [ margin zero ]
-        , where_ ":root"
-            [ fontFamily sansSerif
-            , property "scroll-behavior" "smooth"
-            ]
-        ]
