@@ -1,16 +1,15 @@
 module Emaki.Props exposing
-    ( Props(..)
-    , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
+    ( StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
     , render
     , string, bool, select, counter, boolAndString
     , list, fieldset
     , field
     , customize
+    , Props(..)
     )
 
-{-|
+{-| -- @docs Props
 
-@docs Props
 @docs StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
 @docs render
 @docs string, bool, select, counter, boolAndString
@@ -29,6 +28,7 @@ import Html.Styled.Attributes as Attributes exposing (css, placeholder, selected
 import Html.Styled.Events exposing (onClick, onInput)
 
 
+{-| -}
 type Props msg
     = String (StringProps msg)
     | Bool (BoolProps msg)
@@ -42,6 +42,7 @@ type Props msg
     | Customize (Html msg)
 
 
+{-| -}
 type alias StringProps msg =
     { value : String
     , onInput : String -> msg
@@ -49,6 +50,7 @@ type alias StringProps msg =
     }
 
 
+{-| -}
 type alias BoolProps msg =
     { label : String
     , value : Bool
@@ -56,6 +58,7 @@ type alias BoolProps msg =
     }
 
 
+{-| -}
 type alias SelectProps msg =
     { value : String
     , options : List String
@@ -63,6 +66,7 @@ type alias SelectProps msg =
     }
 
 
+{-| -}
 type alias RadioProps msg =
     { value : String
     , options : List String
@@ -70,6 +74,7 @@ type alias RadioProps msg =
     }
 
 
+{-| -}
 type alias CounterProps msg =
     { value : Float
     , toString : Float -> String
@@ -78,6 +83,7 @@ type alias CounterProps msg =
     }
 
 
+{-| -}
 type alias BoolAndStringProps msg =
     { label : String
     , id : String
@@ -87,6 +93,7 @@ type alias BoolAndStringProps msg =
     }
 
 
+{-| -}
 render : Props msg -> Html msg
 render props =
     case props of
@@ -210,41 +217,49 @@ render props =
             view
 
 
+{-| -}
 string : StringProps msg -> Props msg
 string =
     String
 
 
+{-| -}
 bool : BoolProps msg -> Props msg
 bool =
     Bool
 
 
+{-| -}
 select : SelectProps msg -> Props msg
 select =
     Select
 
 
+{-| -}
 counter : CounterProps msg -> Props msg
 counter =
     Counter
 
 
+{-| -}
 boolAndString : BoolAndStringProps msg -> Props msg
 boolAndString =
     BoolAndString
 
 
+{-| -}
 list : List (Props msg) -> Props msg
 list =
     List
 
 
+{-| -}
 fieldset : String -> List (Props msg) -> Props msg
 fieldset =
     FieldSet
 
 
+{-| -}
 field :
     { label : String
     , props : Props msg
@@ -255,6 +270,7 @@ field { label, note, props } =
     Field { label = label, note = note } props
 
 
+{-| -}
 customize : Html msg -> Props msg
 customize =
     Customize

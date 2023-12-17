@@ -1,131 +1,141 @@
-module Emaki exposing (..)
+module Emaki exposing
+    ( staticView
+    , controlledView
+    , bind
+    , ControlsMsg
+    , BindedControl
+    )
 
 {-|
 
 
-# Elm-Emaki
+# Emaki
 
-    import App.Button exposing (view) -- view : { label: String, onClick : msg } -> Html msg
 
-    button : Emaki
-    button = emakiOf (\label -> msg -> view { label = label, onClick = msg } )
-      |> stringProps { label = "change me" } }
-      |> actionLogger msg
+## Static
+
+@docs staticView
+
+
+## Controlled
+
+@docs controlledView
+@docs bind
+@docs ControlsMsg
+@docs BindedControl
 
 -}
 
--- type alias Model =
---     { element :
---      props : Array NewProp.Model
---     }
--- type Msg
---     = PropsMsg Int NewProp.Msg
--- update : Msg -> Model -> Model
--- update msg model =
---     case msg of
---         PropsMsg index newPropMsg ->
---             Array.Extra.update index (NewProp.update newPropMsg) model
-
 import Browser
-import Html exposing (..)
-import Html.Attributes exposing (checked, type_, value)
-import Html.Events exposing (onCheck, onInput)
-import Maybe.Extra
+import Css exposing (..)
+import Css.Extra exposing (columnGap, rowGap)
+import Css.Global exposing (children, everything)
+import Css.Palette as Palette
+import DesignToken.Palette exposing (playground, propsPanel)
+import Emaki.Controls exposing (Control)
+import Html.Styled exposing (..)
+import Html.Styled.Attributes exposing (css)
 
 
+{-| simple (not controlled, static) view.
 
--- type ParamModifier viewParam
---     = ParamModifier (viewParam -> viewParam)
---     | NoOp
+    main =
+        staticView (text "simple view")
 
-
-type alias Lens s a =
-    { get : s -> a
-    , set : a -> s -> s
-    }
-
-
-type alias Props model =
-    model -> Html (model -> model)
-
-
-bool : String -> Lens params Bool -> Props params
-bool labelStr l params =
-    div []
-        [ label []
-            [ text labelStr
-            , input [ type_ "checkbox", onCheck l.set, checked (l.get params) ] []
-            ]
-        ]
-
-
-int : String -> Lens params Int -> Props params
-int labelStr l params =
-    div []
-        [ label []
-            [ text labelStr
-            , input
-                [ type_ "number"
-                , onInput (String.toInt >> Maybe.Extra.unwrap identity l.set)
-                , value (String.fromInt (l.get params))
-                ]
-                []
-            ]
-        ]
-
-
-string : String -> Lens params String -> Props params
-string labelStr l params =
-    div []
-        [ label []
-            [ text labelStr
-            , input [ onInput l.set, value (l.get params) ] []
-            ]
-        ]
-
-
-type alias SampleViewParams =
-    { name : String
-    , age : Int
-    , isMale : Bool
-    }
-
-
-sampleProps : List (Props SampleViewParams)
-sampleProps =
-    [ string "name" (Lens .name (\name r -> { r | name = name }))
-    , int "age" (Lens .age (\age r -> { r | age = age }))
-    , bool "isMale" (Lens .isMale (\isMale r -> { r | isMale = isMale }))
-    ]
-
-
-sampleView : SampleViewParams -> Html msg
-sampleView r =
-    text <|
-        String.concat
-            [ r.name
-            , String.fromInt r.age
-            , if r.isMale then
-                "true"
-
-              else
-                "false"
-            ]
-
-
-type StatelessMsg params
-    = UpdateParams params
-
-
-runStateless :
-    { default : model
-    , view : model -> Html (model -> model)
-    , props : List (Props (model -> model))
-    }
-    -> Program () model (StatelessMsg model)
-runStateless { default, view, props } =
+-}
+staticView : Html msg -> Program () () msg
+staticView html =
     Browser.sandbox
-        { init = default
-        , view = \s -> view s |> Html.map (\f -> UpdateParams (f s))
-        , update = \(UpdateParams new) _ -> new
+        { init = ()
+        , view = always (toUnstyled html)
+        , update = \_ m -> m
         }
+
+
+{-| -}
+type ControlsMsg params
+    = ParamChanged params
+
+
+{-| -}
+type alias BindedControl model msg =
+    model -> Html msg
+
+
+{-| -}
+bind :
+    { from : model -> input
+    , to : output -> msg
+    }
+    -> Control input output
+    -> BindedControl model (ControlsMsg msg)
+bind { from, to } control =
+    Html.Styled.map (ParamChanged << to) << control << from
+
+
+{-| show view with param controlled by `Control`
+-}
+controlledView :
+    { view : params -> Html (ControlsMsg params)
+    , defaultParams : params
+    , controls : List (BindedControl params (ControlsMsg params))
+    }
+    -> Program () params (ControlsMsg params)
+controlledView { defaultParams, view, controls } =
+    Browser.sandbox
+        { init = defaultParams
+        , view =
+            \model ->
+                layout
+                    { view = view model
+                    , controls = List.map ((|>) model) controls
+                    }
+                    |> Html.Styled.toUnstyled
+        , update = \(ParamChanged params) _ -> params
+        }
+
+
+layout :
+    { view : Html msg
+    , controls : List (Html msg)
+    }
+    -> Html msg
+layout { view, controls } =
+    section
+        [ css
+            [ padding4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 1.5)
+            , borderRadius (Css.em 1.5)
+            , display Css.Extra.grid
+            , property "grid-template-columns" "1fr 25em"
+            , columnGap (Css.em 1.5)
+            , fontSize (px 14)
+            , Palette.paletteWithBorder (border3 (px 1) solid) playground
+            , property "-webkit-backdrop-filter" "blur(300px)"
+            , property "backdrop-filter" "blur(300px)"
+            , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
+            ]
+        ]
+        [ div [ css [ displayFlex, flexDirection column, justifyContent center ] ]
+            [ view ]
+        , div
+            [ css
+                [ padding (Css.em 0.5)
+                , displayFlex
+                , flexDirection column
+                , rowGap (Css.em 0.5)
+                , borderRadius (Css.em 1)
+                , Palette.palette propsPanel
+                , children
+                    [ everything
+                        [ padding (Css.em 0.75)
+                        , displayFlex
+                        , flexDirection column
+                        , rowGap (Css.em 0.5)
+                        , borderRadius (Css.em 0.5)
+                        , Palette.palette propsPanel
+                        ]
+                    ]
+                ]
+            ]
+            controls
+        ]
