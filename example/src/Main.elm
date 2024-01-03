@@ -1,25 +1,30 @@
 module Main exposing (main)
 
-import Browser
+import Browser exposing (Document)
+import Browser.Navigation as Navigation exposing (Key)
 import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder)
+import Css.Palette.Extra exposing (paletteByState)
 import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), Typography, WebkitFontSmoothing(..), WordBreak(..), typography)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes exposing (css, href, id)
 import Progress exposing (State(..))
+import Url exposing (Url)
 
 
 main : Program () Model Msg
 main =
-    Browser.element
+    Browser.application
         { init = init
-        , view = view >> toUnstyled
+        , view = view
         , update = update
         , subscriptions = \_ -> Sub.none
+        , onUrlRequest = UrlRequested
+        , onUrlChange = UrlChanged
         }
 
 
@@ -28,7 +33,9 @@ main =
 
 
 type alias Model =
-    { progressModel : Progress.Model
+    { url : Url
+    , key : Key
+    , progressModel : Progress.Model
     , typographyModel : TypographyModel
     }
 
@@ -43,13 +50,15 @@ type alias TypographyModel =
     }
 
 
-init : () -> ( Model, Cmd Msg )
-init () =
+init : () -> Url -> Key -> ( Model, Cmd Msg )
+init () url key =
     let
         ( progressModel, progressCmd ) =
             Progress.init
     in
-    ( { progressModel = progressModel
+    ( { url = url
+      , key = key
+      , progressModel = progressModel
       , typographyModel = init_TypographyModel
       }
     , Cmd.map ProgressMsg progressCmd
@@ -81,7 +90,9 @@ init_TypographyModel =
 
 
 type Msg
-    = UpdateProgress (Progress.Model -> Progress.Model)
+    = UrlRequested Browser.UrlRequest
+    | UrlChanged Url
+    | UpdateProgress (Progress.Model -> Progress.Model)
     | UpdateTypography (TypographyModel -> TypographyModel)
     | ProgressMsg Progress.Msg
 
@@ -89,6 +100,18 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        UrlRequested urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    -- 現時点ではfragmentによる遷移のみを想定している
+                    ( model, Navigation.load (Url.toString url) )
+
+                Browser.External url ->
+                    ( model, Navigation.load url )
+
+        UrlChanged url ->
+            ( { model | url = url }, Cmd.none )
+
         UpdateProgress updater ->
             ( { model | progressModel = updater model.progressModel }, Cmd.none )
 
@@ -107,45 +130,22 @@ update msg model =
 -- VIEW
 
 
-view : Model -> Html Msg
+view : Model -> Document Msg
 view model =
-    main_
-        [ css
-            [ padding (Css.em 1)
-            , before
-                [ property "content" "''"
-                , position absolute
-                , property "inset" "0"
-                , zIndex (int -2)
-                , property "background" """
-radial-gradient(at 80% 90%, hsl(200, 100%, 90%), hsl(200, 100%, 90%) 40%, transparent 40%),
-radial-gradient(at 70% -5%, hsl(300, 100%, 90%), hsl(300, 100%, 90%) 30%, transparent 40%),
-radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transparent 50%)"""
+    { title = "elm-emaki"
+    , body =
+        List.map toUnstyled <|
+            emakiView model
+                [ { id = "progress"
+                  , heading = "Progress"
+                  , sectionContents = [ progressPlayground model.progressModel ]
+                  }
+                , { id = "typography"
+                  , heading = "Typography"
+                  , sectionContents = [ typographyPlayground model.typographyModel ]
+                  }
                 ]
-            , after
-                [ property "content" "''"
-                , position absolute
-                , property "inset" "0"
-                , zIndex (int -1)
-                , property "-webkit-backdrop-filter" "blur(100px) contrast(1.2)"
-                , property "backdrop-filter" "blur(100px) contrast(1.2)"
-                ]
-            ]
-        ]
-        [ resetCSS
-        , article
-            [ css
-                [ displayFlex
-                , flexDirection column
-                , rowGap (Css.em 0.5)
-                ]
-            ]
-            [ h2 [ css [ fontSize (px 20) ] ] [ text "Progress" ]
-            , progressPlayground model.progressModel
-            , h2 [] [ text "Typography" ]
-            , typographyPlayground model.typographyModel
-            ]
-        ]
+    }
 
 
 progressPlayground : Progress.Model -> Html Msg
@@ -706,24 +706,115 @@ playground { preview, props } =
         ]
 
 
-
--- RESET CSS
-
-
-resetCSS : Html msg
-resetCSS =
+emakiView : Model -> List { id : String, heading : String, sectionContents : List (Html msg) } -> List (Html msg)
+emakiView model contents =
     let
-        where_ : String -> List Style -> Snippet
-        where_ selector_ styles =
-            Css.Global.selector (":where(" ++ selector_ ++ ")") styles
+        section_ content =
+            section [ id content.id ] <|
+                h2 [ css [ fontSize (px 20) ] ] [ text content.heading ]
+                    :: content.sectionContents
     in
-    Css.Global.global
-        [ Css.Global.selector "*, ::before, ::after"
-            [ boxSizing borderBox
-            , property "-webkit-font-smoothing" "antialiased"
+    [ Css.Global.global globalStyles
+    , navigation model.url contents
+    , main_
+        [ css
+            [ padding (Css.em 1.5)
+            , displayFlex
+            , flexDirection column
+            , rowGap (Css.em 2)
+            , children
+                [ everything
+                    [ target [ property "scroll-margin-top" "1em" ] ]
+                ]
             ]
-        , Css.Global.everything
-            [ margin zero ]
-        , where_ ":root"
-            [ fontFamily sansSerif ]
         ]
+        (List.map section_ contents)
+    ]
+
+
+globalStyles : List Snippet
+globalStyles =
+    let
+        resetCss =
+            [ Css.Global.selector "*, ::before, ::after"
+                [ boxSizing borderBox
+                , property "-webkit-font-smoothing" "antialiased"
+                ]
+            , Css.Global.everything
+                [ margin zero ]
+            ]
+
+        globalCustomize =
+            [ where_ ":root"
+                [ fontFamily sansSerif
+                , property "scroll-behavior" "smooth"
+                ]
+            , Css.Global.selector "body"
+                [ display grid
+                , gridTemplateColumns [ fr 1, fr 4 ]
+                , before
+                    [ property "content" "''"
+                    , position absolute
+                    , property "inset" "0"
+                    , zIndex (int -2)
+                    , property "background" """
+radial-gradient(at 80% 90%, hsl(200, 100%, 90%), hsl(200, 100%, 90%) 40%, transparent 40%),
+radial-gradient(at 70% -5%, hsl(300, 100%, 90%), hsl(300, 100%, 90%) 30%, transparent 40%),
+radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transparent 50%)"""
+                    ]
+                , after
+                    [ property "content" "''"
+                    , position absolute
+                    , property "inset" "0"
+                    , zIndex (int -1)
+                    , property "-webkit-backdrop-filter" "blur(100px) contrast(1.2)"
+                    , property "backdrop-filter" "blur(100px) contrast(1.2)"
+                    ]
+                ]
+            ]
+    in
+    resetCss ++ globalCustomize
+
+
+where_ : String -> List Style -> Snippet
+where_ selector_ styles =
+    Css.Global.selector (":where(" ++ selector_ ++ ")") styles
+
+
+navigation : Url -> List { a | heading : String, id : String } -> Html msg
+navigation currentUrl items =
+    let
+        isSelected id =
+            currentUrl.fragment == Just id
+
+        listItem { id, heading } =
+            li [ css [ listStyle none ] ]
+                [ a
+                    [ href ("#" ++ id)
+                    , css
+                        [ display block
+                        , padding2 (Css.em 0.5) (Css.em 1)
+                        , borderRadius (Css.em 0.5)
+                        , fontSize (px 14)
+                        , textDecoration none
+                        , paletteByState Palette.navItem
+                        , batchIf (isSelected id)
+                            [ palette Palette.navItemSelected ]
+                        ]
+                    ]
+                    [ text heading ]
+                ]
+    in
+    nav
+        [ css
+            [ position sticky
+            , top zero
+            , height (vh 100)
+            , padding (Css.em 0.5)
+            , palette Palette.navigation
+            , property "-webkit-backdrop-filter" "blur(300px)"
+            , property "backdrop-filter" "blur(300px)"
+            , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
+            ]
+        ]
+        [ ul [ css [ padding zero ] ] (List.map listItem items) ]
