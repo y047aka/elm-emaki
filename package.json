@@ -16,10 +16,10 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "elm": "^0.19.1-5",
+    "elm": "^0.19.1-6",
     "elm-format": "^0.8.7",
     "elm-review": "^2.10.3",
     "prettier": "^2.8.8",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.3"
   }
 }
