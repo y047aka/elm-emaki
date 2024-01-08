@@ -5,7 +5,7 @@ import Browser.Navigation as Navigation exposing (Key)
 import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
-import Css.Palette exposing (palette, paletteWithBorder)
+import Css.Palette exposing (palette, paletteWithBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
 import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), Typography, WebkitFontSmoothing(..), WordBreak(..), typography)
 import DesignToken.Palette as Palette
@@ -720,8 +720,8 @@ emakiView : Model -> List { id : String, heading : String, sectionContents : Lis
 emakiView model contents =
     let
         section_ content =
-            section [ id content.id ] <|
-                h2 [ css [ fontSize (px 20) ] ] [ text content.heading ]
+            section [ id content.id, css [ displayFlex, flexDirection column, rowGap (Css.em 0.5) ] ] <|
+                h2 [ css [ fontSize (px 20), palette (Css.Palette.init |> setColor (hsl 0 0 1)) ] ] [ text content.heading ]
                     :: content.sectionContents
     in
     [ Css.Global.global globalStyles
@@ -835,5 +835,13 @@ navigation { url, isDarkMode } items =
             [ input [ type_ "checkbox", Attributes.checked isDarkMode, onClick ToggleDarkMode ] []
             , text "DarkMode"
             ]
-        , ul [ css [ padding zero ] ] (List.map listItem items)
+        , ul
+            [ css
+                [ padding zero
+                , displayFlex
+                , flexDirection column
+                , rowGap (Css.px 5)
+                ]
+            ]
+            (List.map listItem items)
         ]
