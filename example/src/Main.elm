@@ -8,6 +8,7 @@ import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
 import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), Typography, WebkitFontSmoothing(..), WordBreak(..), typography)
+import DesignToken.Color exposing (grey095)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
@@ -721,7 +722,7 @@ emakiView model contents =
     let
         section_ content =
             section [ id content.id, css [ displayFlex, flexDirection column, rowGap (Css.em 0.5) ] ] <|
-                h2 [ css [ fontSize (px 20), palette (Css.Palette.init |> setColor (hsl 0 0 1)) ] ] [ text content.heading ]
+                h2 [ css [ fontSize (px 20), palette (Css.Palette.init |> setColor grey095) ] ] [ text content.heading ]
                     :: content.sectionContents
     in
     [ Css.Global.global globalStyles
