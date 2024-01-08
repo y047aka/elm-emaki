@@ -93,22 +93,37 @@ navItemSelected darkMode =
 -- PLAYGROUND
 
 
-playground : Palette
-playground =
-    { light
-        | background = light.background |> Maybe.map (setAlpha_fixme 0.8)
-        , border = Just <| hsla 0 0 1 0.1
-    }
+playground : Bool -> Palette
+playground darkMode =
+    if darkMode then
+        { dark
+            | background = dark.background |> Maybe.map (setAlpha_fixme 0.8)
+            , border = Nothing
+        }
+
+    else
+        { light
+            | background = light.background |> Maybe.map (setAlpha_fixme 0.8)
+            , border = Just <| hsla 0 0 1 0.1
+        }
 
 
-propsPanel : Palette
-propsPanel =
-    { init | background = dark.background |> Maybe.map (setAlpha_fixme 0.05) }
+propsPanel : Bool -> Palette
+propsPanel darkMode =
+    if darkMode then
+        { init | background = light.background |> Maybe.map (setAlpha_fixme 0.05) }
+
+    else
+        { init | background = dark.background |> Maybe.map (setAlpha_fixme 0.05) }
 
 
-propsField : Palette
-propsField =
-    light
+propsField : Bool -> Palette
+propsField darkMode =
+    if darkMode then
+        dark
+
+    else
+        light
 
 
 formField : Palette
