@@ -11,7 +11,8 @@ import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), T
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css, href, id)
+import Html.Styled.Attributes as Attributes exposing (css, href, id, type_)
+import Html.Styled.Events exposing (onClick)
 import Progress exposing (State(..))
 import Url exposing (Url)
 
@@ -35,6 +36,7 @@ main =
 type alias Model =
     { url : Url
     , key : Key
+    , darkMode : Bool
     , progressModel : Progress.Model
     , typographyModel : TypographyModel
     }
@@ -58,6 +60,7 @@ init () url key =
     in
     ( { url = url
       , key = key
+      , darkMode = False
       , progressModel = progressModel
       , typographyModel = init_TypographyModel
       }
@@ -92,6 +95,7 @@ init_TypographyModel =
 type Msg
     = UrlRequested Browser.UrlRequest
     | UrlChanged Url
+    | ToggleDarkMode
     | UpdateProgress (Progress.Model -> Progress.Model)
     | UpdateTypography (TypographyModel -> TypographyModel)
     | ProgressMsg Progress.Msg
@@ -111,6 +115,9 @@ update msg model =
 
         UrlChanged url ->
             ( { model | url = url }, Cmd.none )
+
+        ToggleDarkMode ->
+            ( { model | darkMode = not model.darkMode }, Cmd.none )
 
         UpdateProgress updater ->
             ( { model | progressModel = updater model.progressModel }, Cmd.none )
@@ -706,7 +713,7 @@ playground { preview, props } =
         ]
 
 
-emakiView : Model -> List { id : String, heading : String, sectionContents : List (Html msg) } -> List (Html msg)
+emakiView : Model -> List { id : String, heading : String, sectionContents : List (Html Msg) } -> List (Html Msg)
 emakiView model contents =
     let
         section_ content =
@@ -715,7 +722,7 @@ emakiView model contents =
                     :: content.sectionContents
     in
     [ Css.Global.global globalStyles
-    , navigation model.url contents
+    , navigation model contents
     , main_
         [ css
             [ padding (Css.em 1.5)
@@ -781,11 +788,11 @@ where_ selector_ styles =
     Css.Global.selector (":where(" ++ selector_ ++ ")") styles
 
 
-navigation : Url -> List { a | heading : String, id : String } -> Html msg
-navigation currentUrl items =
+navigation : Model -> List { a | heading : String, id : String } -> Html Msg
+navigation m items =
     let
         isSelected id =
-            currentUrl.fragment == Just id
+            m.url.fragment == Just id
 
         listItem { id, heading } =
             li [ css [ listStyle none ] ]
@@ -795,11 +802,10 @@ navigation currentUrl items =
                         [ display block
                         , padding2 (Css.em 0.5) (Css.em 1)
                         , borderRadius (Css.em 0.5)
-                        , fontSize (px 14)
                         , textDecoration none
-                        , paletteByState Palette.navItem
+                        , paletteByState (Palette.navItem m.darkMode)
                         , batchIf (isSelected id)
-                            [ palette Palette.navItemSelected ]
+                            [ palette (Palette.navItemSelected m.darkMode) ]
                         ]
                     ]
                     [ text heading ]
@@ -811,10 +817,20 @@ navigation currentUrl items =
             , top zero
             , height (vh 100)
             , padding (Css.em 0.5)
-            , palette Palette.navigation
+            , displayFlex
+            , flexDirection column
+            , rowGap (Css.em 1)
+            , fontSize (px 14)
+            , fontWeight bold
+            , palette (Palette.navigation m.darkMode)
             , property "-webkit-backdrop-filter" "blur(300px)"
             , property "backdrop-filter" "blur(300px)"
             , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
             ]
         ]
-        [ ul [ css [ padding zero ] ] (List.map listItem items) ]
+        [ label []
+            [ input [ type_ "checkbox", Attributes.checked m.darkMode, onClick ToggleDarkMode ] []
+            , text "DarkMode"
+            ]
+        , ul [ css [ padding zero ] ] (List.map listItem items)
+        ]

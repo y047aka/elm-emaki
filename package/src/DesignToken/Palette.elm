@@ -17,13 +17,13 @@ module DesignToken.Palette exposing
 
 import Css exposing (Color, Style, hover, hsla)
 import Css.Palette exposing (Palette, init, setBackground, setColor)
-import DesignToken.Color exposing (black, grey020, grey030, grey060, grey070, grey080, white)
+import DesignToken.Color exposing (black, grey020, grey030, grey060, grey070, grey090, grey095, white)
 
 
 light : Palette
 light =
     { background = Just (white |> setAlpha_fixme 0.8)
-    , color = Just grey020
+    , color = Just grey030
     , border = Just grey070
     }
 
@@ -48,27 +48,45 @@ textOptional =
 -- NAVIGATION
 
 
-navigation : Palette
-navigation =
-    { dark | background = dark.background |> Maybe.map (setAlpha_fixme 0.9) }
+navigation : Bool -> Palette
+navigation darkMode =
+    if darkMode then
+        { background = dark.background |> Maybe.map (setAlpha_fixme 0.9)
+        , color = Just grey090
+        , border = Nothing
+        }
+
+    else
+        { background = light.background |> Maybe.map (setAlpha_fixme 0.9)
+        , color = Just grey030
+        , border = Nothing
+        }
 
 
-navItem : ( Palette, List ( List Style -> Style, Palette ) )
-navItem =
-    let
-        default =
-            init |> setColor grey080
-    in
-    ( default
-    , [ ( hover, default |> setBackground grey030 |> setColor white ) ]
-    )
+navItem : Bool -> ( Palette, List ( List Style -> Style, Palette ) )
+navItem darkMode =
+    if darkMode then
+        ( init |> setColor grey090
+        , [ ( hover, init |> setBackground grey030 |> setColor white ) ]
+        )
+
+    else
+        ( init |> setColor grey030
+        , [ ( hover, init |> setBackground grey090 |> setColor grey030 ) ]
+        )
 
 
-navItemSelected : Palette
-navItemSelected =
-    Tuple.first navItem
-        |> setBackground grey020
-        |> setColor white
+navItemSelected : Bool -> Palette
+navItemSelected darkMode =
+    if darkMode then
+        Tuple.first (navItem darkMode)
+            |> setBackground grey020
+            |> setColor white
+
+    else
+        Tuple.first (navItem darkMode)
+            |> setBackground grey095
+            |> setColor grey020
 
 
 
