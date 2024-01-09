@@ -17,6 +17,7 @@ module DesignToken.Palette exposing
 
 import Css exposing (Color, Style, hover, hsla)
 import Css.Palette exposing (Palette, init, setBackground, setColor)
+import Css.Palette.Extra exposing (light_dark)
 import DesignToken.Color exposing (black, grey020, grey030, grey060, grey070, grey085, grey090, grey095, white)
 
 
@@ -49,44 +50,47 @@ textOptional =
 
 
 navigation : Bool -> Palette
-navigation darkMode =
-    if darkMode then
-        { background = dark.background |> Maybe.map (setAlpha_fixme 0.7)
-        , color = Just grey095
-        , border = Nothing
-        }
-
-    else
-        { background = light.background |> Maybe.map (setAlpha_fixme 0.95)
-        , color = Just grey030
-        , border = Nothing
+navigation isDarkMode =
+    light_dark isDarkMode
+        { light =
+            { background = light.background |> Maybe.map (setAlpha_fixme 0.95)
+            , color = Just grey030
+            , border = Nothing
+            }
+        , dark =
+            { background = dark.background |> Maybe.map (setAlpha_fixme 0.7)
+            , color = Just grey095
+            , border = Nothing
+            }
         }
 
 
 navItem : Bool -> ( Palette, List ( List Style -> Style, Palette ) )
-navItem darkMode =
-    if darkMode then
-        ( init |> setColor grey095
-        , [ ( hover, init |> setBackground grey030 |> setColor white ) ]
-        )
-
-    else
-        ( init |> setColor grey030
-        , [ ( hover, init |> setBackground grey085 |> setColor grey030 ) ]
-        )
+navItem isDarkMode =
+    light_dark isDarkMode
+        { light =
+            ( init |> setColor grey030
+            , [ ( hover, init |> setBackground grey085 |> setColor grey030 ) ]
+            )
+        , dark =
+            ( init |> setColor grey095
+            , [ ( hover, init |> setBackground grey030 |> setColor white ) ]
+            )
+        }
 
 
 navItemSelected : Bool -> Palette
-navItemSelected darkMode =
-    if darkMode then
-        Tuple.first (navItem darkMode)
-            |> setBackground grey020
-            |> setColor white
-
-    else
-        Tuple.first (navItem darkMode)
-            |> setBackground grey090
-            |> setColor grey030
+navItemSelected isDarkMode =
+    light_dark isDarkMode
+        { light =
+            Tuple.first (navItem isDarkMode)
+                |> setBackground grey090
+                |> setColor grey030
+        , dark =
+            Tuple.first (navItem isDarkMode)
+                |> setBackground grey020
+                |> setColor white
+        }
 
 
 
@@ -94,36 +98,35 @@ navItemSelected darkMode =
 
 
 playground : Bool -> Palette
-playground darkMode =
-    if darkMode then
-        { dark
-            | background = dark.background |> Maybe.map (setAlpha_fixme 0.7)
-            , border = Nothing
-        }
-
-    else
-        { light
-            | background = light.background |> Maybe.map (setAlpha_fixme 0.95)
-            , border = Nothing
+playground isDarkMode =
+    light_dark isDarkMode
+        { light =
+            { light
+                | background = light.background |> Maybe.map (setAlpha_fixme 0.95)
+                , border = Nothing
+            }
+        , dark =
+            { dark
+                | background = dark.background |> Maybe.map (setAlpha_fixme 0.7)
+                , border = Nothing
+            }
         }
 
 
 propsPanel : Bool -> Palette
-propsPanel darkMode =
-    if darkMode then
-        { init | background = light.background |> Maybe.map (setAlpha_fixme 0.1) }
-
-    else
-        { init | background = dark.background |> Maybe.map (setAlpha_fixme 0.1) }
+propsPanel isDarkMode =
+    light_dark isDarkMode
+        { light = { init | background = dark.background |> Maybe.map (setAlpha_fixme 0.1) }
+        , dark = { init | background = light.background |> Maybe.map (setAlpha_fixme 0.1) }
+        }
 
 
 propsField : Bool -> Palette
-propsField darkMode =
-    if darkMode then
-        { init | background = light.background |> Maybe.map (setAlpha_fixme 0.1) }
-
-    else
-        { init | background = light.background |> Maybe.map (setAlpha_fixme 0.7) }
+propsField isDarkMode =
+    light_dark isDarkMode
+        { light = { init | background = light.background |> Maybe.map (setAlpha_fixme 0.7) }
+        , dark = { init | background = light.background |> Maybe.map (setAlpha_fixme 0.1) }
+        }
 
 
 formField : Palette
