@@ -5,13 +5,15 @@ import Browser.Navigation as Navigation exposing (Key)
 import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
-import Css.Palette exposing (palette, paletteWithBorder)
+import Css.Palette exposing (palette, paletteWithBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
 import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), Typography, WebkitFontSmoothing(..), WordBreak(..), typography)
+import DesignToken.Color exposing (grey095)
 import DesignToken.Palette as Palette
 import Emaki.Props as Props exposing (Props)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css, href, id)
+import Html.Styled.Attributes as Attributes exposing (css, href, id, type_)
+import Html.Styled.Events exposing (onClick)
 import Progress exposing (State(..))
 import Url exposing (Url)
 
@@ -35,6 +37,7 @@ main =
 type alias Model =
     { url : Url
     , key : Key
+    , isDarkMode : Bool
     , progressModel : Progress.Model
     , typographyModel : TypographyModel
     }
@@ -58,6 +61,7 @@ init () url key =
     in
     ( { url = url
       , key = key
+      , isDarkMode = False
       , progressModel = progressModel
       , typographyModel = init_TypographyModel
       }
@@ -92,6 +96,7 @@ init_TypographyModel =
 type Msg
     = UrlRequested Browser.UrlRequest
     | UrlChanged Url
+    | ToggleDarkMode
     | UpdateProgress (Progress.Model -> Progress.Model)
     | UpdateTypography (TypographyModel -> TypographyModel)
     | ProgressMsg Progress.Msg
@@ -112,6 +117,9 @@ update msg model =
         UrlChanged url ->
             ( { model | url = url }, Cmd.none )
 
+        ToggleDarkMode ->
+            ( { model | isDarkMode = not model.isDarkMode }, Cmd.none )
+
         UpdateProgress updater ->
             ( { model | progressModel = updater model.progressModel }, Cmd.none )
 
@@ -131,27 +139,28 @@ update msg model =
 
 
 view : Model -> Document Msg
-view model =
+view m =
     { title = "elm-emaki"
     , body =
         List.map toUnstyled <|
-            emakiView model
+            emakiView m
                 [ { id = "progress"
                   , heading = "Progress"
-                  , sectionContents = [ progressPlayground model.progressModel ]
+                  , sectionContents = [ progressPlayground m.isDarkMode m.progressModel ]
                   }
                 , { id = "typography"
                   , heading = "Typography"
-                  , sectionContents = [ typographyPlayground model.typographyModel ]
+                  , sectionContents = [ typographyPlayground m.isDarkMode m.typographyModel ]
                   }
                 ]
     }
 
 
-progressPlayground : Progress.Model -> Html Msg
-progressPlayground pm =
+progressPlayground : Bool -> Progress.Model -> Html Msg
+progressPlayground isDarkMode pm =
     playground
-        { preview = Progress.progressWithProps pm
+        { isDarkMode = isDarkMode
+        , preview = Progress.progressWithProps pm
         , props =
             [ Props.FieldSet "Bar"
                 [ Props.field
@@ -275,10 +284,11 @@ progressPlayground pm =
         }
 
 
-typographyPlayground : TypographyModel -> Html Msg
-typographyPlayground tm =
+typographyPlayground : Bool -> TypographyModel -> Html Msg
+typographyPlayground isDarkMode tm =
     playground
-        { preview =
+        { isDarkMode = isDarkMode
+        , preview =
             div
                 [ css
                     [ displayFlex
@@ -661,11 +671,12 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
 
 
 playground :
-    { preview : Html msg
+    { isDarkMode : Bool
+    , preview : Html msg
     , props : List (Props msg)
     }
     -> Html msg
-playground { preview, props } =
+playground { isDarkMode, preview, props } =
     section
         [ css
             [ padding4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 1.5)
@@ -674,7 +685,7 @@ playground { preview, props } =
             , property "grid-template-columns" "1fr 25em"
             , columnGap (Css.em 1.5)
             , fontSize (px 14)
-            , paletteWithBorder (border3 (px 1) solid) Palette.playground
+            , paletteWithBorder (border3 (px 1) solid) (Palette.playground isDarkMode)
             , property "-webkit-backdrop-filter" "blur(300px)"
             , property "backdrop-filter" "blur(300px)"
             , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
@@ -689,7 +700,7 @@ playground { preview, props } =
                 , flexDirection column
                 , rowGap (Css.em 0.5)
                 , borderRadius (Css.em 1)
-                , palette Palette.propsPanel
+                , palette (Palette.propsPanel isDarkMode)
                 , children
                     [ everything
                         [ padding (Css.em 0.75)
@@ -697,7 +708,7 @@ playground { preview, props } =
                         , flexDirection column
                         , rowGap (Css.em 0.5)
                         , borderRadius (Css.em 0.5)
-                        , palette Palette.propsField
+                        , palette (Palette.propsField isDarkMode)
                         ]
                     ]
                 ]
@@ -706,16 +717,16 @@ playground { preview, props } =
         ]
 
 
-emakiView : Model -> List { id : String, heading : String, sectionContents : List (Html msg) } -> List (Html msg)
+emakiView : Model -> List { id : String, heading : String, sectionContents : List (Html Msg) } -> List (Html Msg)
 emakiView model contents =
     let
         section_ content =
-            section [ id content.id ] <|
-                h2 [ css [ fontSize (px 20) ] ] [ text content.heading ]
+            section [ id content.id, css [ displayFlex, flexDirection column, rowGap (Css.em 0.5) ] ] <|
+                h2 [ css [ fontSize (px 20), palette (Css.Palette.init |> setColor grey095) ] ] [ text content.heading ]
                     :: content.sectionContents
     in
     [ Css.Global.global globalStyles
-    , navigation model.url contents
+    , navigation model contents
     , main_
         [ css
             [ padding (Css.em 1.5)
@@ -758,9 +769,9 @@ globalStyles =
                     , property "inset" "0"
                     , zIndex (int -2)
                     , property "background" """
-radial-gradient(at 80% 90%, hsl(200, 100%, 90%), hsl(200, 100%, 90%) 40%, transparent 40%),
-radial-gradient(at 70% -5%, hsl(300, 100%, 90%), hsl(300, 100%, 90%) 30%, transparent 40%),
-radial-gradient(at 5% 0%, hsl(200, 100%, 80%), hsl(200, 100%, 80%) 50%, transparent 50%)"""
+radial-gradient(at 80% 90%, hsl(200, 100%, 10%), hsl(200, 100%, 10%) 40%, transparent 40%),
+radial-gradient(at 70% -5%, hsl(300, 100%, 10%), hsl(300, 100%, 10%) 30%, transparent 40%),
+radial-gradient(at 5% 0%, hsl(200, 100%, 20%), hsl(200, 100%, 20%) 50%, transparent 50%)"""
                     ]
                 , after
                     [ property "content" "''"
@@ -781,11 +792,11 @@ where_ selector_ styles =
     Css.Global.selector (":where(" ++ selector_ ++ ")") styles
 
 
-navigation : Url -> List { a | heading : String, id : String } -> Html msg
-navigation currentUrl items =
+navigation : { a | url : Url, isDarkMode : Bool } -> List { b | heading : String, id : String } -> Html Msg
+navigation { url, isDarkMode } items =
     let
         isSelected id =
-            currentUrl.fragment == Just id
+            url.fragment == Just id
 
         listItem { id, heading } =
             li [ css [ listStyle none ] ]
@@ -795,11 +806,10 @@ navigation currentUrl items =
                         [ display block
                         , padding2 (Css.em 0.5) (Css.em 1)
                         , borderRadius (Css.em 0.5)
-                        , fontSize (px 14)
                         , textDecoration none
-                        , paletteByState Palette.navItem
+                        , paletteByState (Palette.navItem isDarkMode)
                         , batchIf (isSelected id)
-                            [ palette Palette.navItemSelected ]
+                            [ palette (Palette.navItemSelected isDarkMode) ]
                         ]
                     ]
                     [ text heading ]
@@ -811,10 +821,28 @@ navigation currentUrl items =
             , top zero
             , height (vh 100)
             , padding (Css.em 0.5)
-            , palette Palette.navigation
+            , displayFlex
+            , flexDirection column
+            , rowGap (Css.em 1)
+            , fontSize (px 14)
+            , fontWeight bold
+            , palette (Palette.navigation isDarkMode)
             , property "-webkit-backdrop-filter" "blur(300px)"
             , property "backdrop-filter" "blur(300px)"
             , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
             ]
         ]
-        [ ul [ css [ padding zero ] ] (List.map listItem items) ]
+        [ label []
+            [ input [ type_ "checkbox", Attributes.checked isDarkMode, onClick ToggleDarkMode ] []
+            , text "DarkMode"
+            ]
+        , ul
+            [ css
+                [ padding zero
+                , displayFlex
+                , flexDirection column
+                , rowGap (Css.px 5)
+                ]
+            ]
+            (List.map listItem items)
+        ]
