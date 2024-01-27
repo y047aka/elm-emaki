@@ -1,10 +1,10 @@
 module Css.Palette.Extra exposing (light_dark, paletteByState)
 
-import Css exposing (Style)
+import Css exposing (ColorValue, Style)
 import Css.Palette exposing (Palette, palette)
 
 
-paletteByState : ( Palette, List ( List Style -> Style, Palette ) ) -> Style
+paletteByState : ( Palette (ColorValue c), List ( List Style -> Style, Palette (ColorValue c) ) ) -> Style
 paletteByState ( default, palettes ) =
     List.map (\( pseudoClass, p ) -> pseudoClass [ palette p ]) palettes
         |> (::) (palette default)
