@@ -98,6 +98,7 @@ render props =
                 , placeholder ps.placeholder
                 , css
                     [ property "appearance" "none"
+                    , width (pct 100)
                     , padding (em 0.75)
                     , fontSize inherit
                     , borderRadius (em 0.25)
@@ -117,6 +118,7 @@ render props =
                 [ onInput ps.onChange
                 , css
                     [ property "appearance" "none"
+                    , width (pct 100)
                     , padding (em 0.75)
                     , fontSize inherit
                     , borderRadius (em 0.25)
@@ -198,13 +200,13 @@ render props =
             div
                 [ css
                     [ displayFlex
-                    , flexDirection column
+                    , flexWrap wrap
                     , rowGap (em 0.25)
                     ]
                 ]
-                [ div [] [ Html.label [ css [ fontWeight bold ] ] [ text label ] ]
-                , render ps
-                , div [ css [ palette Palette.textOptional ] ] [ text note ]
+                [ Html.label [ css [ width (pct 50) ] ] [ text label ]
+                , div [ css [ width (pct 50) ] ] [ render ps ]
+                , div [ css [ width (pct 100), palette Palette.textOptional, empty [ display none ] ] ] [ text note ]
                 ]
 
         Customize view ->
