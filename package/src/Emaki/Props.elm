@@ -189,7 +189,7 @@ render props =
                 ]
 
         List childProps ->
-            div [ css [ displayFlex, flexDirection column, rowGap (Css.em 0.5) ] ]
+            div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
                 (List.map render childProps)
 
         FieldSet label childProps ->
@@ -197,7 +197,7 @@ render props =
                 [ css
                     [ displayFlex
                     , flexDirection column
-                    , rowGap (Css.em 0.5)
+                    , rowGap (Css.em 1)
                     , borderWidth zero
                     ]
                 ]
