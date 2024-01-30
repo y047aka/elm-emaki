@@ -704,9 +704,6 @@ playground { isDarkMode, preview, props } =
                 , children
                     [ everything
                         [ padding (Css.em 0.75)
-                        , displayFlex
-                        , flexDirection column
-                        , rowGap (Css.em 0.5)
                         , borderRadius (Css.em 0.5)
                         , palette (Palette.propsField isDarkMode)
                         ]

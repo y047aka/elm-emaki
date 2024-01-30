@@ -189,10 +189,19 @@ render props =
                 ]
 
         List childProps ->
-            div [] (List.map render childProps)
+            div [ css [ displayFlex, flexDirection column, rowGap (Css.em 0.5) ] ]
+                (List.map render childProps)
 
         FieldSet label childProps ->
-            Html.div [ css [ borderWidth zero ] ] <|
+            Html.div
+                [ css
+                    [ displayFlex
+                    , flexDirection column
+                    , rowGap (Css.em 0.5)
+                    , borderWidth zero
+                    ]
+                ]
+            <|
                 legend [ css [ fontWeight bold ] ] [ text label ]
                     :: List.map render childProps
 
