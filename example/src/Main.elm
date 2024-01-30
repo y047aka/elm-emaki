@@ -162,22 +162,20 @@ progressPlayground isDarkMode pm =
         { isDarkMode = isDarkMode
         , preview = Progress.progressWithProps pm
         , props =
-            [ Props.FieldSet "Bar"
+            [ Props.field
+                { label = "Bar"
+                , props =
+                    Props.counter
+                        { value = pm.value
+                        , toString = \value -> String.fromFloat value ++ "%"
+                        , onClickPlus = ProgressMsg Progress.CounterPlus
+                        , onClickMinus = ProgressMsg Progress.CounterMinus
+                        }
+                , note = "A progress element can contain a bar visually indicating progress"
+                }
+            , Props.FieldSet "Config"
                 [ Props.field
-                    { label = ""
-                    , props =
-                        Props.counter
-                            { value = pm.value
-                            , toString = \value -> String.fromFloat value ++ "%"
-                            , onClickPlus = ProgressMsg Progress.CounterPlus
-                            , onClickMinus = ProgressMsg Progress.CounterMinus
-                            }
-                    , note = "A progress element can contain a bar visually indicating progress"
-                    }
-                ]
-            , Props.FieldSet "Types"
-                [ Props.field
-                    { label = ""
+                    { label = "Types"
                     , props =
                         Props.bool
                             { label = "Indicating"
@@ -203,10 +201,8 @@ progressPlayground isDarkMode pm =
                             }
                     , note = "An indicating progress bar visually indicates the current level of progress of a task"
                     }
-                ]
-            , Props.FieldSet "States"
-                [ Props.field
-                    { label = ""
+                , Props.field
+                    { label = "States"
                     , props =
                         Props.select
                             { value = Progress.stateToString pm.state
