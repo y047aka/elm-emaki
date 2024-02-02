@@ -89,6 +89,65 @@ type alias BoolAndStringProps msg =
     }
 
 
+string : StringProps msg -> Props msg
+string =
+    String
+
+
+bool : BoolProps msg -> Props msg
+bool =
+    Bool
+
+
+select : SelectProps msg -> Props msg
+select =
+    Select
+
+
+radio : RadioProps msg -> Props msg
+radio =
+    Radio
+
+
+counter : CounterProps msg -> Props msg
+counter =
+    Counter
+
+
+boolAndString : BoolAndStringProps msg -> Props msg
+boolAndString =
+    BoolAndString
+
+
+list : List (Props msg) -> Props msg
+list =
+    List
+
+
+fieldset : String -> List (Props msg) -> Props msg
+fieldset =
+    FieldSet
+
+
+field :
+    { label : String
+    , props : Props msg
+    , note : String
+    }
+    -> Props msg
+field { label, note, props } =
+    Field { label = label, note = note } props
+
+
+customize : Html msg -> Props msg
+customize =
+    Customize
+
+
+
+-- VIEW
+
+
 render : Props msg -> Html msg
 render props =
     case props of
@@ -211,61 +270,6 @@ render props =
 
         Customize view ->
             view
-
-
-string : StringProps msg -> Props msg
-string =
-    String
-
-
-bool : BoolProps msg -> Props msg
-bool =
-    Bool
-
-
-select : SelectProps msg -> Props msg
-select =
-    Select
-
-
-radio : RadioProps msg -> Props msg
-radio =
-    Radio
-
-
-counter : CounterProps msg -> Props msg
-counter =
-    Counter
-
-
-boolAndString : BoolAndStringProps msg -> Props msg
-boolAndString =
-    BoolAndString
-
-
-list : List (Props msg) -> Props msg
-list =
-    List
-
-
-fieldset : String -> List (Props msg) -> Props msg
-fieldset =
-    FieldSet
-
-
-field :
-    { label : String
-    , props : Props msg
-    , note : String
-    }
-    -> Props msg
-field { label, note, props } =
-    Field { label = label, note = note } props
-
-
-customize : Html msg -> Props msg
-customize =
-    Customize
 
 
 
