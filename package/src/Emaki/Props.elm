@@ -21,10 +21,12 @@ module Emaki.Props exposing
 -}
 
 import Css exposing (..)
-import Css.Extra exposing (columnGap, rowGap)
-import Css.Palette exposing (palette, paletteWithBorder)
+import Css.Extra exposing (grid, rowGap)
+import Css.Global exposing (children, selector, typeSelector)
+import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setColor)
+import Css.Palette.Extra exposing (paletteByState)
 import DesignToken.Palette as Palette
-import Html.Styled as Html exposing (Html, button, div, input, legend, text)
+import Html.Styled as Html exposing (Attribute, Html, div, input, legend, text)
 import Html.Styled.Attributes as Attributes exposing (css, placeholder, selected, type_, value)
 import Html.Styled.Events exposing (onClick, onInput)
 
@@ -148,20 +150,9 @@ render props =
                 )
 
         Counter ps ->
-            let
-                button_ attributes =
-                    button
-                        (css
-                            [ padding2 (em 0.25) (em 0.5)
-                            , borderRadius (em 0.25)
-                            , paletteWithBorder (border3 (px 1) solid) Palette.formField
-                            ]
-                            :: attributes
-                        )
-            in
-            div [ css [ displayFlex, alignItems center, columnGap (em 0.5) ] ]
+            labeledButtons []
                 [ button_ [ onClick ps.onClickMinus ] [ text "-" ]
-                , text (ps.toString ps.value)
+                , basicLabel [] [ text (ps.toString ps.value) ]
                 , button_ [ onClick ps.onClickPlus ] [ text "+" ]
                 ]
 
@@ -275,3 +266,99 @@ field { label, note, props } =
 customize : Html msg -> Props msg
 customize =
     Customize
+
+
+
+-- VIEW HELPERS
+
+
+labeledButtons : List (Attribute msg) -> List (Html msg) -> Html msg
+labeledButtons attributes =
+    Html.div <|
+        css
+            [ cursor pointer
+            , display grid
+            , property "grid-template-columns" "auto 1fr auto"
+            , children
+                [ typeSelector "button"
+                    [ firstChild
+                        [ borderTopRightRadius zero
+                        , borderBottomRightRadius zero
+                        ]
+                    , lastChild
+                        [ borderTopLeftRadius zero
+                        , borderBottomLeftRadius zero
+                        ]
+                    ]
+                , selector "*:not(button)"
+                    [ displayFlex
+                    , alignItems center
+                    , justifyContent center
+                    , margin4 zero zero zero (px -1)
+                    , fontSize (em 1)
+                    , borderColor (rgba 34 36 38 0.15)
+
+                    -- Extra Styles
+                    , borderRadius zero
+                    ]
+                ]
+            ]
+            :: attributes
+
+
+button_ : List (Attribute msg) -> List (Html msg) -> Html msg
+button_ =
+    Html.styled Html.button
+        [ cursor pointer
+        , minHeight (em 1)
+        , outline none
+        , borderStyle none
+        , textAlign center
+        , lineHeight (em 1)
+        , fontWeight bold
+        , padding2 (em 0.75) (em 1.5)
+        , borderRadius (em 0.25)
+        , property "user-select" "none"
+        , paletteByState defaultPalettes
+        , disabled
+            [ cursor default
+            , opacity (num 0.45)
+            , backgroundImage none
+            , pointerEvents none
+            ]
+        ]
+
+
+defaultPalettes : ( Palette (ColorValue Color), List ( List Style -> Style, Palette (ColorValue Color) ) )
+defaultPalettes =
+    let
+        default =
+            { background = Just (hex "#E0E1E2")
+            , color = Just (rgba 0 0 0 0.6)
+            , border = Nothing
+            }
+    in
+    ( default
+    , [ ( hover, default |> setBackground (hex "#CACBCD") |> setColor (rgba 0 0 0 0.8) )
+      , ( focus, default |> setBackground (hex "#CACBCD") |> setColor (rgba 0 0 0 0.8) )
+      , ( active, default |> setBackground (hex "#BABBBC") |> setColor (rgba 0 0 0 0.9) )
+      ]
+    )
+
+
+basicLabel : List (Attribute msg) -> List (Html msg) -> Html msg
+basicLabel =
+    Html.styled Html.div
+        [ display inlineBlock
+        , fontSize (rem 0.85714286)
+        , lineHeight (num 1)
+        , palette
+            { background = Nothing
+            , color = Just (rgba 0 0 0 0.87)
+            , border = Nothing
+            }
+        , border3 (px 1) solid (rgba 34 36 38 0.15)
+        , borderRadius (rem 0.25)
+        , property "-webkit-transition" "background 0.1s ease"
+        , property "transition" "background 0.1s ease"
+        ]
