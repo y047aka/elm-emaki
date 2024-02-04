@@ -53,7 +53,7 @@ type alias StringProps msg =
 
 
 type alias BoolProps msg =
-    { label : String
+    { id : String
     , value : Bool
     , onClick : msg
     }
@@ -189,8 +189,7 @@ render props =
 
         Bool ps ->
             toggleCheckbox
-                { id = ps.label
-                , label = ps.label
+                { id = ps.id
                 , checked = ps.value
                 , onClick = ps.onClick
                 }
@@ -324,7 +323,6 @@ render props =
 
 toggleCheckbox :
     { id : String
-    , label : String
     , checked : Bool
     , onClick : msg
     }
@@ -342,7 +340,7 @@ toggleCheckbox props =
             , onClick props.onClick
             ]
             []
-        , toggleLabel [ for props.id ] [ text props.label ]
+        , toggleLabel [ for props.id ] []
         ]
 
 
@@ -461,8 +459,6 @@ toggleLabel =
     Html.styled Html.label
         [ -- .ui.checkbox label
           position relative
-        , display block
-        , paddingLeft (em 1.85714)
         , outline none
 
         -- .ui.checkbox label:before
@@ -508,10 +504,6 @@ toggleLabel =
                         |> setBorder (rgba 34 36 38 0.35)
                     )
                 ]
-
-            -- .ui.checkbox label:hover
-            -- .ui.checkbox + label:hover
-            , color (rgba 0 0 0 0.8)
             ]
 
         -- Down
@@ -529,21 +521,6 @@ toggleLabel =
             , after
                 [ color (rgba 0 0 0 0.95) ]
             ]
-
-        -- .ui.checkbox input.hidden + label
-        , cursor pointer
-        , property "-webkit-user-select" "none"
-        , property "-moz-user-select" "none"
-        , property "-ms-user-select" "none"
-        , property "user-select" "none"
-
-        -- .ui.toggle.checkbox label
-        , minHeight (rem 1.5)
-        , paddingLeft (rem 4.5)
-        , color (rgba 0 0 0 0.87)
-
-        -- .ui.toggle.checkbox label
-        , paddingTop (em 0.15)
 
         -- .ui.toggle.checkbox label:before
         , before

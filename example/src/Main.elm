@@ -174,9 +174,9 @@ progressPlayground isDarkMode pm =
                 , Props.comment "A progress element can contain a bar visually indicating progress"
                 ]
             , Props.FieldSet "Config"
-                [ Props.field "Types"
+                [ Props.field "Indicating"
                     (Props.bool
-                        { label = "Indicating"
+                        { id = "indicating"
                         , value = pm.indicating
                         , onClick =
                             (\c ->
