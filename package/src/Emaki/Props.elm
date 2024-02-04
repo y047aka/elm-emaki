@@ -153,7 +153,13 @@ render : Props msg -> Html msg
 render props =
     case props of
         Comment str ->
-            Html.div [ css [ palette Palette.textOptional ] ] [ text str ]
+            Html.div
+                [ css
+                    [ palette Palette.textOptional
+                    , empty [ display none ]
+                    ]
+                ]
+                [ text str ]
 
         String ps ->
             input
