@@ -15,7 +15,7 @@ module DesignToken.Palette exposing
 
 -}
 
-import Css exposing (Style, hover)
+import Css exposing (Color, Style, hover, rgba)
 import Css.Color exposing (Hsl360, hsla)
 import Css.Palette exposing (Palette, init, setBackground, setColor)
 import Css.Palette.Extra exposing (light_dark)
@@ -130,9 +130,12 @@ propsField isDarkMode =
         }
 
 
-formField : Palette Hsl360
+formField : Palette Color
 formField =
-    { light | background = Just (hsla 0 0 0 0) }
+    { background = Just (rgba 0 0 0 0)
+    , color = Just (rgba 0 0 0 0.87)
+    , border = Just (rgba 34 36 38 0.15)
+    }
 
 
 

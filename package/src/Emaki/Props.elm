@@ -21,7 +21,7 @@ module Emaki.Props exposing
 -}
 
 import Css exposing (..)
-import Css.Extra exposing (grid, rowGap)
+import Css.Extra exposing (grid, gridColumn, gridRow, rowGap)
 import Css.Global exposing (children, selector, typeSelector)
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setColor)
 import Css.Palette.Extra exposing (paletteByState)
@@ -162,8 +162,17 @@ render props =
                     , width (pct 100)
                     , padding (em 0.75)
                     , fontSize inherit
+                    , lineHeight (em 1)
                     , borderRadius (em 0.25)
                     , paletteWithBorder (border3 (px 1) solid) Palette.formField
+                    , focus
+                        [ palette
+                            { background = Nothing
+                            , color = Just (rgba 0 0 0 0.95)
+                            , border = Just (hex "#85b7d9")
+                            }
+                        , outline none
+                        ]
                     ]
                 ]
                 []
@@ -175,20 +184,46 @@ render props =
                 ]
 
         Select ps ->
-            Html.select
-                [ onInput ps.onChange
-                , css
-                    [ property "appearance" "none"
-                    , width (pct 100)
-                    , padding (em 0.75)
-                    , fontSize inherit
-                    , borderRadius (em 0.25)
-                    , paletteWithBorder (border3 (px 1) solid) Palette.formField
+            Html.div
+                [ css
+                    [ display grid
+                    , property "grid-template-columns" "1fr auto"
+                    , alignItems center
+                    , before
+                        [ property "content" (qt "▼")
+                        , gridColumn "2"
+                        , gridRow "1"
+                        , padding (em 1)
+                        , fontSize (em 0.6)
+                        ]
                     ]
                 ]
-                (List.map (\option -> Html.option [ value option, selected (ps.value == option) ] [ text option ])
-                    ps.options
-                )
+                [ Html.select
+                    [ onInput ps.onChange
+                    , css
+                        [ gridColumn "1 / -1"
+                        , gridRow "1"
+                        , property "appearance" "none"
+                        , width (pct 100)
+                        , padding (em 0.75)
+                        , fontSize inherit
+                        , lineHeight (em 1)
+                        , borderRadius (em 0.25)
+                        , paletteWithBorder (border3 (px 1) solid) Palette.formField
+                        , focus
+                            [ palette
+                                { background = Nothing
+                                , color = Just (rgba 0 0 0 0.95)
+                                , border = Just (hex "#85b7d9")
+                                }
+                            , outline none
+                            ]
+                        ]
+                    ]
+                    (List.map (\option -> Html.option [ value option, selected (ps.value == option) ] [ text option ])
+                        ps.options
+                    )
+                ]
 
         Radio ps ->
             Html.div []
