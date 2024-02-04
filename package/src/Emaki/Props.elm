@@ -41,7 +41,7 @@ type Props msg
     | BoolAndString (BoolAndStringProps msg)
     | List (List (Props msg))
     | FieldSet String (List (Props msg))
-    | Field { label : String } (Props msg)
+    | Field String (Props msg)
     | Customize (Html msg)
 
 
@@ -135,13 +135,9 @@ fieldset =
     FieldSet
 
 
-field :
-    { label : String
-    , props : Props msg
-    }
-    -> Props msg
-field { label, props } =
-    Field { label = label } props
+field : String -> Props msg -> Props msg
+field label props =
+    Field label props
 
 
 customize : Html msg -> Props msg
@@ -298,7 +294,7 @@ render props =
                 legend [ css [ fontWeight bold ] ] [ text label ]
                     :: List.map render childProps
 
-        Field { label } ps ->
+        Field label ps ->
             div
                 [ css
                     [ display grid

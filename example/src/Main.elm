@@ -163,79 +163,73 @@ progressPlayground isDarkMode pm =
         , preview = Progress.progressWithProps pm
         , props =
             [ Props.FieldSet ""
-                [ Props.field
-                    { label = "Bar"
-                    , props =
-                        Props.counter
-                            { value = pm.value
-                            , toString = \value -> String.fromFloat value ++ "%"
-                            , onClickPlus = ProgressMsg Progress.CounterPlus
-                            , onClickMinus = ProgressMsg Progress.CounterMinus
-                            }
-                    }
+                [ Props.field "Bar"
+                    (Props.counter
+                        { value = pm.value
+                        , toString = \value -> String.fromFloat value ++ "%"
+                        , onClickPlus = ProgressMsg Progress.CounterPlus
+                        , onClickMinus = ProgressMsg Progress.CounterMinus
+                        }
+                    )
                 , Props.comment "A progress element can contain a bar visually indicating progress"
                 ]
             , Props.FieldSet "Config"
-                [ Props.field
-                    { label = "Types"
-                    , props =
-                        Props.bool
-                            { label = "Indicating"
-                            , value = pm.indicating
-                            , onClick =
-                                (\c ->
-                                    let
-                                        newIndicating =
-                                            not c.indicating
-                                    in
-                                    { c
-                                        | indicating = newIndicating
-                                        , caption =
-                                            if newIndicating then
-                                                c.caption
+                [ Props.field "Types"
+                    (Props.bool
+                        { label = "Indicating"
+                        , value = pm.indicating
+                        , onClick =
+                            (\c ->
+                                let
+                                    newIndicating =
+                                        not c.indicating
+                                in
+                                { c
+                                    | indicating = newIndicating
+                                    , caption =
+                                        if newIndicating then
+                                            c.caption
 
-                                            else
-                                                "Uploading Files"
-                                    }
-                                        |> Progress.updateCaptionOnIndicating
-                                )
-                                    |> UpdateProgress
-                            }
-                    }
+                                        else
+                                            "Uploading Files"
+                                }
+                                    |> Progress.updateCaptionOnIndicating
+                            )
+                                |> UpdateProgress
+                        }
+                    )
                 , Props.comment "An indicating progress bar visually indicates the current level of progress of a task"
-                , Props.field
-                    { label = "States"
-                    , props =
-                        Props.select
-                            { value = Progress.stateToString pm.state
-                            , options = List.map Progress.stateToString [ Default, Active, Success, Warning, Error, Disabled ]
-                            , onChange =
-                                (\prevState ps ->
-                                    Progress.stateFromString prevState
-                                        |> Maybe.map
-                                            (\state ->
-                                                { ps
-                                                    | state = state
-                                                    , caption =
-                                                        case state of
-                                                            Success ->
-                                                                "Everything worked, your file is all ready."
+                , Props.field "States"
+                    (Props.select
+                        { value = Progress.stateToString pm.state
+                        , options = List.map Progress.stateToString [ Default, Active, Success, Warning, Error, Disabled ]
+                        , onChange =
+                            (\prevState ps ->
+                                Progress.stateFromString prevState
+                                    |> Maybe.map
+                                        (\state ->
+                                            { ps
+                                                | state = state
+                                                , caption =
+                                                    case state of
+                                                        Success ->
+                                                            "Everything worked, your file is all ready."
 
-                                                            Warning ->
-                                                                "Your file didn't meet the minimum resolution requirements."
+                                                        Warning ->
+                                                            "Your file didn't meet the minimum resolution requirements."
 
-                                                            Error ->
-                                                                "There was an error."
+                                                        Error ->
+                                                            "There was an error."
 
-                                                            _ ->
-                                                                ps.caption
-                                                }
-                                            )
-                                        |> Maybe.withDefault ps
-                                )
-                                    >> UpdateProgress
-                            }
-                    }
+                                                        _ ->
+                                                            ps.caption
+                                            }
+                                        )
+                                    |> Maybe.withDefault ps
+                            )
+                                >> UpdateProgress
+                        }
+                    )
                 , Props.comment
                     (case pm.state of
                         Active ->
@@ -258,25 +252,21 @@ progressPlayground isDarkMode pm =
                     )
                 ]
             , Props.FieldSet "Content"
-                [ Props.field
-                    { label = "Unit"
-                    , props =
-                        Props.string
-                            { value = pm.unit
-                            , onInput = (\string ps -> { ps | unit = string }) >> UpdateProgress
-                            , placeholder = ""
-                            }
-                    }
+                [ Props.field "Unit"
+                    (Props.string
+                        { value = pm.unit
+                        , onInput = (\string ps -> { ps | unit = string }) >> UpdateProgress
+                        , placeholder = ""
+                        }
+                    )
                 , Props.comment "A progress bar can contain a text value indicating current progress"
-                , Props.field
-                    { label = "Caption"
-                    , props =
-                        Props.string
-                            { value = pm.caption
-                            , onInput = (\string ps -> { ps | caption = string }) >> UpdateProgress
-                            , placeholder = ""
-                            }
-                    }
+                , Props.field "Caption"
+                    (Props.string
+                        { value = pm.caption
+                        , onInput = (\string ps -> { ps | caption = string }) >> UpdateProgress
+                        , placeholder = ""
+                        }
+                    )
                 , Props.comment "A progress element can contain a label"
                 ]
             ]
@@ -312,346 +302,322 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 , p [] [ text "よって、われらの各自の政府は、サンフランシスコ市に会合し、全権委任状を示してそれが良好妥当であると認められた代表者を通じて、この国際連合憲章に同意したので、ここに国際連合という国際機構を設ける。" ]
                 ]
         , props =
-            [ Props.field
-                { label = "-webkit-font-smoothing"
-                , props =
-                    Props.select
-                        { value = tm.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
-                        , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
+            [ Props.field "-webkit-font-smoothing"
+                (Props.select
+                    { value = tm.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
+                    , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
+                    , onChange =
+                        (\webkitFontSmoothing m ->
+                            { m
+                                | webkitFontSmoothing =
+                                    case webkitFontSmoothing of
+                                        "auto" ->
+                                            Auto
+
+                                        "none" ->
+                                            None
+
+                                        "antialiased" ->
+                                            Antialiased
+
+                                        "subpixel-antialiased" ->
+                                            SubpixelAntialiased
+
+                                        _ ->
+                                            m.webkitFontSmoothing
+                            }
+                        )
+                            >> UpdateTypography
+                    }
+                )
+            , Props.FieldSet "Typography"
+                [ Props.field "font-family"
+                    (Props.select
+                        { value = tm.typography.font.families |> String.concat
+                        , options = [ Css.sansSerif.value, Css.serif.value ]
                         , onChange =
-                            (\webkitFontSmoothing m ->
+                            (\fontFamily m ->
                                 { m
-                                    | webkitFontSmoothing =
-                                        case webkitFontSmoothing of
-                                            "auto" ->
-                                                Auto
+                                    | typography =
+                                        case fontFamily of
+                                            "sans-serif" ->
+                                                m.typography |> Typography.setFontFamilies [ "sans-serif" ]
 
-                                            "none" ->
-                                                None
-
-                                            "antialiased" ->
-                                                Antialiased
-
-                                            "subpixel-antialiased" ->
-                                                SubpixelAntialiased
+                                            "serif" ->
+                                                m.typography |> Typography.setFontFamilies [ "serif" ]
 
                                             _ ->
-                                                m.webkitFontSmoothing
+                                                m.typography
                                 }
                             )
                                 >> UpdateTypography
                         }
-                }
-            , Props.FieldSet "Typography"
-                [ Props.field
-                    { label = "font-family"
-                    , props =
-                        Props.select
-                            { value = tm.typography.font.families |> String.concat
-                            , options = [ Css.sansSerif.value, Css.serif.value ]
-                            , onChange =
-                                (\fontFamily m ->
+                    )
+                , Props.field "font-size"
+                    (Props.counter
+                        { value = tm.fontSize
+                        , toString = \value -> String.fromFloat value ++ "px"
+                        , onClickPlus =
+                            UpdateTypography
+                                (\m ->
                                     { m
-                                        | typography =
-                                            case fontFamily of
-                                                "sans-serif" ->
-                                                    m.typography |> Typography.setFontFamilies [ "sans-serif" ]
-
-                                                "serif" ->
-                                                    m.typography |> Typography.setFontFamilies [ "serif" ]
-
-                                                _ ->
-                                                    m.typography
+                                        | fontSize = m.fontSize + 1
+                                        , typography = m.typography |> Typography.setFontSize (px (m.fontSize + 1))
                                     }
                                 )
-                                    >> UpdateTypography
-                            }
-                    }
-                , Props.field
-                    { label = "font-size"
-                    , props =
-                        Props.counter
-                            { value = tm.fontSize
-                            , toString = \value -> String.fromFloat value ++ "px"
-                            , onClickPlus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | fontSize = m.fontSize + 1
-                                            , typography = m.typography |> Typography.setFontSize (px (m.fontSize + 1))
-                                        }
-                                    )
-                            , onClickMinus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | fontSize = m.fontSize - 1
-                                            , typography = m.typography |> Typography.setFontSize (px (m.fontSize - 1))
-                                        }
-                                    )
-                            }
-                    }
-                , Props.field
-                    { label = "font-style"
-                    , props =
-                        Props.radio
-                            { value = tm.typography.font.style |> Maybe.map .value |> Maybe.withDefault "-"
-                            , options = [ Css.normal.value, Css.italic.value ]
-                            , onChange =
-                                (\style m ->
+                        , onClickMinus =
+                            UpdateTypography
+                                (\m ->
                                     { m
-                                        | typography =
-                                            case style of
-                                                "normal" ->
-                                                    m.typography |> Typography.setFontStyle Css.normal
-
-                                                "italic" ->
-                                                    m.typography |> Typography.setFontStyle Css.italic
-
-                                                _ ->
-                                                    m.typography
+                                        | fontSize = m.fontSize - 1
+                                        , typography = m.typography |> Typography.setFontSize (px (m.fontSize - 1))
                                     }
                                 )
-                                    >> UpdateTypography
-                            }
-                    }
-                , Props.field
-                    { label = "font-weight"
-                    , props =
-                        Props.select
-                            { value = tm.typography.font.weight |> Maybe.map .value |> Maybe.withDefault "-"
-                            , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
-                            , onChange =
-                                (\weight m ->
+                        }
+                    )
+                , Props.field "font-style"
+                    (Props.radio
+                        { value = tm.typography.font.style |> Maybe.map .value |> Maybe.withDefault "-"
+                        , options = [ Css.normal.value, Css.italic.value ]
+                        , onChange =
+                            (\style m ->
+                                { m
+                                    | typography =
+                                        case style of
+                                            "normal" ->
+                                                m.typography |> Typography.setFontStyle Css.normal
+
+                                            "italic" ->
+                                                m.typography |> Typography.setFontStyle Css.italic
+
+                                            _ ->
+                                                m.typography
+                                }
+                            )
+                                >> UpdateTypography
+                        }
+                    )
+                , Props.field "font-weight"
+                    (Props.select
+                        { value = tm.typography.font.weight |> Maybe.map .value |> Maybe.withDefault "-"
+                        , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
+                        , onChange =
+                            (\weight m ->
+                                { m
+                                    | typography =
+                                        case weight of
+                                            "lighter" ->
+                                                m.typography |> Typography.setFontWeight Css.lighter
+
+                                            "normal" ->
+                                                m.typography |> Typography.setFontWeight Css.normal
+
+                                            "bold" ->
+                                                m.typography |> Typography.setFontWeight Css.bold
+
+                                            "bolder" ->
+                                                m.typography |> Typography.setFontWeight Css.bolder
+
+                                            _ ->
+                                                m.typography
+                                }
+                            )
+                                >> UpdateTypography
+                        }
+                    )
+                , Props.field "text-align"
+                    (Props.radio
+                        { value = tm.textAlign |> Typography.textAlignToString
+                        , options = [ "left", "center", "right", "justify" ]
+                        , onChange =
+                            (\align m ->
+                                { m
+                                    | textAlign =
+                                        case align of
+                                            "left" ->
+                                                Left
+
+                                            "center" ->
+                                                Center
+
+                                            "right" ->
+                                                Right
+
+                                            "justify" ->
+                                                Justify
+
+                                            _ ->
+                                                m.textAlign
+                                    , typography =
+                                        case align of
+                                            "left" ->
+                                                m.typography |> Typography.setTextAlign Css.left
+
+                                            "center" ->
+                                                m.typography |> Typography.setTextAlign Css.center
+
+                                            "right" ->
+                                                m.typography |> Typography.setTextAlign Css.right
+
+                                            "justify" ->
+                                                m.typography |> Typography.setTextAlign Css.justify
+
+                                            _ ->
+                                                m.typography
+                                }
+                            )
+                                >> UpdateTypography
+                        }
+                    )
+                , Props.field "line-height"
+                    (Props.counter
+                        { value = tm.lineHeight
+                        , toString = \value -> String.fromFloat value
+                        , onClickPlus =
+                            UpdateTypography
+                                (\m ->
                                     { m
-                                        | typography =
-                                            case weight of
-                                                "lighter" ->
-                                                    m.typography |> Typography.setFontWeight Css.lighter
-
-                                                "normal" ->
-                                                    m.typography |> Typography.setFontWeight Css.normal
-
-                                                "bold" ->
-                                                    m.typography |> Typography.setFontWeight Css.bold
-
-                                                "bolder" ->
-                                                    m.typography |> Typography.setFontWeight Css.bolder
-
-                                                _ ->
-                                                    m.typography
+                                        | lineHeight = ((m.lineHeight * 10) + 1) / 10
+                                        , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
                                     }
                                 )
-                                    >> UpdateTypography
-                            }
-                    }
-                , Props.field
-                    { label = "text-align"
-                    , props =
-                        Props.radio
-                            { value = tm.textAlign |> Typography.textAlignToString
-                            , options = [ "left", "center", "right", "justify" ]
-                            , onChange =
-                                (\align m ->
+                        , onClickMinus =
+                            UpdateTypography
+                                (\m ->
                                     { m
-                                        | textAlign =
-                                            case align of
-                                                "left" ->
-                                                    Left
-
-                                                "center" ->
-                                                    Center
-
-                                                "right" ->
-                                                    Right
-
-                                                "justify" ->
-                                                    Justify
-
-                                                _ ->
-                                                    m.textAlign
-                                        , typography =
-                                            case align of
-                                                "left" ->
-                                                    m.typography |> Typography.setTextAlign Css.left
-
-                                                "center" ->
-                                                    m.typography |> Typography.setTextAlign Css.center
-
-                                                "right" ->
-                                                    m.typography |> Typography.setTextAlign Css.right
-
-                                                "justify" ->
-                                                    m.typography |> Typography.setTextAlign Css.justify
-
-                                                _ ->
-                                                    m.typography
+                                        | lineHeight = ((m.lineHeight * 10) - 1) / 10
+                                        , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
                                     }
                                 )
-                                    >> UpdateTypography
-                            }
-                    }
-                , Props.field
-                    { label = "line-height"
-                    , props =
-                        Props.counter
-                            { value = tm.lineHeight
-                            , toString = \value -> String.fromFloat value
-                            , onClickPlus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | lineHeight = ((m.lineHeight * 10) + 1) / 10
-                                            , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
-                                        }
-                                    )
-                            , onClickMinus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | lineHeight = ((m.lineHeight * 10) - 1) / 10
-                                            , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
-                                        }
-                                    )
-                            }
-                    }
-                , Props.field
-                    { label = "text-decoration"
-                    , props =
-                        Props.radio
-                            { value = tm.typography.textSetting.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
-                            , options = [ Css.none.value, Css.underline.value ]
-                            , onChange =
-                                (\decoration m ->
+                        }
+                    )
+                , Props.field "text-decoration"
+                    (Props.radio
+                        { value = tm.typography.textSetting.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
+                        , options = [ Css.none.value, Css.underline.value ]
+                        , onChange =
+                            (\decoration m ->
+                                { m
+                                    | typography =
+                                        case decoration of
+                                            "none" ->
+                                                m.typography |> Typography.setTextDecoration Css.none
+
+                                            "underline" ->
+                                                m.typography |> Typography.setTextDecoration Css.underline
+
+                                            _ ->
+                                                m.typography
+                                }
+                            )
+                                >> UpdateTypography
+                        }
+                    )
+                , Props.field "letter-spacing"
+                    (Props.counter
+                        { value = tm.letterSpacing
+                        , toString = \value -> String.fromFloat value ++ "em"
+                        , onClickPlus =
+                            UpdateTypography
+                                (\m ->
                                     { m
-                                        | typography =
-                                            case decoration of
-                                                "none" ->
-                                                    m.typography |> Typography.setTextDecoration Css.none
-
-                                                "underline" ->
-                                                    m.typography |> Typography.setTextDecoration Css.underline
-
-                                                _ ->
-                                                    m.typography
+                                        | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
+                                        , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
                                     }
                                 )
-                                    >> UpdateTypography
-                            }
-                    }
-                , Props.field
-                    { label = "letter-spacing"
-                    , props =
-                        Props.counter
-                            { value = tm.letterSpacing
-                            , toString = \value -> String.fromFloat value ++ "em"
-                            , onClickPlus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
-                                            , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
-                                        }
-                                    )
-                            , onClickMinus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
-                                            , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
-                                        }
-                                    )
-                            }
-                    }
-                , Props.field
-                    { label = "text-transform"
-                    , props =
-                        Props.select
-                            { value = tm.typography.textSetting.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
-                            , options = [ Css.none.value, Css.uppercase.value, Css.lowercase.value, Css.capitalize.value ]
-                            , onChange =
-                                (\transform m ->
+                        , onClickMinus =
+                            UpdateTypography
+                                (\m ->
                                     { m
-                                        | typography =
-                                            case transform of
-                                                "none" ->
-                                                    m.typography |> Typography.setTextTransform Css.none
-
-                                                "uppercase" ->
-                                                    m.typography |> Typography.setTextTransform Css.uppercase
-
-                                                "lowercase" ->
-                                                    m.typography |> Typography.setTextTransform Css.lowercase
-
-                                                "capitalize" ->
-                                                    m.typography |> Typography.setTextTransform Css.capitalize
-
-                                                _ ->
-                                                    m.typography
+                                        | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
+                                        , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
                                     }
                                 )
-                                    >> UpdateTypography
-                            }
-                    }
+                        }
+                    )
+                , Props.field "text-transform"
+                    (Props.select
+                        { value = tm.typography.textSetting.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
+                        , options = [ Css.none.value, Css.uppercase.value, Css.lowercase.value, Css.capitalize.value ]
+                        , onChange =
+                            (\transform m ->
+                                { m
+                                    | typography =
+                                        case transform of
+                                            "none" ->
+                                                m.typography |> Typography.setTextTransform Css.none
+
+                                            "uppercase" ->
+                                                m.typography |> Typography.setTextTransform Css.uppercase
+
+                                            "lowercase" ->
+                                                m.typography |> Typography.setTextTransform Css.lowercase
+
+                                            "capitalize" ->
+                                                m.typography |> Typography.setTextTransform Css.capitalize
+
+                                            _ ->
+                                                m.typography
+                                }
+                            )
+                                >> UpdateTypography
+                        }
+                    )
                 ]
             , Props.FieldSet "TextBlock"
-                [ Props.field
-                    { label = "word-break"
-                    , props =
-                        Props.select
-                            { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
-                            , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
-                            , onChange =
-                                (\wordBreak m ->
-                                    { m
-                                        | typography =
-                                            case wordBreak of
-                                                "normal" ->
-                                                    m.typography |> Typography.setWordBreak Normal_WordBreak
+                [ Props.field "word-break"
+                    (Props.select
+                        { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
+                        , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
+                        , onChange =
+                            (\wordBreak m ->
+                                { m
+                                    | typography =
+                                        case wordBreak of
+                                            "normal" ->
+                                                m.typography |> Typography.setWordBreak Normal_WordBreak
 
-                                                "break-all" ->
-                                                    m.typography |> Typography.setWordBreak BreakAll
+                                            "break-all" ->
+                                                m.typography |> Typography.setWordBreak BreakAll
 
-                                                "keep-all" ->
-                                                    m.typography |> Typography.setWordBreak KeepAll
+                                            "keep-all" ->
+                                                m.typography |> Typography.setWordBreak KeepAll
 
-                                                "auto-phrase" ->
-                                                    m.typography |> Typography.setWordBreak AutoPhrase
+                                            "auto-phrase" ->
+                                                m.typography |> Typography.setWordBreak AutoPhrase
 
-                                                _ ->
-                                                    m.typography
-                                    }
-                                )
-                                    >> UpdateTypography
-                            }
-                    }
-                , Props.field
-                    { label = "overflow-wrap"
-                    , props =
-                        Props.select
-                            { value = tm.typography.textBlock.overflowWrap |> Maybe.map Typography.overflowWrapToString |> Maybe.withDefault "-"
-                            , options = [ "normal", "break-word", "anywhere" ]
-                            , onChange =
-                                (\overflowWrap m ->
-                                    { m
-                                        | typography =
-                                            case overflowWrap of
-                                                "normal" ->
-                                                    m.typography |> Typography.setOverflowWrap Normal_OverflowWrap
+                                            _ ->
+                                                m.typography
+                                }
+                            )
+                                >> UpdateTypography
+                        }
+                    )
+                , Props.field "overflow-wrap"
+                    (Props.select
+                        { value = tm.typography.textBlock.overflowWrap |> Maybe.map Typography.overflowWrapToString |> Maybe.withDefault "-"
+                        , options = [ "normal", "break-word", "anywhere" ]
+                        , onChange =
+                            (\overflowWrap m ->
+                                { m
+                                    | typography =
+                                        case overflowWrap of
+                                            "normal" ->
+                                                m.typography |> Typography.setOverflowWrap Normal_OverflowWrap
 
-                                                "break-word" ->
-                                                    m.typography |> Typography.setOverflowWrap BreakWord
+                                            "break-word" ->
+                                                m.typography |> Typography.setOverflowWrap BreakWord
 
-                                                "anywhere" ->
-                                                    m.typography |> Typography.setOverflowWrap Anywhere
+                                            "anywhere" ->
+                                                m.typography |> Typography.setOverflowWrap Anywhere
 
-                                                _ ->
-                                                    m.typography
-                                    }
-                                )
-                                    >> UpdateTypography
-                            }
-                    }
+                                            _ ->
+                                                m.typography
+                                }
+                            )
+                                >> UpdateTypography
+                        }
+                    )
                 ]
             ]
         }
