@@ -297,7 +297,7 @@ render props =
                     ]
                 ]
             <|
-                legend [ css [ fontWeight bold ] ] [ text label ]
+                legend [ css [ fontWeight bold, empty [ display none ] ] ] [ text label ]
                     :: List.map render childProps
 
         Field label ps ->
