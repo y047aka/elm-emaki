@@ -312,7 +312,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
             [ Props.field
                 { label = "-webkit-font-smoothing"
                 , props =
-                    Props.radio
+                    Props.select
                         { value = tm.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
                         , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
                         , onChange =
@@ -419,7 +419,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 , Props.field
                     { label = "font-weight"
                     , props =
-                        Props.radio
+                        Props.select
                             { value = tm.typography.font.weight |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
                             , onChange =
@@ -572,7 +572,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 , Props.field
                     { label = "text-transform"
                     , props =
-                        Props.radio
+                        Props.select
                             { value = tm.typography.textSetting.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.none.value, Css.uppercase.value, Css.lowercase.value, Css.capitalize.value ]
                             , onChange =
@@ -605,7 +605,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 [ Props.field
                     { label = "word-break"
                     , props =
-                        Props.radio
+                        Props.select
                             { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
                             , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
                             , onChange =
@@ -636,7 +636,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 , Props.field
                     { label = "overflow-wrap"
                     , props =
-                        Props.radio
+                        Props.select
                             { value = tm.typography.textBlock.overflowWrap |> Maybe.map Typography.overflowWrapToString |> Maybe.withDefault "-"
                             , options = [ "normal", "break-word", "anywhere" ]
                             , onChange =
