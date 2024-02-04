@@ -2,7 +2,7 @@ module Emaki.Props exposing
     ( Props(..)
     , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
     , render
-    , string, bool, select, radio, counter, boolAndString
+    , comment, string, bool, select, radio, counter, boolAndString
     , list, fieldset
     , field
     , customize
@@ -13,7 +13,7 @@ module Emaki.Props exposing
 @docs Props
 @docs StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
 @docs render
-@docs string, bool, select, radio, counter, boolAndString
+@docs comment, string, bool, select, radio, counter, boolAndString
 @docs list, fieldset
 @docs field
 @docs customize
@@ -21,7 +21,7 @@ module Emaki.Props exposing
 -}
 
 import Css exposing (..)
-import Css.Extra exposing (grid, gridColumn, gridRow, rowGap)
+import Css.Extra exposing (fr, grid, gridColumn, gridRow, gridTemplateColumns, rowGap)
 import Css.Global exposing (children, selector, typeSelector)
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setColor)
 import Css.Palette.Extra exposing (paletteByState)
@@ -32,7 +32,8 @@ import Html.Styled.Events exposing (onClick, onInput)
 
 
 type Props msg
-    = String (StringProps msg)
+    = Comment String
+    | String (StringProps msg)
     | Bool (BoolProps msg)
     | Select (SelectProps msg)
     | Radio (RadioProps msg)
@@ -40,7 +41,7 @@ type Props msg
     | BoolAndString (BoolAndStringProps msg)
     | List (List (Props msg))
     | FieldSet String (List (Props msg))
-    | Field { label : String, note : String } (Props msg)
+    | Field { label : String } (Props msg)
     | Customize (Html msg)
 
 
@@ -89,6 +90,11 @@ type alias BoolAndStringProps msg =
     }
 
 
+comment : String -> Props msg
+comment =
+    Comment
+
+
 string : StringProps msg -> Props msg
 string =
     String
@@ -132,11 +138,10 @@ fieldset =
 field :
     { label : String
     , props : Props msg
-    , note : String
     }
     -> Props msg
-field { label, note, props } =
-    Field { label = label, note = note } props
+field { label, props } =
+    Field { label = label } props
 
 
 customize : Html msg -> Props msg
@@ -151,6 +156,9 @@ customize =
 render : Props msg -> Html msg
 render props =
     case props of
+        Comment str ->
+            Html.div [ css [ palette Palette.textOptional ] ] [ text str ]
+
         String ps ->
             input
                 [ type_ "text"
@@ -290,17 +298,16 @@ render props =
                 legend [ css [ fontWeight bold ] ] [ text label ]
                     :: List.map render childProps
 
-        Field { label, note } ps ->
+        Field { label } ps ->
             div
                 [ css
-                    [ displayFlex
-                    , flexWrap wrap
-                    , rowGap (em 0.25)
+                    [ display grid
+                    , gridTemplateColumns [ fr 1, fr 1 ]
+                    , alignItems center
                     ]
                 ]
-                [ Html.label [ css [ width (pct 50) ] ] [ text label ]
-                , div [ css [ width (pct 50) ] ] [ render ps ]
-                , div [ css [ width (pct 100), palette Palette.textOptional, empty [ display none ] ] ] [ text note ]
+                [ Html.label [] [ text label ]
+                , render ps
                 ]
 
         Customize view ->

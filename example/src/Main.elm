@@ -162,17 +162,19 @@ progressPlayground isDarkMode pm =
         { isDarkMode = isDarkMode
         , preview = Progress.progressWithProps pm
         , props =
-            [ Props.field
-                { label = "Bar"
-                , props =
-                    Props.counter
-                        { value = pm.value
-                        , toString = \value -> String.fromFloat value ++ "%"
-                        , onClickPlus = ProgressMsg Progress.CounterPlus
-                        , onClickMinus = ProgressMsg Progress.CounterMinus
-                        }
-                , note = "A progress element can contain a bar visually indicating progress"
-                }
+            [ Props.FieldSet ""
+                [ Props.field
+                    { label = "Bar"
+                    , props =
+                        Props.counter
+                            { value = pm.value
+                            , toString = \value -> String.fromFloat value ++ "%"
+                            , onClickPlus = ProgressMsg Progress.CounterPlus
+                            , onClickMinus = ProgressMsg Progress.CounterMinus
+                            }
+                    }
+                , Props.comment "A progress element can contain a bar visually indicating progress"
+                ]
             , Props.FieldSet "Config"
                 [ Props.field
                     { label = "Types"
@@ -199,8 +201,8 @@ progressPlayground isDarkMode pm =
                                 )
                                     |> UpdateProgress
                             }
-                    , note = "An indicating progress bar visually indicates the current level of progress of a task"
                     }
+                , Props.comment "An indicating progress bar visually indicates the current level of progress of a task"
                 , Props.field
                     { label = "States"
                     , props =
@@ -233,26 +235,27 @@ progressPlayground isDarkMode pm =
                                 )
                                     >> UpdateProgress
                             }
-                    , note =
-                        case pm.state of
-                            Active ->
-                                "A progress bar can show activity"
-
-                            Success ->
-                                "A progress bar can show a success state"
-
-                            Warning ->
-                                "A progress bar can show a warning state"
-
-                            Error ->
-                                "A progress bar can show an error state"
-
-                            Disabled ->
-                                "A progress bar can be disabled"
-
-                            _ ->
-                                ""
                     }
+                , Props.comment
+                    (case pm.state of
+                        Active ->
+                            "A progress bar can show activity"
+
+                        Success ->
+                            "A progress bar can show a success state"
+
+                        Warning ->
+                            "A progress bar can show a warning state"
+
+                        Error ->
+                            "A progress bar can show an error state"
+
+                        Disabled ->
+                            "A progress bar can be disabled"
+
+                        _ ->
+                            ""
+                    )
                 ]
             , Props.FieldSet "Content"
                 [ Props.field
@@ -263,8 +266,8 @@ progressPlayground isDarkMode pm =
                             , onInput = (\string ps -> { ps | unit = string }) >> UpdateProgress
                             , placeholder = ""
                             }
-                    , note = "A progress bar can contain a text value indicating current progress"
                     }
+                , Props.comment "A progress bar can contain a text value indicating current progress"
                 , Props.field
                     { label = "Caption"
                     , props =
@@ -273,8 +276,8 @@ progressPlayground isDarkMode pm =
                             , onInput = (\string ps -> { ps | caption = string }) >> UpdateProgress
                             , placeholder = ""
                             }
-                    , note = "A progress element can contain a label"
                     }
+                , Props.comment "A progress element can contain a label"
                 ]
             ]
         }
@@ -338,7 +341,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             )
                                 >> UpdateTypography
                         }
-                , note = ""
                 }
             , Props.FieldSet "Typography"
                 [ Props.field
@@ -364,7 +366,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                                     >> UpdateTypography
                             }
-                    , note = ""
                     }
                 , Props.field
                     { label = "font-size"
@@ -389,7 +390,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                         }
                                     )
                             }
-                    , note = ""
                     }
                 , Props.field
                     { label = "font-style"
@@ -414,7 +414,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                                     >> UpdateTypography
                             }
-                    , note = ""
                     }
                 , Props.field
                     { label = "font-weight"
@@ -445,7 +444,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                                     >> UpdateTypography
                             }
-                    , note = ""
                     }
                 , Props.field
                     { label = "text-align"
@@ -492,7 +490,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                                     >> UpdateTypography
                             }
-                    , note = ""
                     }
                 , Props.field
                     { label = "line-height"
@@ -517,7 +514,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                         }
                                     )
                             }
-                    , note = ""
                     }
                 , Props.field
                     { label = "text-decoration"
@@ -542,7 +538,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                                     >> UpdateTypography
                             }
-                    , note = ""
                     }
                 , Props.field
                     { label = "letter-spacing"
@@ -567,7 +562,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                         }
                                     )
                             }
-                    , note = ""
                     }
                 , Props.field
                     { label = "text-transform"
@@ -598,7 +592,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                                     >> UpdateTypography
                             }
-                    , note = ""
                     }
                 ]
             , Props.FieldSet "TextBlock"
@@ -631,7 +624,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                                     >> UpdateTypography
                             }
-                    , note = ""
                     }
                 , Props.field
                     { label = "overflow-wrap"
@@ -659,7 +651,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                                     >> UpdateTypography
                             }
-                    , note = ""
                     }
                 ]
             ]
