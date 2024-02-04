@@ -348,105 +348,34 @@ toggleInput : List (Attribute msg) -> List (Html msg) -> Html msg
 toggleInput =
     Html.styled Html.input
         [ cursor pointer
+        , width (rem 3.5)
+        , height (rem 1.5)
         , opacity zero
-        , active
-            [ generalSiblings
-                [ Css.Global.label
-                    [ -- .ui.checkbox input:active ~ label
-                      color (rgba 0 0 0 0.95)
-                    ]
-                ]
-            ]
         , focus
             [ generalSiblings
                 [ Css.Global.label
-                    [ -- .ui.checkbox input:focus ~ label
-                      color (rgba 0 0 0 0.95)
-
-                    -- .ui.checkbox input:focus ~ label:before
-                    , before
-                        [ palette
-                            (Palette.init
-                                |> setBackground (hex "#FFFFFF")
-                                |> setBorder (hex "#96C8DA")
-                            )
-                        ]
-
-                    -- .ui.checkbox input:focus ~ label:after
-                    , after
-                        [ color (rgba 0 0 0 0.95) ]
-                    ]
+                    [ before [ palette (Palette.init |> setBackground (rgba 0 0 0 0.15)) ] ]
                 ]
             ]
         , checked
-            [ generalSiblings
-                [ Css.Global.label
-                    [ -- .ui.checkbox input:checked ~ label:before
-                      before
-                        [ palette
-                            (Palette.init
-                                |> setBackground (hex "#FFFFFF")
-                                |> setBorder (rgba 34 36 38 0.35)
-                            )
-                        ]
-
-                    -- .ui.checkbox input:checked ~ label:after
-                    , after
-                        [ opacity (int 1)
-                        , color (rgba 0 0 0 0.95)
-                        ]
-
-                    -- .ui.checkbox input:checked ~ .box:after
-                    -- .ui.checkbox input:checked ~ label:after
-                    , after
-                        [ property "content" "url(\"data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='black' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M5.707 7.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4a1 1 0 0 0-1.414-1.414L7 8.586 5.707 7.293z'/%3e%3c/svg%3e\")" ]
-                    ]
-                ]
-            ]
-        , -- .ui.toggle.checkbox input
-          width (rem 3.5)
-        , height (rem 1.5)
-
-        -- .ui.toggle.checkbox input:focus ~ label:before
-        , focus
             [ generalSiblings
                 [ Css.Global.label
                     [ before
-                        [ backgroundColor (rgba 0 0 0 0.15)
-                        , property "border" "none"
+                        [ palette
+                            (Palette.init
+                                |> setBackground (hex "#2185D0")
+                                |> setBorder (rgba 34 36 38 0.35)
+                            )
                         ]
-                    ]
-                ]
-            ]
-
-        -- .ui.toggle.checkbox input:checked ~ label
-        , checked
-            [ generalSiblings
-                [ Css.Global.label
-                    [ color (rgba 0 0 0 0.95) |> important
-
-                    -- .ui.toggle.checkbox input:checked ~ label:before
-                    , before
-                        [ backgroundColor (hex "#2185D0") |> important ]
-
-                    -- .ui.toggle.checkbox input:checked ~ label:after
                     , after
-                        [ left (rem 2.15)
-                        , property "-webkit-box-shadow" "0 1px 2px 0 rgba(34, 36, 38, 0.15), 0 0 0 1px rgba(34, 36, 38, 0.15) inset"
-                        , property "box-shadow" "0 1px 2px 0 rgba(34, 36, 38, 0.15), 0 0 0 1px rgba(34, 36, 38, 0.15) inset"
-                        ]
+                        [ left (rem 2.15) ]
                     ]
                 ]
-
-            -- .ui.toggle.checkbox input:focus:checked ~ label
             , focus
                 [ generalSiblings
                     [ Css.Global.label
-                        [ color (rgba 0 0 0 0.95) |> important
-
-                        -- .ui.toggle.checkbox input:focus:checked ~ label:before
-                        , before
-                            [ backgroundColor (hex "#0d71bb") |> important ]
+                        [ before
+                            [ backgroundColor (hex "#0d71bb") ]
                         ]
                     ]
                 ]
@@ -457,121 +386,54 @@ toggleInput =
 toggleLabel : List (Attribute msg) -> List (Html msg) -> Html msg
 toggleLabel =
     Html.styled Html.label
-        [ -- .ui.checkbox label
-          position relative
+        [ position relative
         , outline none
-
-        -- .ui.checkbox label:before
         , before
             [ position absolute
             , top zero
             , left zero
+            , zIndex (int 1)
             , property "content" "''"
-            , borderRadius (rem 0.21428571)
+            , display block
+            , width (rem 3.5)
+            , height (rem 1.5)
+            , borderRadius (rem 500)
             , property "-webkit-transition" "border 0.1s ease, opacity 0.1s ease, -webkit-transform 0.1s ease, -webkit-box-shadow 0.1s ease"
             , property "transition" "border 0.1s ease, opacity 0.1s ease, -webkit-transform 0.1s ease, -webkit-box-shadow 0.1s ease"
             , property "transition" "border 0.1s ease, opacity 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease"
             , property "transition" "border 0.1s ease, opacity 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease, -webkit-transform 0.1s ease, -webkit-box-shadow 0.1s ease"
-            , paletteWithBorder (border3 (px 1) solid)
+            , palette
                 (Palette.init
-                    |> setBackground (hex "#FFFFFF")
+                    |> setBackground (rgba 0 0 0 0.05)
                     |> setBorder (hex "#D4D4D5")
                 )
             ]
-
-        -- .ui.checkbox label:after
         , after
             [ position absolute
-            , fontSize (px 14)
             , top zero
-            , left zero
-            , textAlign center
-            , opacity zero
-            , color (rgba 0 0 0 0.87)
-            , property "-webkit-transition" "border 0.1s ease, opacity 0.1s ease, -webkit-transform 0.1s ease, -webkit-box-shadow 0.1s ease;"
-            , property "transition" "border 0.1s ease, opacity 0.1s ease, -webkit-transform 0.1s ease, -webkit-box-shadow 0.1s ease;"
-            , property "transition" "border 0.1s ease, opacity 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;"
-            , property "transition" "border 0.1s ease, opacity 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease, -webkit-transform 0.1s ease, -webkit-box-shadow 0.1s ease;"
-            ]
-
-        -- Hover
-        , hover
-            [ -- .ui.checkbox label:hover::before
-              before
-                [ palette
-                    (Palette.init
-                        |> setBackground (hex "#FFFFFF")
-                        |> setBorder (rgba 34 36 38 0.35)
-                    )
-                ]
-            ]
-
-        -- Down
-        , active
-            [ -- .ui.checkbox label:active::before
-              before
-                [ palette
-                    (Palette.init
-                        |> setBackground (hex "#F9FAFB")
-                        |> setBorder (rgba 34 36 38 0.35)
-                    )
-                ]
-
-            -- .ui.checkbox label:active::after
-            , after
-                [ color (rgba 0 0 0 0.95) ]
-            ]
-
-        -- .ui.toggle.checkbox label:before
-        , before
-            [ display block
-            , position absolute
-            , property "content" "''"
-            , zIndex (int 1)
-            , property "-webkit-transform" "none"
-            , property "transform" "none"
-            , property "border" "none"
-            , top zero
-            , backgroundColor (rgba 0 0 0 0.05)
-            , property "-webkit-box-shadow" "none"
-            , property "box-shadow" "none"
-            , width (rem 3.5)
-            , height (rem 1.5)
-            , borderRadius (rem 500)
-            ]
-
-        -- .ui.toggle.checkbox label:after
-        , after
-            [ property "background" "#FFFFFF -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 0, 0, 0.05)))"
-            , property "background" "#FFFFFF -webkit-linear-gradient(transparent, rgba(0, 0, 0, 0.05))"
-            , property "background" "#FFFFFF linear-gradient(transparent, rgba(0, 0, 0, 0.05))"
-            , position absolute
-            , property "content" "''" |> important
-            , opacity (int 1)
+            , left (rem -0.05)
             , zIndex (int 2)
-            , property "border" "none"
-            , property "-webkit-box-shadow" "0 1px 2px 0 rgba(34, 36, 38, 0.15), 0 0 0 1px rgba(34, 36, 38, 0.15) inset"
-            , property "box-shadow" "0 1px 2px 0 rgba(34, 36, 38, 0.15), 0 0 0 1px rgba(34, 36, 38, 0.15) inset"
+            , property "content" "''"
             , width (rem 1.5)
             , height (rem 1.5)
-            , top zero
-            , left zero
             , borderRadius (rem 500)
             , property "-webkit-transition" "background 0.3s ease, left 0.3s ease"
             , property "transition" "background 0.3s ease, left 0.3s ease"
-
-            -- .ui.toggle.checkbox input ~ label:after
-            , left (rem -0.05)
+            , property "background" "#FFFFFF -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgba(0, 0, 0, 0.05)))"
+            , property "background" "#FFFFFF -webkit-linear-gradient(transparent, rgba(0, 0, 0, 0.05))"
+            , property "background" "#FFFFFF linear-gradient(transparent, rgba(0, 0, 0, 0.05))"
             , property "-webkit-box-shadow" "0 1px 2px 0 rgba(34, 36, 38, 0.15), 0 0 0 1px rgba(34, 36, 38, 0.15) inset"
             , property "box-shadow" "0 1px 2px 0 rgba(34, 36, 38, 0.15), 0 0 0 1px rgba(34, 36, 38, 0.15) inset"
             ]
-
-        -- .ui.toggle.checkbox label:hover::before {
+        , active
+            [ before
+                [ palette (Palette.init |> setBackground (hex "#F9FAFB")) ]
+            , after
+                [ color (rgba 0 0 0 0.95) ]
+            ]
         , hover
             [ before
-                [ backgroundColor (rgba 0 0 0 0.15)
-                , property "border" "none"
-                ]
+                [ palette (Palette.init |> setBackground (rgba 0 0 0 0.15)) ]
             ]
         ]
 
