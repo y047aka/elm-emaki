@@ -298,7 +298,6 @@ labeledButtons attributes =
                     [ displayFlex
                     , alignItems center
                     , justifyContent center
-                    , margin4 zero zero zero (px -1)
                     , fontSize (em 1)
                     , borderColor (rgba 34 36 38 0.15)
 
