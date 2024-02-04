@@ -691,7 +691,8 @@ playground { isDarkMode, preview, props } =
             [ preview ]
         , div
             [ css
-                [ padding (Css.em 0.5)
+                [ alignSelf start
+                , padding (Css.em 0.5)
                 , displayFlex
                 , flexDirection column
                 , rowGap (Css.em 0.5)
