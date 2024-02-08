@@ -15,10 +15,10 @@ module DesignToken.Palette exposing
 
 -}
 
-import Css exposing (Color, Style, hover, rgba)
+import Css exposing (Color, rgba)
 import Css.Color exposing (Hsl360, hsla)
 import Css.Palette exposing (Palette, init, setBackground, setColor)
-import Css.Palette.Extra exposing (light_dark)
+import Css.Palette.Extra exposing (PalettesByState, initPalettes, light_dark)
 import DesignToken.Color exposing (black, grey020, grey030, grey060, grey070, grey085, grey090, grey095, white)
 
 
@@ -66,17 +66,19 @@ navigation isDarkMode =
         }
 
 
-navItem : Bool -> ( Palette Hsl360, List ( List Style -> Style, Palette Hsl360 ) )
+navItem : Bool -> PalettesByState Hsl360
 navItem isDarkMode =
     light_dark isDarkMode
         { light =
-            ( init |> setColor grey030
-            , [ ( hover, init |> setBackground grey085 |> setColor grey030 ) ]
-            )
+            { initPalettes
+                | default = Just (init |> setColor grey030)
+                , hover = Just (init |> setBackground grey085 |> setColor grey030)
+            }
         , dark =
-            ( init |> setColor grey095
-            , [ ( hover, init |> setBackground grey030 |> setColor white ) ]
-            )
+            { initPalettes
+                | default = Just (init |> setColor grey095)
+                , hover = Just (init |> setBackground grey030 |> setColor white)
+            }
         }
 
 
@@ -84,11 +86,13 @@ navItemSelected : Bool -> Palette Hsl360
 navItemSelected isDarkMode =
     light_dark isDarkMode
         { light =
-            Tuple.first (navItem isDarkMode)
+            (navItem isDarkMode).default
+                |> Maybe.withDefault init
                 |> setBackground grey090
                 |> setColor grey030
         , dark =
-            Tuple.first (navItem isDarkMode)
+            (navItem isDarkMode).default
+                |> Maybe.withDefault init
                 |> setBackground grey020
                 |> setColor white
         }
