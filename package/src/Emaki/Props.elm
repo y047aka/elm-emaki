@@ -2,7 +2,7 @@ module Emaki.Props exposing
     ( Props
     , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
     , render
-    , header, comment, string, bool, select, radio, counter, boolAndString
+    , comment, header, string, bool, select, radio, counter, boolAndString
     , list
     , field
     , customize
@@ -13,7 +13,7 @@ module Emaki.Props exposing
 @docs Props
 @docs StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
 @docs render
-@docs header, comment, string, bool, select, radio, counter, boolAndString
+@docs comment, header, string, bool, select, radio, counter, boolAndString
 @docs list
 @docs field
 @docs customize
@@ -32,8 +32,8 @@ import Html.Styled.Events exposing (onClick, onInput)
 
 
 type Props msg
-    = Header String msg
-    | Comment String
+    = Comment String
+    | Header String msg
     | String (StringProps msg)
     | Bool (BoolProps msg)
     | Select (SelectProps msg)
@@ -90,14 +90,14 @@ type alias BoolAndStringProps msg =
     }
 
 
-header : String -> msg -> Props msg
-header =
-    Header
-
-
 comment : String -> Props msg
 comment =
     Comment
+
+
+header : String -> msg -> Props msg
+header =
+    Header
 
 
 string : StringProps msg -> Props msg
@@ -152,6 +152,15 @@ customize =
 render : Props msg -> Html msg
 render props =
     case props of
+        Comment str ->
+            div
+                [ css
+                    [ palette Palette.textOptional
+                    , empty [ display none ]
+                    ]
+                ]
+                [ text str ]
+
         Header str resetMsg ->
             Html.header [ css [ displayFlex, justifyContent spaceBetween, alignItems center, fontWeight bold ] ]
                 [ div [ css [] ] [ text str ]
@@ -171,15 +180,6 @@ render props =
                     ]
                     [ text "Reset" ]
                 ]
-
-        Comment str ->
-            div
-                [ css
-                    [ palette Palette.textOptional
-                    , empty [ display none ]
-                    ]
-                ]
-                [ text str ]
 
         String ps ->
             input
