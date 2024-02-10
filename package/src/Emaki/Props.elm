@@ -26,13 +26,13 @@ import Css.Global exposing (children, everything, generalSiblings, selector, typ
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
 import DesignToken.Palette as Palette
-import Html.Styled as Html exposing (Attribute, Html, div, input, text)
+import Html.Styled as Html exposing (Attribute, Html, button, div, input, text)
 import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder, selected, type_, value)
 import Html.Styled.Events exposing (onClick, onInput)
 
 
 type Props msg
-    = Header String
+    = Header String msg
     | Comment String
     | String (StringProps msg)
     | Bool (BoolProps msg)
@@ -90,7 +90,7 @@ type alias BoolAndStringProps msg =
     }
 
 
-header : String -> Props msg
+header : String -> msg -> Props msg
 header =
     Header
 
@@ -152,9 +152,25 @@ customize =
 render : Props msg -> Html msg
 render props =
     case props of
-        Header str ->
-            Html.header [ css [ fontWeight bold, empty [ display none ] ] ]
-                [ text str ]
+        Header str resetMsg ->
+            Html.header [ css [ displayFlex, justifyContent spaceBetween, alignItems center, fontWeight bold ] ]
+                [ div [ css [] ] [ text str ]
+                , button
+                    [ onClick resetMsg
+                    , css
+                        [ cursor pointer
+                        , padding2 (em 0.25) (em 0.5)
+                        , fontSize (px 12)
+                        , borderRadius (em 0.25)
+                        , paletteWithBorder (border3 (px 1) solid)
+                            { background = Just (hsla 0 0 0 0)
+                            , color = Just (hsl 210 0 0.5)
+                            , border = Just (hsl 210 0 0.5)
+                            }
+                        ]
+                    ]
+                    [ text "Reset" ]
+                ]
 
         Comment str ->
             div

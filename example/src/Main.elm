@@ -174,7 +174,7 @@ progressPlayground isDarkMode pm =
                 , Props.comment "A progress element can contain a bar visually indicating progress"
                 ]
             , Props.list
-                [ Props.header "Config"
+                [ Props.header "Config" (UpdateProgress (\pm_ -> { pm_ | indicating = False, state = Default }))
                 , Props.field "Indicating"
                     (Props.bool
                         { id = "indicating"
@@ -253,7 +253,7 @@ progressPlayground isDarkMode pm =
                     )
                 ]
             , Props.list
-                [ Props.header "Content"
+                [ Props.header "Content" (UpdateProgress (\pm_ -> { pm_ | unit = "%", caption = "Uploading Files" }))
                 , Props.field "Unit"
                     (Props.string
                         { value = pm.unit
@@ -334,6 +334,17 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 )
             , Props.list
                 [ Props.header "Typography"
+                    (UpdateTypography
+                        (\tm_ ->
+                            { init_TypographyModel
+                                | webkitFontSmoothing = tm_.webkitFontSmoothing
+                                , typography =
+                                    init_TypographyModel.typography
+                                        |> Typography.setWordBreak (Maybe.withDefault Normal_WordBreak tm_.typography.textBlock.wordBreak)
+                                        |> Typography.setOverflowWrap (Maybe.withDefault Normal_OverflowWrap tm_.typography.textBlock.overflowWrap)
+                            }
+                        )
+                    )
                 , Props.field "font-family"
                     (Props.select
                         { value = tm.typography.font.families |> String.concat
@@ -569,6 +580,16 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 ]
             , Props.list
                 [ Props.header "TextBlock"
+                    (UpdateTypography
+                        (\tm_ ->
+                            { tm_
+                                | typography =
+                                    tm_.typography
+                                        |> Typography.setWordBreak Normal_WordBreak
+                                        |> Typography.setOverflowWrap Normal_OverflowWrap
+                            }
+                        )
+                    )
                 , Props.field "word-break"
                     (Props.select
                         { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
