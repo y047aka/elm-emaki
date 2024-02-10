@@ -1,5 +1,5 @@
 module Emaki.Props exposing
-    ( Props(..)
+    ( Props
     , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
     , render
     , header, comment, string, bool, select, radio, counter, boolAndString
