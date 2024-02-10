@@ -2,7 +2,7 @@ module Emaki.Props exposing
     ( Props(..)
     , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
     , render
-    , comment, string, bool, select, radio, counter, boolAndString
+    , header, comment, string, bool, select, radio, counter, boolAndString
     , list, fieldset
     , field
     , customize
@@ -13,7 +13,7 @@ module Emaki.Props exposing
 @docs Props
 @docs StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
 @docs render
-@docs comment, string, bool, select, radio, counter, boolAndString
+@docs header, comment, string, bool, select, radio, counter, boolAndString
 @docs list, fieldset
 @docs field
 @docs customize
@@ -32,7 +32,8 @@ import Html.Styled.Events exposing (onClick, onInput)
 
 
 type Props msg
-    = Comment String
+    = Header String
+    | Comment String
     | String (StringProps msg)
     | Bool (BoolProps msg)
     | Select (SelectProps msg)
@@ -88,6 +89,11 @@ type alias BoolAndStringProps msg =
     , onUpdate : { visible : Bool, value : String } -> msg
     , placeholder : String
     }
+
+
+header : String -> Props msg
+header =
+    Header
 
 
 comment : String -> Props msg
@@ -152,6 +158,10 @@ customize =
 render : Props msg -> Html msg
 render props =
     case props of
+        Header str ->
+            Html.div [ css [ fontWeight bold, empty [ display none ] ] ]
+                [ text str ]
+
         Comment str ->
             Html.div
                 [ css
