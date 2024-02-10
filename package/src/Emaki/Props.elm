@@ -26,7 +26,7 @@ import Css.Global exposing (children, everything, generalSiblings, selector, typ
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
 import DesignToken.Palette as Palette
-import Html.Styled as Html exposing (Attribute, Html, input, text)
+import Html.Styled as Html exposing (Attribute, Html, div, input, text)
 import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder, selected, type_, value)
 import Html.Styled.Events exposing (onClick, onInput)
 
@@ -157,7 +157,7 @@ render props =
                 [ text str ]
 
         Comment str ->
-            Html.div
+            div
                 [ css
                     [ palette Palette.textOptional
                     , empty [ display none ]
@@ -199,7 +199,7 @@ render props =
                 }
 
         Select ps ->
-            Html.div
+            div
                 [ css
                     [ display grid
                     , property "grid-template-columns" "1fr auto"
@@ -241,7 +241,7 @@ render props =
                 ]
 
         Radio ps ->
-            Html.div []
+            div []
                 (List.map
                     (\option ->
                         Html.label [ css [ display block ] ]
@@ -266,8 +266,8 @@ render props =
                 ]
 
         BoolAndString ({ data } as ps) ->
-            Html.div []
-                [ Html.div []
+            div []
+                [ div []
                     [ Html.label []
                         [ input
                             [ type_ "checkbox"
@@ -289,11 +289,11 @@ render props =
                 ]
 
         List childProps ->
-            Html.div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
+            div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
                 (List.map render childProps)
 
         Field label ps ->
-            Html.div
+            div
                 [ css
                     [ display grid
                     , gridTemplateColumns [ fr 1, fr 1 ]
@@ -319,7 +319,7 @@ toggleCheckbox :
     }
     -> Html msg
 toggleCheckbox props =
-    Html.styled Html.div
+    Html.styled div
         [ display grid
         , children [ everything [ gridColumn "1", gridRow "1" ] ]
         ]
@@ -431,7 +431,7 @@ toggleLabel =
 
 labeledButtons : List (Attribute msg) -> List (Html msg) -> Html msg
 labeledButtons attributes =
-    Html.div <|
+    div <|
         css
             [ cursor pointer
             , display grid
@@ -504,7 +504,7 @@ defaultPalettes =
 
 basicLabel : List (Attribute msg) -> List (Html msg) -> Html msg
 basicLabel =
-    Html.styled Html.div
+    Html.styled div
         [ display inlineBlock
         , fontSize (rem 0.85714286)
         , lineHeight (num 1)
