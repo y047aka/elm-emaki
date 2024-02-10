@@ -750,9 +750,6 @@ where_ selector_ styles =
 navigation : { a | url : Url, isDarkMode : Bool } -> List { b | heading : String, id : String } -> Html Msg
 navigation { url, isDarkMode } items =
     let
-        isSelected id =
-            url.fragment == Just id
-
         listItem { id, heading } =
             li [ css [ listStyle none ] ]
                 [ a
@@ -765,7 +762,7 @@ navigation { url, isDarkMode } items =
                         , palettesByState
                             (Palette.navItem
                                 { isDarkMode = isDarkMode
-                                , isSelected = isSelected id
+                                , isSelected = url.fragment == Just id
                                 }
                             )
                         ]
