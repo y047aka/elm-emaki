@@ -3,7 +3,7 @@ module Emaki.Props exposing
     , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
     , render
     , header, comment, string, bool, select, radio, counter, boolAndString
-    , list, fieldset
+    , list
     , field
     , customize
     )
@@ -14,7 +14,7 @@ module Emaki.Props exposing
 @docs StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
 @docs render
 @docs header, comment, string, bool, select, radio, counter, boolAndString
-@docs list, fieldset
+@docs list
 @docs field
 @docs customize
 
@@ -26,7 +26,7 @@ import Css.Global exposing (children, everything, generalSiblings, selector, typ
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
 import DesignToken.Palette as Palette
-import Html.Styled as Html exposing (Attribute, Html, div, input, legend, text)
+import Html.Styled as Html exposing (Attribute, Html, div, input, text)
 import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder, selected, type_, value)
 import Html.Styled.Events exposing (onClick, onInput)
 
@@ -41,7 +41,6 @@ type Props msg
     | Counter (CounterProps msg)
     | BoolAndString (BoolAndStringProps msg)
     | List (List (Props msg))
-    | FieldSet String (List (Props msg))
     | Field String (Props msg)
     | Customize (Html msg)
 
@@ -136,11 +135,6 @@ list =
     List
 
 
-fieldset : String -> List (Props msg) -> Props msg
-fieldset =
-    FieldSet
-
-
 field : String -> Props msg -> Props msg
 field label props =
     Field label props
@@ -159,7 +153,7 @@ render : Props msg -> Html msg
 render props =
     case props of
         Header str ->
-            Html.div [ css [ fontWeight bold, empty [ display none ] ] ]
+            Html.header [ css [ fontWeight bold, empty [ display none ] ] ]
                 [ text str ]
 
         Comment str ->
@@ -297,19 +291,6 @@ render props =
         List childProps ->
             div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
                 (List.map render childProps)
-
-        FieldSet label childProps ->
-            Html.div
-                [ css
-                    [ displayFlex
-                    , flexDirection column
-                    , rowGap (Css.em 1)
-                    , borderWidth zero
-                    ]
-                ]
-            <|
-                legend [ css [ padding zero, fontWeight bold, empty [ display none ] ] ] [ text label ]
-                    :: List.map render childProps
 
         Field label ps ->
             div

@@ -162,7 +162,7 @@ progressPlayground isDarkMode pm =
         { isDarkMode = isDarkMode
         , preview = Progress.progressWithProps pm
         , props =
-            [ Props.FieldSet ""
+            [ Props.list
                 [ Props.field "Bar"
                     (Props.counter
                         { value = pm.value
@@ -173,8 +173,9 @@ progressPlayground isDarkMode pm =
                     )
                 , Props.comment "A progress element can contain a bar visually indicating progress"
                 ]
-            , Props.FieldSet "Config"
-                [ Props.field "Indicating"
+            , Props.list
+                [ Props.header "Config"
+                , Props.field "Indicating"
                     (Props.bool
                         { id = "indicating"
                         , value = pm.indicating
@@ -251,8 +252,9 @@ progressPlayground isDarkMode pm =
                             ""
                     )
                 ]
-            , Props.FieldSet "Content"
-                [ Props.field "Unit"
+            , Props.list
+                [ Props.header "Content"
+                , Props.field "Unit"
                     (Props.string
                         { value = pm.unit
                         , onInput = (\string ps -> { ps | unit = string }) >> UpdateProgress
@@ -330,8 +332,9 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             >> UpdateTypography
                     }
                 )
-            , Props.FieldSet "Typography"
-                [ Props.field "font-family"
+            , Props.list
+                [ Props.header "Typography"
+                , Props.field "font-family"
                     (Props.select
                         { value = tm.typography.font.families |> String.concat
                         , options = [ Css.sansSerif.value, Css.serif.value ]
@@ -564,8 +567,9 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                         }
                     )
                 ]
-            , Props.FieldSet "TextBlock"
-                [ Props.field "word-break"
+            , Props.list
+                [ Props.header "TextBlock"
+                , Props.field "word-break"
                     (Props.select
                         { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
                         , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
