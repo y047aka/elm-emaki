@@ -6,6 +6,7 @@ import Css.Palette as Palette exposing (Palette, palette)
 
 type alias PalettesByState color =
     { default : Maybe (Palette color)
+    , selected : Maybe ( Bool, Palette color )
     , link : Maybe (Palette color)
     , visited : Maybe (Palette color)
     , hover : Maybe (Palette color)
@@ -16,8 +17,14 @@ type alias PalettesByState color =
 
 palettesByState : PalettesByState (ColorValue c) -> Style
 palettesByState ps =
+    [ case ps.selected of
+        Just ( True, selected ) ->
+            Just (palette selected)
+
+        _ ->
+            Maybe.map palette ps.default
+
     -- https://meyerweb.com/eric/css/link-specificity.html
-    [ Maybe.map palette ps.default
     , Maybe.map (\p -> Css.link [ palette p ]) ps.link
     , Maybe.map (\p -> Css.visited [ palette p ]) ps.visited
     , Maybe.map (\p -> Css.hover [ palette p ]) ps.hover
@@ -31,6 +38,7 @@ palettesByState ps =
 initPalettes : PalettesByState (ColorValue c)
 initPalettes =
     { default = Just Palette.init
+    , selected = Nothing
     , link = Just Palette.init
     , visited = Just Palette.init
     , hover = Just Palette.init
