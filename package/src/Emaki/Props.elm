@@ -26,7 +26,7 @@ import Css.Global exposing (children, everything, generalSiblings, selector, typ
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
 import DesignToken.Palette as Palette
-import Html.Styled as Html exposing (Attribute, Html, div, input, text)
+import Html.Styled as Html exposing (Attribute, Html, input, text)
 import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder, selected, type_, value)
 import Html.Styled.Events exposing (onClick, onInput)
 
@@ -266,8 +266,8 @@ render props =
                 ]
 
         BoolAndString ({ data } as ps) ->
-            div []
-                [ div []
+            Html.div []
+                [ Html.div []
                     [ Html.label []
                         [ input
                             [ type_ "checkbox"
@@ -289,11 +289,11 @@ render props =
                 ]
 
         List childProps ->
-            div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
+            Html.div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
                 (List.map render childProps)
 
         Field label ps ->
-            div
+            Html.div
                 [ css
                     [ display grid
                     , gridTemplateColumns [ fr 1, fr 1 ]
