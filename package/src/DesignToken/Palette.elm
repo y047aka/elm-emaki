@@ -1,7 +1,7 @@
 module DesignToken.Palette exposing
     ( light, dark
     , textOptional
-    , navigation, navItem, navItemSelected
+    , navigation, navItem
     , playground, propsPanel, propsField, formField
     )
 
@@ -10,7 +10,7 @@ module DesignToken.Palette exposing
 @docs light, dark
 @docs textOptional
 
-@docs navigation, navItem, navItemSelected
+@docs navigation, navItem
 @docs playground, propsPanel, propsField, formField
 
 -}
@@ -66,35 +66,37 @@ navigation isDarkMode =
         }
 
 
-navItem : Bool -> PalettesByState Hsl360
-navItem isDarkMode =
+navItem : { isDarkMode : Bool, isSelected : Bool } -> PalettesByState Hsl360
+navItem { isDarkMode, isSelected } =
     light_dark isDarkMode
         { light =
+            let
+                default =
+                    init |> setColor grey030
+            in
             { initPalettes
-                | default = Just (init |> setColor grey030)
+                | default =
+                    if isSelected then
+                        Just (default |> setBackground grey090)
+
+                    else
+                        Just default
                 , hover = Just (init |> setBackground grey085 |> setColor grey030)
             }
         , dark =
+            let
+                default =
+                    init |> setColor white
+            in
             { initPalettes
-                | default = Just (init |> setColor grey095)
+                | default =
+                    if isSelected then
+                        Just (default |> setBackground grey020)
+
+                    else
+                        Just default
                 , hover = Just (init |> setBackground grey030 |> setColor white)
             }
-        }
-
-
-navItemSelected : Bool -> Palette Hsl360
-navItemSelected isDarkMode =
-    light_dark isDarkMode
-        { light =
-            (navItem isDarkMode).default
-                |> Maybe.withDefault init
-                |> setBackground grey090
-                |> setColor grey030
-        , dark =
-            (navItem isDarkMode).default
-                |> Maybe.withDefault init
-                |> setBackground grey020
-                |> setColor white
         }
 
 

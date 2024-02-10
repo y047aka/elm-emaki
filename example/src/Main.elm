@@ -762,9 +762,12 @@ navigation { url, isDarkMode } items =
                         , padding2 (Css.em 0.5) (Css.em 1)
                         , borderRadius (Css.em 0.5)
                         , textDecoration none
-                        , palettesByState (Palette.navItem isDarkMode)
-                        , batchIf (isSelected id)
-                            [ palette (Palette.navItemSelected isDarkMode) ]
+                        , palettesByState
+                            (Palette.navItem
+                                { isDarkMode = isDarkMode
+                                , isSelected = isSelected id
+                                }
+                            )
                         ]
                     ]
                     [ text heading ]
