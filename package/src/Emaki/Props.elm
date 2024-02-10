@@ -21,7 +21,7 @@ module Emaki.Props exposing
 -}
 
 import Css exposing (..)
-import Css.Extra exposing (fr, grid, gridColumn, gridRow, gridTemplateColumns, rowGap)
+import Css.Extra exposing (columnGap, fr, grid, gridColumn, gridRow, gridTemplateColumns, rowGap)
 import Css.Global exposing (children, everything, generalSiblings, selector, typeSelector)
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
@@ -314,6 +314,7 @@ render props =
                     [ display grid
                     , gridTemplateColumns [ fr 1, fr 1 ]
                     , alignItems center
+                    , columnGap (em 0.25)
                     ]
                 ]
                 [ Html.label [] [ text label ]
