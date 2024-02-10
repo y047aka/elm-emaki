@@ -75,7 +75,7 @@ navItem { isDarkMode, isSelected } =
                     init |> setColor grey030
             in
             { initPalettes
-                | default = Just default
+                | default = default
                 , selected = Just ( isSelected, default |> setBackground grey090 )
                 , hover = Just (default |> setBackground grey085)
             }
@@ -85,7 +85,7 @@ navItem { isDarkMode, isSelected } =
                     init |> setColor white
             in
             { initPalettes
-                | default = Just default
+                | default = default
                 , selected = Just ( isSelected, default |> setBackground grey020 )
                 , hover = Just (default |> setBackground grey030)
             }

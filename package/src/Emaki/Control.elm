@@ -498,7 +498,7 @@ defaultPalettes =
             }
     in
     { initPalettes
-        | default = Just default
+        | default = default
         , hover = Just (default |> setBackground (hex "#CACBCD") |> setColor (rgba 0 0 0 0.8))
         , focus = Just (default |> setBackground (hex "#CACBCD") |> setColor (rgba 0 0 0 0.8))
         , active = Just (default |> setBackground (hex "#BABBBC") |> setColor (rgba 0 0 0 0.9))
