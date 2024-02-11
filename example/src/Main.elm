@@ -160,7 +160,7 @@ progressPlayground : Bool -> Progress.Model -> Html Msg
 progressPlayground isDarkMode pm =
     playground
         { isDarkMode = isDarkMode
-        , preview = Progress.progressWithControl pm
+        , preview = Progress.progressWithProps pm
         , props =
             [ Control.list
                 [ Control.field "Bar"
