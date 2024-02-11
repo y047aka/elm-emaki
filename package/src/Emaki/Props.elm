@@ -1,9 +1,9 @@
 module Emaki.Props exposing
-    ( Props(..)
+    ( Props
     , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
     , render
-    , comment, string, bool, select, radio, counter, boolAndString
-    , list, fieldset
+    , comment, header, string, bool, select, radio, counter, boolAndString
+    , list
     , field
     , customize
     )
@@ -13,26 +13,27 @@ module Emaki.Props exposing
 @docs Props
 @docs StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
 @docs render
-@docs comment, string, bool, select, radio, counter, boolAndString
-@docs list, fieldset
+@docs comment, header, string, bool, select, radio, counter, boolAndString
+@docs list
 @docs field
 @docs customize
 
 -}
 
 import Css exposing (..)
-import Css.Extra exposing (fr, grid, gridColumn, gridRow, gridTemplateColumns, rowGap)
+import Css.Extra exposing (columnGap, fr, grid, gridColumn, gridRow, gridTemplateColumns, rowGap)
 import Css.Global exposing (children, everything, generalSiblings, selector, typeSelector)
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
 import DesignToken.Palette as Palette
-import Html.Styled as Html exposing (Attribute, Html, div, input, legend, text)
+import Html.Styled as Html exposing (Attribute, Html, div, input, text)
 import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder, selected, type_, value)
 import Html.Styled.Events exposing (onClick, onInput)
 
 
 type Props msg
     = Comment String
+    | Header String
     | String (StringProps msg)
     | Bool (BoolProps msg)
     | Select (SelectProps msg)
@@ -40,7 +41,6 @@ type Props msg
     | Counter (CounterProps msg)
     | BoolAndString (BoolAndStringProps msg)
     | List (List (Props msg))
-    | FieldSet String (List (Props msg))
     | Field String (Props msg)
     | Customize (Html msg)
 
@@ -95,6 +95,11 @@ comment =
     Comment
 
 
+header : String -> Props msg
+header =
+    Header
+
+
 string : StringProps msg -> Props msg
 string =
     String
@@ -130,11 +135,6 @@ list =
     List
 
 
-fieldset : String -> List (Props msg) -> Props msg
-fieldset =
-    FieldSet
-
-
 field : String -> Props msg -> Props msg
 field label props =
     Field label props
@@ -153,12 +153,18 @@ render : Props msg -> Html msg
 render props =
     case props of
         Comment str ->
-            Html.div
+            div
                 [ css
                     [ palette Palette.textOptional
                     , empty [ display none ]
                     ]
                 ]
+                [ text str ]
+
+        -- TODO: 消す
+        -- https://github.com/y047aka/elm-emaki/pull/29#issue-2128470533
+        Header str ->
+            Html.header [ css [ displayFlex, justifyContent spaceBetween, alignItems center, fontWeight bold ] ]
                 [ text str ]
 
         String ps ->
@@ -195,7 +201,7 @@ render props =
                 }
 
         Select ps ->
-            Html.div
+            div
                 [ css
                     [ display grid
                     , property "grid-template-columns" "1fr auto"
@@ -237,7 +243,7 @@ render props =
                 ]
 
         Radio ps ->
-            Html.div []
+            div []
                 (List.map
                     (\option ->
                         Html.label [ css [ display block ] ]
@@ -288,25 +294,13 @@ render props =
             div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
                 (List.map render childProps)
 
-        FieldSet label childProps ->
-            Html.div
-                [ css
-                    [ displayFlex
-                    , flexDirection column
-                    , rowGap (Css.em 1)
-                    , borderWidth zero
-                    ]
-                ]
-            <|
-                legend [ css [ padding zero, fontWeight bold, empty [ display none ] ] ] [ text label ]
-                    :: List.map render childProps
-
         Field label ps ->
             div
                 [ css
                     [ display grid
                     , gridTemplateColumns [ fr 1, fr 1 ]
                     , alignItems center
+                    , columnGap (em 0.25)
                     ]
                 ]
                 [ Html.label [] [ text label ]
@@ -328,7 +322,7 @@ toggleCheckbox :
     }
     -> Html msg
 toggleCheckbox props =
-    Html.styled Html.div
+    Html.styled div
         [ display grid
         , children [ everything [ gridColumn "1", gridRow "1" ] ]
         ]
@@ -440,7 +434,7 @@ toggleLabel =
 
 labeledButtons : List (Attribute msg) -> List (Html msg) -> Html msg
 labeledButtons attributes =
-    Html.div <|
+    div <|
         css
             [ cursor pointer
             , display grid
@@ -513,7 +507,7 @@ defaultPalettes =
 
 basicLabel : List (Attribute msg) -> List (Html msg) -> Html msg
 basicLabel =
-    Html.styled Html.div
+    Html.styled div
         [ display inlineBlock
         , fontSize (rem 0.85714286)
         , lineHeight (num 1)
