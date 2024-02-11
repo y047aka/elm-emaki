@@ -3,7 +3,7 @@ module Emaki.Control exposing
     , StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
     , render
     , comment, header, string, bool, select, radio, counter, boolAndString
-    , list
+
     , field
     , customize
     )
@@ -14,14 +14,13 @@ module Emaki.Control exposing
 @docs StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
 @docs render
 @docs comment, header, string, bool, select, radio, counter, boolAndString
-@docs list
 @docs field
 @docs customize
 
 -}
 
 import Css exposing (..)
-import Css.Extra exposing (columnGap, fr, grid, gridColumn, gridRow, gridTemplateColumns, rowGap)
+import Css.Extra exposing (columnGap, fr, grid, gridColumn, gridRow, gridTemplateColumns)
 import Css.Global exposing (children, everything, generalSiblings, selector, typeSelector)
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
@@ -40,7 +39,6 @@ type Control msg
     | Radio (RadioControl msg)
     | Counter (CounterControl msg)
     | BoolAndString (BoolAndStringControl msg)
-    | List (List (Control msg))
     | Field String (Control msg)
     | Customize (Html msg)
 
@@ -130,9 +128,6 @@ boolAndString =
     BoolAndString
 
 
-list : List (Control msg) -> Control msg
-list =
-    List
 
 
 field : String -> Control msg -> Control msg
@@ -290,9 +285,6 @@ render props =
                     []
                 ]
 
-        List childControl ->
-            div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
-                (List.map render childControl)
 
         Field label ps ->
             div
