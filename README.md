@@ -27,11 +27,10 @@ emaki = [
 $ npx elm-emaki
 ```
 
-## 将来的なemakiの例
+## 将来的な emaki の例
 
-動作を見たいview関数の実装`someView : Args -> Html msg`があった時、emakiファイルをこんな
+動作を見たい view 関数の実装`someView : Args -> Html msg`があった時、emaki ファイルをこんな
 感じに書くと動作確認できる画面ができる予定。
-
 
 ```elm
 import Emaki
