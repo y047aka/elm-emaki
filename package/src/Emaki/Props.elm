@@ -161,6 +161,8 @@ render props =
                 ]
                 [ text str ]
 
+        -- TODO: 消す
+        -- https://github.com/y047aka/elm-emaki/pull/29#issue-2128470533
         Header str resetMsg ->
             Html.header [ css [ displayFlex, justifyContent spaceBetween, alignItems center, fontWeight bold ] ]
                 [ div [ css [] ] [ text str ]
