@@ -56,7 +56,7 @@ main =
                     , label = "user name"
                     , onChange = \newValue viewProps -> { viewProps | userName = newValue }
                     }
-                , Emaki.toggle
+                , Control.toggle
                     { init = False
                     , label = "active?"
                     , onChange = \newValue viewProps -> { viewProps | active = newValue }
