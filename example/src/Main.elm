@@ -644,6 +644,31 @@ playground :
     }
     -> Html msg
 playground { isDarkMode, preview, controlSections } =
+    let
+        controlSection { heading, controls } =
+            div
+                [ css
+                    [ padding (Css.em 0.75)
+                    , displayFlex
+                    , flexDirection column
+                    , rowGap (Css.em 1)
+                    , borderRadius (Css.em 0.5)
+                    , palette (Palette.controlSection isDarkMode)
+                    ]
+                ]
+                (header
+                    [ css
+                        [ displayFlex
+                        , justifyContent spaceBetween
+                        , alignItems center
+                        , fontWeight bold
+                        , empty [ display none ]
+                        ]
+                    ]
+                    [ text heading ]
+                    :: List.map Control.render controls
+                )
+    in
     section
         [ css
             [ padding4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 1.5)
@@ -671,33 +696,7 @@ playground { isDarkMode, preview, controlSections } =
                 , palette (Palette.controlPanel isDarkMode)
                 ]
             ]
-            (List.map
-                (\{ heading, controls } ->
-                    div
-                        [ css
-                            [ padding (Css.em 0.75)
-                            , displayFlex
-                            , flexDirection column
-                            , rowGap (Css.em 1)
-                            , borderRadius (Css.em 0.5)
-                            , palette (Palette.controlSection isDarkMode)
-                            ]
-                        ]
-                        (header
-                            [ css
-                                [ displayFlex
-                                , justifyContent spaceBetween
-                                , alignItems center
-                                , fontWeight bold
-                                , empty [ display none ]
-                                ]
-                            ]
-                            [ text heading ]
-                            :: List.map Control.render controls
-                        )
-                )
-                controlSections
-            )
+            (List.map controlSection controlSections)
         ]
 
 
