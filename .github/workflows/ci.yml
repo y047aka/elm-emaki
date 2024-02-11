@@ -1,4 +1,4 @@
-name: lint
+name: ci
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ defaults:
     shell: nu {0}
 
 jobs:
-  format:
+  ci:
     runs-on: ubuntu-latest
     steps:
       - uses: hustcer/setup-nu@v3.9
