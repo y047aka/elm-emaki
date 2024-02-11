@@ -58,7 +58,7 @@ main =
                 , Emaki.toggle
                     { init = False
                     , label = "active?"
-                    , onChange = \newValue viewProp -> { viewProp | active = newValue }
+                    , onChange = \newValue viewProps -> { viewProps | active = newValue }
                     }
                 ]
             }
