@@ -1,6 +1,6 @@
-module Emaki.Props exposing
-    ( Props
-    , StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
+module Emaki.Control exposing
+    ( Control
+    , StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
     , render
     , comment, header, string, bool, select, radio, counter, boolAndString
     , list
@@ -10,8 +10,8 @@ module Emaki.Props exposing
 
 {-|
 
-@docs Props
-@docs StringProps, BoolProps, SelectProps, RadioProps, CounterProps, BoolAndStringProps
+@docs Control
+@docs StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
 @docs render
 @docs comment, header, string, bool, select, radio, counter, boolAndString
 @docs list
@@ -31,49 +31,49 @@ import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder,
 import Html.Styled.Events exposing (onClick, onInput)
 
 
-type Props msg
+type Control msg
     = Comment String
     | Header String
-    | String (StringProps msg)
-    | Bool (BoolProps msg)
-    | Select (SelectProps msg)
-    | Radio (RadioProps msg)
-    | Counter (CounterProps msg)
-    | BoolAndString (BoolAndStringProps msg)
-    | List (List (Props msg))
-    | Field String (Props msg)
+    | String (StringControl msg)
+    | Bool (BoolControl msg)
+    | Select (SelectControl msg)
+    | Radio (RadioControl msg)
+    | Counter (CounterControl msg)
+    | BoolAndString (BoolAndStringControl msg)
+    | List (List (Control msg))
+    | Field String (Control msg)
     | Customize (Html msg)
 
 
-type alias StringProps msg =
+type alias StringControl msg =
     { value : String
     , onInput : String -> msg
     , placeholder : String
     }
 
 
-type alias BoolProps msg =
+type alias BoolControl msg =
     { id : String
     , value : Bool
     , onClick : msg
     }
 
 
-type alias SelectProps msg =
+type alias SelectControl msg =
     { value : String
     , options : List String
     , onChange : String -> msg
     }
 
 
-type alias RadioProps msg =
+type alias RadioControl msg =
     { value : String
     , options : List String
     , onChange : String -> msg
     }
 
 
-type alias CounterProps msg =
+type alias CounterControl msg =
     { value : Float
     , toString : Float -> String
     , onClickPlus : msg
@@ -81,7 +81,7 @@ type alias CounterProps msg =
     }
 
 
-type alias BoolAndStringProps msg =
+type alias BoolAndStringControl msg =
     { label : String
     , id : String
     , data : { visible : Bool, value : String }
@@ -90,57 +90,57 @@ type alias BoolAndStringProps msg =
     }
 
 
-comment : String -> Props msg
+comment : String -> Control msg
 comment =
     Comment
 
 
-header : String -> Props msg
+header : String -> Control msg
 header =
     Header
 
 
-string : StringProps msg -> Props msg
+string : StringControl msg -> Control msg
 string =
     String
 
 
-bool : BoolProps msg -> Props msg
+bool : BoolControl msg -> Control msg
 bool =
     Bool
 
 
-select : SelectProps msg -> Props msg
+select : SelectControl msg -> Control msg
 select =
     Select
 
 
-radio : RadioProps msg -> Props msg
+radio : RadioControl msg -> Control msg
 radio =
     Radio
 
 
-counter : CounterProps msg -> Props msg
+counter : CounterControl msg -> Control msg
 counter =
     Counter
 
 
-boolAndString : BoolAndStringProps msg -> Props msg
+boolAndString : BoolAndStringControl msg -> Control msg
 boolAndString =
     BoolAndString
 
 
-list : List (Props msg) -> Props msg
+list : List (Control msg) -> Control msg
 list =
     List
 
 
-field : String -> Props msg -> Props msg
+field : String -> Control msg -> Control msg
 field label props =
     Field label props
 
 
-customize : Html msg -> Props msg
+customize : Html msg -> Control msg
 customize =
     Customize
 
@@ -149,7 +149,7 @@ customize =
 -- VIEW
 
 
-render : Props msg -> Html msg
+render : Control msg -> Html msg
 render props =
     case props of
         Comment str ->
@@ -290,9 +290,9 @@ render props =
                     []
                 ]
 
-        List childProps ->
+        List childControl ->
             div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
-                (List.map render childProps)
+                (List.map render childControl)
 
         Field label ps ->
             div
