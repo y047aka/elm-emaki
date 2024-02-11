@@ -10,7 +10,7 @@ import Css.Palette.Extra exposing (paletteByState)
 import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), Typography, WebkitFontSmoothing(..), WordBreak(..), typography)
 import DesignToken.Color exposing (grey095)
 import DesignToken.Palette as Palette
-import Emaki.Props as Props exposing (Props)
+import Emaki.Control as Control exposing (Control)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes as Attributes exposing (css, href, id, type_)
 import Html.Styled.Events exposing (onClick)
@@ -160,23 +160,23 @@ progressPlayground : Bool -> Progress.Model -> Html Msg
 progressPlayground isDarkMode pm =
     playground
         { isDarkMode = isDarkMode
-        , preview = Progress.progressWithProps pm
+        , preview = Progress.progressWithControl pm
         , props =
-            [ Props.list
-                [ Props.field "Bar"
-                    (Props.counter
+            [ Control.list
+                [ Control.field "Bar"
+                    (Control.counter
                         { value = pm.value
                         , toString = \value -> String.fromFloat value ++ "%"
                         , onClickPlus = ProgressMsg Progress.CounterPlus
                         , onClickMinus = ProgressMsg Progress.CounterMinus
                         }
                     )
-                , Props.comment "A progress element can contain a bar visually indicating progress"
+                , Control.comment "A progress element can contain a bar visually indicating progress"
                 ]
-            , Props.list
-                [ Props.header "Config"
-                , Props.field "Indicating"
-                    (Props.bool
+            , Control.list
+                [ Control.header "Config"
+                , Control.field "Indicating"
+                    (Control.bool
                         { id = "indicating"
                         , value = pm.indicating
                         , onClick =
@@ -199,9 +199,9 @@ progressPlayground isDarkMode pm =
                                 |> UpdateProgress
                         }
                     )
-                , Props.comment "An indicating progress bar visually indicates the current level of progress of a task"
-                , Props.field "States"
-                    (Props.select
+                , Control.comment "An indicating progress bar visually indicates the current level of progress of a task"
+                , Control.field "States"
+                    (Control.select
                         { value = Progress.stateToString pm.state
                         , options = List.map Progress.stateToString [ Default, Active, Success, Warning, Error, Disabled ]
                         , onChange =
@@ -231,7 +231,7 @@ progressPlayground isDarkMode pm =
                                 >> UpdateProgress
                         }
                     )
-                , Props.comment
+                , Control.comment
                     (case pm.state of
                         Active ->
                             "A progress bar can show activity"
@@ -252,24 +252,24 @@ progressPlayground isDarkMode pm =
                             ""
                     )
                 ]
-            , Props.list
-                [ Props.header "Content"
-                , Props.field "Unit"
-                    (Props.string
+            , Control.list
+                [ Control.header "Content"
+                , Control.field "Unit"
+                    (Control.string
                         { value = pm.unit
                         , onInput = (\string ps -> { ps | unit = string }) >> UpdateProgress
                         , placeholder = ""
                         }
                     )
-                , Props.comment "A progress bar can contain a text value indicating current progress"
-                , Props.field "Caption"
-                    (Props.string
+                , Control.comment "A progress bar can contain a text value indicating current progress"
+                , Control.field "Caption"
+                    (Control.string
                         { value = pm.caption
                         , onInput = (\string ps -> { ps | caption = string }) >> UpdateProgress
                         , placeholder = ""
                         }
                     )
-                , Props.comment "A progress element can contain a label"
+                , Control.comment "A progress element can contain a label"
                 ]
             ]
         }
@@ -304,8 +304,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 , p [] [ text "よって、われらの各自の政府は、サンフランシスコ市に会合し、全権委任状を示してそれが良好妥当であると認められた代表者を通じて、この国際連合憲章に同意したので、ここに国際連合という国際機構を設ける。" ]
                 ]
         , props =
-            [ Props.field "-webkit-font-smoothing"
-                (Props.select
+            [ Control.field "-webkit-font-smoothing"
+                (Control.select
                     { value = tm.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
                     , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
                     , onChange =
@@ -332,10 +332,10 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             >> UpdateTypography
                     }
                 )
-            , Props.list
-                [ Props.header "Typography"
-                , Props.field "font-family"
-                    (Props.select
+            , Control.list
+                [ Control.header "Typography"
+                , Control.field "font-family"
+                    (Control.select
                         { value = tm.typography.font.families |> String.concat
                         , options = [ Css.sansSerif.value, Css.serif.value ]
                         , onChange =
@@ -356,8 +356,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 >> UpdateTypography
                         }
                     )
-                , Props.field "font-size"
-                    (Props.counter
+                , Control.field "font-size"
+                    (Control.counter
                         { value = tm.fontSize
                         , toString = \value -> String.fromFloat value ++ "px"
                         , onClickPlus =
@@ -378,8 +378,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                         }
                     )
-                , Props.field "font-style"
-                    (Props.radio
+                , Control.field "font-style"
+                    (Control.radio
                         { value = tm.typography.font.style |> Maybe.map .value |> Maybe.withDefault "-"
                         , options = [ Css.normal.value, Css.italic.value ]
                         , onChange =
@@ -400,8 +400,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 >> UpdateTypography
                         }
                     )
-                , Props.field "font-weight"
-                    (Props.select
+                , Control.field "font-weight"
+                    (Control.select
                         { value = tm.typography.font.weight |> Maybe.map .value |> Maybe.withDefault "-"
                         , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
                         , onChange =
@@ -428,8 +428,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 >> UpdateTypography
                         }
                     )
-                , Props.field "text-align"
-                    (Props.radio
+                , Control.field "text-align"
+                    (Control.radio
                         { value = tm.textAlign |> Typography.textAlignToString
                         , options = [ "left", "center", "right", "justify" ]
                         , onChange =
@@ -472,8 +472,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 >> UpdateTypography
                         }
                     )
-                , Props.field "line-height"
-                    (Props.counter
+                , Control.field "line-height"
+                    (Control.counter
                         { value = tm.lineHeight
                         , toString = \value -> String.fromFloat value
                         , onClickPlus =
@@ -494,8 +494,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                         }
                     )
-                , Props.field "text-decoration"
-                    (Props.radio
+                , Control.field "text-decoration"
+                    (Control.radio
                         { value = tm.typography.textSetting.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
                         , options = [ Css.none.value, Css.underline.value ]
                         , onChange =
@@ -516,8 +516,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 >> UpdateTypography
                         }
                     )
-                , Props.field "letter-spacing"
-                    (Props.counter
+                , Control.field "letter-spacing"
+                    (Control.counter
                         { value = tm.letterSpacing
                         , toString = \value -> String.fromFloat value ++ "em"
                         , onClickPlus =
@@ -538,8 +538,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 )
                         }
                     )
-                , Props.field "text-transform"
-                    (Props.select
+                , Control.field "text-transform"
+                    (Control.select
                         { value = tm.typography.textSetting.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
                         , options = [ Css.none.value, Css.uppercase.value, Css.lowercase.value, Css.capitalize.value ]
                         , onChange =
@@ -567,10 +567,10 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                         }
                     )
                 ]
-            , Props.list
-                [ Props.header "TextBlock"
-                , Props.field "word-break"
-                    (Props.select
+            , Control.list
+                [ Control.header "TextBlock"
+                , Control.field "word-break"
+                    (Control.select
                         { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
                         , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
                         , onChange =
@@ -597,8 +597,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                 >> UpdateTypography
                         }
                     )
-                , Props.field "overflow-wrap"
-                    (Props.select
+                , Control.field "overflow-wrap"
+                    (Control.select
                         { value = tm.typography.textBlock.overflowWrap |> Maybe.map Typography.overflowWrapToString |> Maybe.withDefault "-"
                         , options = [ "normal", "break-word", "anywhere" ]
                         , onChange =
@@ -630,7 +630,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
 playground :
     { isDarkMode : Bool
     , preview : Html msg
-    , props : List (Props msg)
+    , props : List (Control msg)
     }
     -> Html msg
 playground { isDarkMode, preview, props } =
@@ -668,7 +668,7 @@ playground { isDarkMode, preview, props } =
                     ]
                 ]
             ]
-            (List.map Props.render props)
+            (List.map Control.render props)
         ]
 
 
