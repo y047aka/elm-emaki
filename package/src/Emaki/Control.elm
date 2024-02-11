@@ -2,8 +2,7 @@ module Emaki.Control exposing
     ( Control
     , StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
     , render
-    , comment, header, string, bool, select, radio, counter, boolAndString
-
+    , comment, string, bool, select, radio, counter, boolAndString
     , field
     , customize
     )
@@ -13,7 +12,7 @@ module Emaki.Control exposing
 @docs Control
 @docs StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
 @docs render
-@docs comment, header, string, bool, select, radio, counter, boolAndString
+@docs comment, string, bool, select, radio, counter, boolAndString
 @docs field
 @docs customize
 
@@ -32,7 +31,6 @@ import Html.Styled.Events exposing (onClick, onInput)
 
 type Control msg
     = Comment String
-    | Header String
     | String (StringControl msg)
     | Bool (BoolControl msg)
     | Select (SelectControl msg)
@@ -93,11 +91,6 @@ comment =
     Comment
 
 
-header : String -> Control msg
-header =
-    Header
-
-
 string : StringControl msg -> Control msg
 string =
     String
@@ -128,8 +121,6 @@ boolAndString =
     BoolAndString
 
 
-
-
 field : String -> Control msg -> Control msg
 field label props =
     Field label props
@@ -154,12 +145,6 @@ render props =
                     , empty [ display none ]
                     ]
                 ]
-                [ text str ]
-
-        -- TODO: 消す
-        -- https://github.com/y047aka/elm-emaki/pull/29#issue-2128470533
-        Header str ->
-            Html.header [ css [ displayFlex, justifyContent spaceBetween, alignItems center, fontWeight bold ] ]
                 [ text str ]
 
         String ps ->
@@ -284,7 +269,6 @@ render props =
                     ]
                     []
                 ]
-
 
         Field label ps ->
             div

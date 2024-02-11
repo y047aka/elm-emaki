@@ -162,7 +162,8 @@ progressPlayground isDarkMode pm =
         { isDarkMode = isDarkMode
         , preview = Progress.progressWithProps pm
         , controlSections =
-            [ { controls =
+            [ { heading = ""
+              , controls =
                     [ Control.field "Bar"
                         (Control.counter
                             { value = pm.value
@@ -174,9 +175,9 @@ progressPlayground isDarkMode pm =
                     , Control.comment "A progress element can contain a bar visually indicating progress"
                     ]
               }
-            , { controls =
-                    [ Control.header "Config"
-                    , Control.field "Indicating"
+            , { heading = "Config"
+              , controls =
+                    [ Control.field "Indicating"
                         (Control.bool
                             { id = "indicating"
                             , value = pm.indicating
@@ -254,9 +255,9 @@ progressPlayground isDarkMode pm =
                         )
                     ]
               }
-            , { controls =
-                    [ Control.header "Content"
-                    , Control.field "Unit"
+            , { heading = "Content"
+              , controls =
+                    [ Control.field "Unit"
                         (Control.string
                             { value = pm.unit
                             , onInput = (\string ps -> { ps | unit = string }) >> UpdateProgress
@@ -307,7 +308,8 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 , p [] [ text "よって、われらの各自の政府は、サンフランシスコ市に会合し、全権委任状を示してそれが良好妥当であると認められた代表者を通じて、この国際連合憲章に同意したので、ここに国際連合という国際機構を設ける。" ]
                 ]
         , controlSections =
-            [ { controls =
+            [ { heading = ""
+              , controls =
                     [ Control.field "-webkit-font-smoothing"
                         (Control.select
                             { value = tm.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
@@ -338,9 +340,9 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                         )
                     ]
               }
-            , { controls =
-                    [ Control.header "Typography"
-                    , Control.field "font-family"
+            , { heading = "Typography"
+              , controls =
+                    [ Control.field "font-family"
                         (Control.select
                             { value = tm.typography.font.families |> String.concat
                             , options = [ Css.sansSerif.value, Css.serif.value ]
@@ -574,9 +576,9 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                         )
                     ]
               }
-            , { controls =
-                    [ Control.header "TextBlock"
-                    , Control.field "word-break"
+            , { heading = "TextBlock"
+              , controls =
+                    [ Control.field "word-break"
                         (Control.select
                             { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
                             , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
@@ -638,7 +640,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
 playground :
     { isDarkMode : Bool
     , preview : Html msg
-    , controlSections : List { controls : List (Control msg) }
+    , controlSections : List { heading : String, controls : List (Control msg) }
     }
     -> Html msg
 playground { isDarkMode, preview, controlSections } =
@@ -670,9 +672,8 @@ playground { isDarkMode, preview, controlSections } =
                 ]
             ]
             (List.map
-                (.controls
-                    >> List.map Control.render
-                    >> div
+                (\{ heading, controls } ->
+                    div
                         [ css
                             [ padding (Css.em 0.75)
                             , displayFlex
@@ -682,6 +683,18 @@ playground { isDarkMode, preview, controlSections } =
                             , palette (Palette.controlSection isDarkMode)
                             ]
                         ]
+                        (header
+                            [ css
+                                [ displayFlex
+                                , justifyContent spaceBetween
+                                , alignItems center
+                                , fontWeight bold
+                                , empty [ display none ]
+                                ]
+                            ]
+                            [ text heading ]
+                            :: List.map Control.render controls
+                        )
                 )
                 controlSections
             )
