@@ -666,7 +666,7 @@ playground { isDarkMode, preview, controlSections } =
                 , flexDirection column
                 , rowGap (Css.em 0.5)
                 , borderRadius (Css.em 1)
-                , palette (Palette.propsPanel isDarkMode)
+                , palette (Palette.controlPanel isDarkMode)
                 ]
             ]
             (List.map
@@ -679,7 +679,7 @@ playground { isDarkMode, preview, controlSections } =
                             , flexDirection column
                             , rowGap (Css.em 1)
                             , borderRadius (Css.em 0.5)
-                            , palette (Palette.propsField isDarkMode)
+                            , palette (Palette.controlSection isDarkMode)
                             ]
                         ]
                 )
