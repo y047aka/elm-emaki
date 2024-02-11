@@ -26,14 +26,14 @@ import Css.Global exposing (children, everything, generalSiblings, selector, typ
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
 import DesignToken.Palette as Palette
-import Html.Styled as Html exposing (Attribute, Html, button, div, input, text)
+import Html.Styled as Html exposing (Attribute, Html, div, input, text)
 import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder, selected, type_, value)
 import Html.Styled.Events exposing (onClick, onInput)
 
 
 type Props msg
     = Comment String
-    | Header String msg
+    | Header String
     | String (StringProps msg)
     | Bool (BoolProps msg)
     | Select (SelectProps msg)
@@ -95,7 +95,7 @@ comment =
     Comment
 
 
-header : String -> msg -> Props msg
+header : String -> Props msg
 header =
     Header
 
@@ -163,25 +163,9 @@ render props =
 
         -- TODO: 消す
         -- https://github.com/y047aka/elm-emaki/pull/29#issue-2128470533
-        Header str resetMsg ->
+        Header str ->
             Html.header [ css [ displayFlex, justifyContent spaceBetween, alignItems center, fontWeight bold ] ]
-                [ div [ css [] ] [ text str ]
-                , button
-                    [ onClick resetMsg
-                    , css
-                        [ cursor pointer
-                        , padding2 (em 0.25) (em 0.5)
-                        , fontSize (px 12)
-                        , borderRadius (em 0.25)
-                        , paletteWithBorder (border3 (px 1) solid)
-                            { background = Just (hsla 0 0 0 0)
-                            , color = Just (hsl 210 0 0.5)
-                            , border = Just (hsl 210 0 0.5)
-                            }
-                        ]
-                    ]
-                    [ text "Reset" ]
-                ]
+                [ text str ]
 
         String ps ->
             input
