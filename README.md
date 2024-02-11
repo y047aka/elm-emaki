@@ -26,3 +26,42 @@ emaki = [
 ```shell
 $ npx elm-emaki
 ```
+
+## 将来的な emaki の例
+
+動作を見たい view 関数の実装`someView : Args -> Html msg`があった時、emaki ファイルをこんな
+感じに書くと動作確認できる画面ができる予定。
+
+```elm
+import Emaki
+import Emaki.Control as Control
+
+
+-- elm-emakiで表示したいviewをimport
+import YourProject.UserProfileCard (view)
+
+
+-- viewはこんな感じのものを想定
+-- view : { userName : String, active : Bool } -> Html msg
+
+
+main : Emaki.Emaki
+main =
+    Emaki.chapters
+        [ Emaki.chapter
+            { view = view
+            , controls =
+                [ Control.text
+                    { init = ""
+                    , label = "user name"
+                    , onChange = \newValue viewProps -> { viewProps | userName = newValue }
+                    }
+                , Control.toggle
+                    { init = False
+                    , label = "active?"
+                    , onChange = \newValue viewProps -> { viewProps | active = newValue }
+                    }
+                ]
+            }
+        ]
+```
