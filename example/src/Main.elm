@@ -667,19 +667,21 @@ playground { isDarkMode, preview, controlSections } =
                 , rowGap (Css.em 0.5)
                 , borderRadius (Css.em 1)
                 , palette (Palette.propsPanel isDarkMode)
-                , children
-                    [ everything
-                        [ padding (Css.em 0.75)
-                        , borderRadius (Css.em 0.5)
-                        , palette (Palette.propsField isDarkMode)
-                        ]
-                    ]
                 ]
             ]
             (List.map
                 (.controls
                     >> List.map Control.render
-                    >> div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
+                    >> div
+                        [ css
+                            [ padding (Css.em 0.75)
+                            , displayFlex
+                            , flexDirection column
+                            , rowGap (Css.em 1)
+                            , borderRadius (Css.em 0.5)
+                            , palette (Palette.propsField isDarkMode)
+                            ]
+                        ]
                 )
                 controlSections
             )
