@@ -42,7 +42,7 @@ import YourProject.UserProfileCard (view)
 
 
 -- viewはこんな感じのものを想定
--- view : { userName : String, active : Boolean } -> Html msg
+-- view : { userName : String, active : Bool } -> Html msg
 
 
 main : Emaki.Emaki
