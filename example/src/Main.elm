@@ -161,7 +161,7 @@ progressPlayground isDarkMode pm =
     playground
         { isDarkMode = isDarkMode
         , preview = Progress.progressWithProps pm
-        , props =
+        , propsSections =
             [ Control.list
                 [ Control.field "Bar"
                     (Control.counter
@@ -303,7 +303,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 , p [] [ text "われら連合国の人民は、われらの一生のうち二度まで言語に絶する悲哀を人類に与えた戦争の惨害から将来の世代を救い、基本的人権と人間の尊厳及び価値と男女及び大小各国の同権とに関する信念を改めて確認し、正義と条約その他の国際法の源泉から生ずる義務の尊重とを維持することができる条件を確立し、一層大きな自由の中で社会的進歩と生活水準の向上とを促進すること、並びに、このために、寛容を実行し、且つ、善良な隣人として互に平和に生活し、国際の平和および安全を維持するためにわれらの力を合わせ、共同の利益の場合を除く外は武力を用いないことを原則の受諾と方法の設定によって確保し、すべての人民の経済的及び社会的発達を促進するために国際機構を用いることを決意して、これらの目的を達成するために、われらの努力を結集することに決定した。" ]
                 , p [] [ text "よって、われらの各自の政府は、サンフランシスコ市に会合し、全権委任状を示してそれが良好妥当であると認められた代表者を通じて、この国際連合憲章に同意したので、ここに国際連合という国際機構を設ける。" ]
                 ]
-        , props =
+        , propsSections =
             [ Control.field "-webkit-font-smoothing"
                 (Control.select
                     { value = tm.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
@@ -630,10 +630,10 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
 playground :
     { isDarkMode : Bool
     , preview : Html msg
-    , props : List (Control msg)
+    , propsSections : List (Control msg)
     }
     -> Html msg
-playground { isDarkMode, preview, props } =
+playground { isDarkMode, preview, propsSections } =
     section
         [ css
             [ padding4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 1.5)
@@ -668,7 +668,7 @@ playground { isDarkMode, preview, props } =
                     ]
                 ]
             ]
-            (List.map Control.render props)
+            (List.map Control.render propsSections)
         ]
 
 
