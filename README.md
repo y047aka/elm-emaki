@@ -34,6 +34,7 @@ $ npx elm-emaki
 
 ```elm
 import Emaki
+import Emaki.Control as Control
 
 
 -- elm-emakiで表示したいviewをimport
