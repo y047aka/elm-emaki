@@ -51,7 +51,7 @@ main =
         [ Emaki.chapter
             { view = view
             , controls =
-                [ Emaki.text
+                [ Control.text
                     { init = ""
                     , label = "user name"
                     , onChange = \newValue viewProps -> { viewProps | userName = newValue }
