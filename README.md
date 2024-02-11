@@ -49,7 +49,7 @@ main =
     Emaki.chapters
         [ Emaki.chapter
             { view = view
-            , props =
+            , controls =
                 [ Emaki.text
                     { init = ""
                     , label = "user name"
