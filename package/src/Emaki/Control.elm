@@ -122,8 +122,8 @@ boolAndString =
 
 
 field : String -> Control msg -> Control msg
-field label props =
-    Field label props
+field label control =
+    Field label control
 
 
 customize : Html msg -> Control msg
@@ -136,8 +136,8 @@ customize =
 
 
 render : Control msg -> Html msg
-render props =
-    case props of
+render control =
+    case control of
         Comment str ->
             div
                 [ css
@@ -270,7 +270,7 @@ render props =
                     []
                 ]
 
-        Field label ps ->
+        Field label cntl ->
             div
                 [ css
                     [ display grid
@@ -280,7 +280,7 @@ render props =
                     ]
                 ]
                 [ Html.label [] [ text label ]
-                , render ps
+                , render cntl
                 ]
 
         Customize view ->
