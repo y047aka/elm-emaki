@@ -53,7 +53,7 @@ main =
                 [ Emaki.text
                     { init = ""
                     , label = "user name"
-                    , onChange = \newValue viewProp -> { viewProp | userName = newValue }
+                    , onChange = \newValue viewProps -> { viewProps | userName = newValue }
                     }
                 , Emaki.toggle
                     { init = False
