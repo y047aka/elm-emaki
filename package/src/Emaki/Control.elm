@@ -2,7 +2,7 @@ module Emaki.Control exposing
     ( Control
     , StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
     , render
-    , comment, string, bool, select, radio, counter, boolAndString
+    , string, bool, select, radio, counter, boolAndString
     , customize
     )
 
@@ -11,7 +11,7 @@ module Emaki.Control exposing
 @docs Control
 @docs StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
 @docs render
-@docs comment, string, bool, select, radio, counter, boolAndString
+@docs string, bool, select, radio, counter, boolAndString
 @docs customize
 
 -}
@@ -28,8 +28,7 @@ import Html.Styled.Events exposing (onClick, onInput)
 
 
 type Control msg
-    = Comment String
-    | String (StringControl msg)
+    = String (StringControl msg)
     | Bool (BoolControl msg)
     | Select (SelectControl msg)
     | Radio (RadioControl msg)
@@ -83,11 +82,6 @@ type alias BoolAndStringControl msg =
     }
 
 
-comment : String -> Control msg
-comment =
-    Comment
-
-
 string : StringControl msg -> Control msg
 string =
     String
@@ -130,15 +124,6 @@ customize =
 render : Control msg -> Html msg
 render control =
     case control of
-        Comment str ->
-            div
-                [ css
-                    [ palette Palette.textOptional
-                    , empty [ display none ]
-                    ]
-                ]
-                [ text str ]
-
         String ps ->
             input
                 [ type_ "text"
