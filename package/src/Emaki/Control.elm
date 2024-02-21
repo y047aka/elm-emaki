@@ -3,7 +3,6 @@ module Emaki.Control exposing
     , StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
     , render
     , comment, string, bool, select, radio, counter, boolAndString
-    , field
     , customize
     )
 
@@ -13,13 +12,12 @@ module Emaki.Control exposing
 @docs StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
 @docs render
 @docs comment, string, bool, select, radio, counter, boolAndString
-@docs field
 @docs customize
 
 -}
 
 import Css exposing (..)
-import Css.Extra exposing (columnGap, fr, grid, gridColumn, gridRow, gridTemplateColumns)
+import Css.Extra exposing (grid, gridColumn, gridRow)
 import Css.Global exposing (children, everything, generalSiblings, selector, typeSelector)
 import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (paletteByState)
@@ -37,7 +35,6 @@ type Control msg
     | Radio (RadioControl msg)
     | Counter (CounterControl msg)
     | BoolAndString (BoolAndStringControl msg)
-    | Field String (Control msg)
     | Customize (Html msg)
 
 
@@ -119,11 +116,6 @@ counter =
 boolAndString : BoolAndStringControl msg -> Control msg
 boolAndString =
     BoolAndString
-
-
-field : String -> Control msg -> Control msg
-field label control =
-    Field label control
 
 
 customize : Html msg -> Control msg
@@ -268,19 +260,6 @@ render control =
                     , placeholder ps.placeholder
                     ]
                     []
-                ]
-
-        Field label cntl ->
-            div
-                [ css
-                    [ display grid
-                    , gridTemplateColumns [ fr 1, fr 1 ]
-                    , alignItems center
-                    , columnGap (em 0.25)
-                    ]
-                ]
-                [ Html.label [] [ text label ]
-                , render cntl
                 ]
 
         Customize view ->
