@@ -43,16 +43,6 @@ type alias Model =
     }
 
 
-type alias TypographyModel =
-    { webkitFontSmoothing : WebkitFontSmoothing
-    , typography : Typography
-    , fontSize : Float
-    , textAlign : TextAlign
-    , lineHeight : Float
-    , letterSpacing : Float
-    }
-
-
 init : () -> Url -> Key -> ( Model, Cmd Msg )
 init () url key =
     let
@@ -67,26 +57,6 @@ init () url key =
       }
     , Cmd.map ProgressMsg progressCmd
     )
-
-
-init_TypographyModel : TypographyModel
-init_TypographyModel =
-    { webkitFontSmoothing = Auto
-    , typography =
-        Typography.init
-            |> Typography.setFontFamilies [ "sans-serif" ]
-            |> Typography.setFontSize (px 16)
-            |> Typography.setFontWeight Css.normal
-            |> Typography.setLineHeight (num 1.5)
-            |> Typography.setTextDecoration Css.none
-            |> Typography.setTextTransform Css.none
-            |> Typography.setWordBreak Normal_WordBreak
-            |> Typography.setOverflowWrap Normal_OverflowWrap
-    , fontSize = 16
-    , textAlign = Left
-    , lineHeight = 1.5
-    , letterSpacing = 0
-    }
 
 
 
@@ -277,6 +247,36 @@ progressPlayground isDarkMode pm =
               }
             ]
         }
+
+
+type alias TypographyModel =
+    { webkitFontSmoothing : WebkitFontSmoothing
+    , typography : Typography
+    , fontSize : Float
+    , textAlign : TextAlign
+    , lineHeight : Float
+    , letterSpacing : Float
+    }
+
+
+init_TypographyModel : TypographyModel
+init_TypographyModel =
+    { webkitFontSmoothing = Auto
+    , typography =
+        Typography.init
+            |> Typography.setFontFamilies [ "sans-serif" ]
+            |> Typography.setFontSize (px 16)
+            |> Typography.setFontWeight Css.normal
+            |> Typography.setLineHeight (num 1.5)
+            |> Typography.setTextDecoration Css.none
+            |> Typography.setTextTransform Css.none
+            |> Typography.setWordBreak Normal_WordBreak
+            |> Typography.setOverflowWrap Normal_OverflowWrap
+    , fontSize = 16
+    , textAlign = Left
+    , lineHeight = 1.5
+    , letterSpacing = 0
+    }
 
 
 typographyPlayground : Bool -> TypographyModel -> Html Msg
