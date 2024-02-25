@@ -27,16 +27,6 @@ type alias Control msg =
     { view : Html msg }
 
 
-type Control_Outdated msg
-    = String
-    | Bool
-    | Select
-    | Radio
-    | Counter
-    | BoolAndString
-    | Customize (Html msg)
-
-
 
 -- VIEW
 
