@@ -47,13 +47,13 @@ string :
     , placeholder : String
     }
     -> Control msg
-string ps =
+string props =
     { view =
         input
             [ type_ "text"
-            , value ps.value
-            , onInput ps.onInput
-            , placeholder ps.placeholder
+            , value props.value
+            , onInput props.onInput
+            , placeholder props.placeholder
             , css
                 [ property "appearance" "none"
                 , width (pct 100)
@@ -82,12 +82,12 @@ bool :
     , onClick : msg
     }
     -> Control msg
-bool ps =
+bool props =
     { view =
         toggleCheckbox
-            { id = ps.id
-            , checked = ps.value
-            , onClick = ps.onClick
+            { id = props.id
+            , checked = props.value
+            , onClick = props.onClick
             }
     }
 
@@ -98,7 +98,7 @@ select :
     , onChange : String -> msg
     }
     -> Control msg
-select ps =
+select props =
     { view =
         div
             [ css
@@ -115,7 +115,7 @@ select ps =
                 ]
             ]
             [ Html.select
-                [ onInput ps.onChange
+                [ onInput props.onChange
                 , css
                     [ gridColumn "1 / -1"
                     , gridRow "1"
@@ -136,8 +136,8 @@ select ps =
                         ]
                     ]
                 ]
-                (List.map (\option -> Html.option [ value option, selected (ps.value == option) ] [ text option ])
-                    ps.options
+                (List.map (\option -> Html.option [ value option, selected (props.value == option) ] [ text option ])
+                    props.options
                 )
             ]
     }
@@ -149,7 +149,7 @@ radio :
     , onChange : String -> msg
     }
     -> Control msg
-radio ps =
+radio props =
     { view =
         div []
             (List.map
@@ -158,14 +158,14 @@ radio ps =
                         [ input
                             [ type_ "radio"
                             , value option
-                            , Attributes.checked (ps.value == option)
-                            , onInput ps.onChange
+                            , Attributes.checked (props.value == option)
+                            , onInput props.onChange
                             ]
                             []
                         , text option
                         ]
                 )
-                ps.options
+                props.options
             )
     }
 
@@ -177,12 +177,12 @@ counter :
     , onClickMinus : msg
     }
     -> Control msg
-counter ps =
+counter props =
     { view =
         labeledButtons []
-            [ button_ [ onClick ps.onClickMinus ] [ text "-" ]
-            , basicLabel [] [ text (ps.toString ps.value) ]
-            , button_ [ onClick ps.onClickPlus ] [ text "+" ]
+            [ button_ [ onClick props.onClickMinus ] [ text "-" ]
+            , basicLabel [] [ text (props.toString props.value) ]
+            , button_ [ onClick props.onClickPlus ] [ text "+" ]
             ]
     }
 
@@ -195,7 +195,7 @@ boolAndString :
     , placeholder : String
     }
     -> Control msg
-boolAndString ({ data } as ps) =
+boolAndString ({ data } as props) =
     { view =
         div []
             [ div []
@@ -204,17 +204,17 @@ boolAndString ({ data } as ps) =
                         [ type_ "checkbox"
                         , Attributes.checked data.visible
                         , Attributes.disabled False
-                        , onClick (ps.onUpdate { data | visible = not data.visible })
+                        , onClick (props.onUpdate { data | visible = not data.visible })
                         ]
                         []
-                    , text ps.label
+                    , text props.label
                     ]
                 ]
             , input
                 [ type_ "text"
                 , value data.value
-                , onInput (\string_ -> ps.onUpdate { data | value = string_ })
-                , placeholder ps.placeholder
+                , onInput (\string_ -> props.onUpdate { data | value = string_ })
+                , placeholder props.placeholder
                 ]
                 []
             ]
