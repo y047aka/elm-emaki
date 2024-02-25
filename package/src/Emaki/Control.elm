@@ -1,7 +1,6 @@
 module Emaki.Control exposing
     ( Control
     , StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
-    , render
     , string, bool, select, radio, counter, boolAndString
     , customize
     )
@@ -10,7 +9,6 @@ module Emaki.Control exposing
 
 @docs Control
 @docs StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
-@docs render
 @docs string, bool, select, radio, counter, boolAndString
 @docs customize
 
@@ -27,7 +25,11 @@ import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder,
 import Html.Styled.Events exposing (onClick, onInput)
 
 
-type Control msg
+type alias Control msg =
+    { view : Html msg }
+
+
+type Control_Outdated msg
     = String (StringControl msg)
     | Bool (BoolControl msg)
     | Select (SelectControl msg)
@@ -82,56 +84,74 @@ type alias BoolAndStringControl msg =
     }
 
 
-string : StringControl msg -> Control msg
-string =
-    String
-
-
-bool : BoolControl msg -> Control msg
-bool =
-    Bool
-
-
-select : SelectControl msg -> Control msg
-select =
-    Select
-
-
-radio : RadioControl msg -> Control msg
-radio =
-    Radio
-
-
-counter : CounterControl msg -> Control msg
-counter =
-    Counter
-
-
-boolAndString : BoolAndStringControl msg -> Control msg
-boolAndString =
-    BoolAndString
-
-
-customize : Html msg -> Control msg
-customize =
-    Customize
-
-
 
 -- VIEW
 
 
-render : Control msg -> Html msg
-render control =
-    case control of
-        String ps ->
-            input
-                [ type_ "text"
-                , value ps.value
-                , onInput ps.onInput
-                , placeholder ps.placeholder
+string : StringControl msg -> Control msg
+string ps =
+    { view =
+        input
+            [ type_ "text"
+            , value ps.value
+            , onInput ps.onInput
+            , placeholder ps.placeholder
+            , css
+                [ property "appearance" "none"
+                , width (pct 100)
+                , padding (em 0.75)
+                , fontSize inherit
+                , lineHeight (em 1)
+                , borderRadius (em 0.25)
+                , paletteWithBorder (border3 (px 1) solid) Palette.formField
+                , focus
+                    [ palette
+                        { background = Nothing
+                        , color = Just (rgba 0 0 0 0.95)
+                        , border = Just (hex "#85b7d9")
+                        }
+                    , outline none
+                    ]
+                ]
+            ]
+            []
+    }
+
+
+bool : BoolControl msg -> Control msg
+bool ps =
+    { view =
+        toggleCheckbox
+            { id = ps.id
+            , checked = ps.value
+            , onClick = ps.onClick
+            }
+    }
+
+
+select : SelectControl msg -> Control msg
+select ps =
+    { view =
+        div
+            [ css
+                [ display grid
+                , property "grid-template-columns" "1fr auto"
+                , alignItems center
+                , before
+                    [ property "content" (qt "▼")
+                    , gridColumn "2"
+                    , gridRow "1"
+                    , padding (em 1)
+                    , fontSize (em 0.6)
+                    ]
+                ]
+            ]
+            [ Html.select
+                [ onInput ps.onChange
                 , css
-                    [ property "appearance" "none"
+                    [ gridColumn "1 / -1"
+                    , gridRow "1"
+                    , property "appearance" "none"
                     , width (pct 100)
                     , padding (em 0.75)
                     , fontSize inherit
@@ -148,107 +168,76 @@ render control =
                         ]
                     ]
                 ]
-                []
-
-        Bool ps ->
-            toggleCheckbox
-                { id = ps.id
-                , checked = ps.value
-                , onClick = ps.onClick
-                }
-
-        Select ps ->
-            div
-                [ css
-                    [ display grid
-                    , property "grid-template-columns" "1fr auto"
-                    , alignItems center
-                    , before
-                        [ property "content" (qt "▼")
-                        , gridColumn "2"
-                        , gridRow "1"
-                        , padding (em 1)
-                        , fontSize (em 0.6)
-                        ]
-                    ]
-                ]
-                [ Html.select
-                    [ onInput ps.onChange
-                    , css
-                        [ gridColumn "1 / -1"
-                        , gridRow "1"
-                        , property "appearance" "none"
-                        , width (pct 100)
-                        , padding (em 0.75)
-                        , fontSize inherit
-                        , lineHeight (em 1)
-                        , borderRadius (em 0.25)
-                        , paletteWithBorder (border3 (px 1) solid) Palette.formField
-                        , focus
-                            [ palette
-                                { background = Nothing
-                                , color = Just (rgba 0 0 0 0.95)
-                                , border = Just (hex "#85b7d9")
-                                }
-                            , outline none
-                            ]
-                        ]
-                    ]
-                    (List.map (\option -> Html.option [ value option, selected (ps.value == option) ] [ text option ])
-                        ps.options
-                    )
-                ]
-
-        Radio ps ->
-            div []
-                (List.map
-                    (\option ->
-                        Html.label [ css [ display block ] ]
-                            [ input
-                                [ type_ "radio"
-                                , value option
-                                , Attributes.checked (ps.value == option)
-                                , onInput ps.onChange
-                                ]
-                                []
-                            , text option
-                            ]
-                    )
+                (List.map (\option -> Html.option [ value option, selected (ps.value == option) ] [ text option ])
                     ps.options
                 )
+            ]
+    }
 
-        Counter ps ->
-            labeledButtons []
-                [ button_ [ onClick ps.onClickMinus ] [ text "-" ]
-                , basicLabel [] [ text (ps.toString ps.value) ]
-                , button_ [ onClick ps.onClickPlus ] [ text "+" ]
-                ]
 
-        BoolAndString ({ data } as ps) ->
-            div []
-                [ div []
-                    [ Html.label []
+radio : RadioControl msg -> Control msg
+radio ps =
+    { view =
+        div []
+            (List.map
+                (\option ->
+                    Html.label [ css [ display block ] ]
                         [ input
-                            [ type_ "checkbox"
-                            , Attributes.checked data.visible
-                            , Attributes.disabled False
-                            , onClick (ps.onUpdate { data | visible = not data.visible })
+                            [ type_ "radio"
+                            , value option
+                            , Attributes.checked (ps.value == option)
+                            , onInput ps.onChange
                             ]
                             []
-                        , text ps.label
+                        , text option
                         ]
-                    ]
-                , input
-                    [ type_ "text"
-                    , value data.value
-                    , onInput (\string_ -> ps.onUpdate { data | value = string_ })
-                    , placeholder ps.placeholder
-                    ]
-                    []
-                ]
+                )
+                ps.options
+            )
+    }
 
-        Customize view ->
-            view
+
+counter : CounterControl msg -> Control msg
+counter ps =
+    { view =
+        labeledButtons []
+            [ button_ [ onClick ps.onClickMinus ] [ text "-" ]
+            , basicLabel [] [ text (ps.toString ps.value) ]
+            , button_ [ onClick ps.onClickPlus ] [ text "+" ]
+            ]
+    }
+
+
+boolAndString : BoolAndStringControl msg -> Control msg
+boolAndString ({ data } as ps) =
+    { view =
+        div []
+            [ div []
+                [ Html.label []
+                    [ input
+                        [ type_ "checkbox"
+                        , Attributes.checked data.visible
+                        , Attributes.disabled False
+                        , onClick (ps.onUpdate { data | visible = not data.visible })
+                        ]
+                        []
+                    , text ps.label
+                    ]
+                ]
+            , input
+                [ type_ "text"
+                , value data.value
+                , onInput (\string_ -> ps.onUpdate { data | value = string_ })
+                , placeholder ps.placeholder
+                ]
+                []
+            ]
+    }
+
+
+customize : Html msg -> Control msg
+customize view =
+    { view = view }
 
 
 

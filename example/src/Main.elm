@@ -695,7 +695,7 @@ playground { isDarkMode, preview, controlSections } =
                             ]
                         ]
                         [ Html.label [] [ text label ]
-                        , Control.render control
+                        , control.view
                         ]
     in
     section
