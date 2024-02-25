@@ -1,6 +1,5 @@
 module Emaki.Control exposing
     ( Control
-    , StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
     , string, bool, select, radio, counter, boolAndString
     , customize
     )
@@ -8,7 +7,6 @@ module Emaki.Control exposing
 {-|
 
 @docs Control
-@docs StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
 @docs string, bool, select, radio, counter, boolAndString
 @docs customize
 
@@ -30,65 +28,25 @@ type alias Control msg =
 
 
 type Control_Outdated msg
-    = String (StringControl msg)
-    | Bool (BoolControl msg)
-    | Select (SelectControl msg)
-    | Radio (RadioControl msg)
-    | Counter (CounterControl msg)
-    | BoolAndString (BoolAndStringControl msg)
+    = String
+    | Bool
+    | Select
+    | Radio
+    | Counter
+    | BoolAndString
     | Customize (Html msg)
-
-
-type alias StringControl msg =
-    { value : String
-    , onInput : String -> msg
-    , placeholder : String
-    }
-
-
-type alias BoolControl msg =
-    { id : String
-    , value : Bool
-    , onClick : msg
-    }
-
-
-type alias SelectControl msg =
-    { value : String
-    , options : List String
-    , onChange : String -> msg
-    }
-
-
-type alias RadioControl msg =
-    { value : String
-    , options : List String
-    , onChange : String -> msg
-    }
-
-
-type alias CounterControl msg =
-    { value : Float
-    , toString : Float -> String
-    , onClickPlus : msg
-    , onClickMinus : msg
-    }
-
-
-type alias BoolAndStringControl msg =
-    { label : String
-    , id : String
-    , data : { visible : Bool, value : String }
-    , onUpdate : { visible : Bool, value : String } -> msg
-    , placeholder : String
-    }
 
 
 
 -- VIEW
 
 
-string : StringControl msg -> Control msg
+string :
+    { value : String
+    , onInput : String -> msg
+    , placeholder : String
+    }
+    -> Control msg
 string ps =
     { view =
         input
@@ -118,7 +76,12 @@ string ps =
     }
 
 
-bool : BoolControl msg -> Control msg
+bool :
+    { id : String
+    , value : Bool
+    , onClick : msg
+    }
+    -> Control msg
 bool ps =
     { view =
         toggleCheckbox
@@ -129,7 +92,12 @@ bool ps =
     }
 
 
-select : SelectControl msg -> Control msg
+select :
+    { value : String
+    , options : List String
+    , onChange : String -> msg
+    }
+    -> Control msg
 select ps =
     { view =
         div
@@ -175,7 +143,12 @@ select ps =
     }
 
 
-radio : RadioControl msg -> Control msg
+radio :
+    { value : String
+    , options : List String
+    , onChange : String -> msg
+    }
+    -> Control msg
 radio ps =
     { view =
         div []
@@ -197,7 +170,13 @@ radio ps =
     }
 
 
-counter : CounterControl msg -> Control msg
+counter :
+    { value : Float
+    , toString : Float -> String
+    , onClickPlus : msg
+    , onClickMinus : msg
+    }
+    -> Control msg
 counter ps =
     { view =
         labeledButtons []
@@ -208,7 +187,14 @@ counter ps =
     }
 
 
-boolAndString : BoolAndStringControl msg -> Control msg
+boolAndString :
+    { label : String
+    , id : String
+    , data : { visible : Bool, value : String }
+    , onUpdate : { visible : Bool, value : String } -> msg
+    , placeholder : String
+    }
+    -> Control msg
 boolAndString ({ data } as ps) =
     { view =
         div []
