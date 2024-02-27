@@ -1,13 +1,13 @@
 module Progress exposing
     ( Model, State(..), init
-    , Msg(..), update, updateCaptionOnIndicating
+    , Msg(..), update, clampValue, updateCaptionOnIndicating
     , progressWithProps, stateFromString, stateToString
     )
 
 {-|
 
 @docs Model, State, init
-@docs Msg, update, updateCaptionOnIndicating
+@docs Msg, update, clampValue, updateCaptionOnIndicating
 @docs progressWithProps, stateFromString, stateToString
 
 -}
@@ -90,6 +90,11 @@ update msg model =
 
         CounterMinus ->
             ( model, Random.generate SetValue (Random.int -15 -10) )
+
+
+clampValue : Float -> Float
+clampValue =
+    max 0 >> min 100
 
 
 updateCaptionOnIndicating : Model -> Model

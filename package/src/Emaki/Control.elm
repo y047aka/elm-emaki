@@ -23,8 +23,8 @@ import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder,
 import Html.Styled.Events exposing (onClick, onInput)
 
 
-type alias Control msg =
-    { view : Html msg }
+type alias Control props =
+    { view : Html (props -> props) }
 
 
 
@@ -33,10 +33,10 @@ type alias Control msg =
 
 string :
     { value : String
-    , onInput : String -> msg
+    , onInput : String -> props -> props
     , placeholder : String
     }
-    -> Control msg
+    -> Control props
 string props =
     { view =
         input
@@ -69,15 +69,15 @@ string props =
 bool :
     { id : String
     , value : Bool
-    , onClick : msg
+    , onChange : Bool -> props -> props
     }
-    -> Control msg
+    -> Control props
 bool props =
     { view =
         toggleCheckbox
             { id = props.id
             , checked = props.value
-            , onClick = props.onClick
+            , onClick = props.onChange props.value
             }
     }
 
@@ -85,9 +85,9 @@ bool props =
 select :
     { value : String
     , options : List String
-    , onChange : String -> msg
+    , onChange : String -> props -> props
     }
-    -> Control msg
+    -> Control props
 select props =
     { view =
         div
@@ -136,9 +136,9 @@ select props =
 radio :
     { value : String
     , options : List String
-    , onChange : String -> msg
+    , onChange : String -> props -> props
     }
-    -> Control msg
+    -> Control props
 radio props =
     { view =
         div []
@@ -163,10 +163,10 @@ radio props =
 counter :
     { value : Float
     , toString : Float -> String
-    , onClickPlus : msg
-    , onClickMinus : msg
+    , onClickPlus : props -> props
+    , onClickMinus : props -> props
     }
-    -> Control msg
+    -> Control props
 counter props =
     { view =
         labeledButtons []
@@ -181,10 +181,10 @@ boolAndString :
     { label : String
     , id : String
     , data : { visible : Bool, value : String }
-    , onUpdate : { visible : Bool, value : String } -> msg
+    , onUpdate : { visible : Bool, value : String } -> props -> props
     , placeholder : String
     }
-    -> Control msg
+    -> Control props
 boolAndString ({ data } as props) =
     { view =
         div []
@@ -211,7 +211,7 @@ boolAndString ({ data } as props) =
     }
 
 
-customize : Html msg -> Control msg
+customize : Html (props -> props) -> Control props
 customize view =
     { view = view }
 
