@@ -11,7 +11,7 @@ import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), T
 import DesignToken.Color exposing (grey095)
 import DesignToken.Palette as Palette
 import Emaki.Control as Control exposing (Control)
-import Html.Styled exposing (..)
+import Html.Styled as Html exposing (Html, a, div, h2, header, input, li, main_, nav, p, section, text, toUnstyled, ul)
 import Html.Styled.Attributes as Attributes exposing (css, href, id, type_)
 import Html.Styled.Events exposing (onClick)
 import Progress exposing (State(..))
@@ -161,116 +161,120 @@ progressPlayground isDarkMode pm =
     playground
         { isDarkMode = isDarkMode
         , preview = Progress.progressWithProps pm
-        , props =
-            [ Control.list
-                [ Control.field "Bar"
-                    (Control.counter
-                        { value = pm.value
-                        , toString = \value -> String.fromFloat value ++ "%"
-                        , onClickPlus = ProgressMsg Progress.CounterPlus
-                        , onClickMinus = ProgressMsg Progress.CounterMinus
-                        }
-                    )
-                , Control.comment "A progress element can contain a bar visually indicating progress"
-                ]
-            , Control.list
-                [ Control.header "Config"
-                , Control.field "Indicating"
-                    (Control.bool
-                        { id = "indicating"
-                        , value = pm.indicating
-                        , onClick =
-                            (\c ->
-                                let
-                                    newIndicating =
-                                        not c.indicating
-                                in
-                                { c
-                                    | indicating = newIndicating
-                                    , caption =
-                                        if newIndicating then
-                                            c.caption
+        , controlSections =
+            [ { heading = ""
+              , controls =
+                    [ Field "Bar"
+                        (Control.counter
+                            { value = pm.value
+                            , toString = \value -> String.fromFloat value ++ "%"
+                            , onClickPlus = ProgressMsg Progress.CounterPlus
+                            , onClickMinus = ProgressMsg Progress.CounterMinus
+                            }
+                        )
+                    , Comment "A progress element can contain a bar visually indicating progress"
+                    ]
+              }
+            , { heading = "Config"
+              , controls =
+                    [ Field "Indicating"
+                        (Control.bool
+                            { id = "indicating"
+                            , value = pm.indicating
+                            , onClick =
+                                (\c ->
+                                    let
+                                        newIndicating =
+                                            not c.indicating
+                                    in
+                                    { c
+                                        | indicating = newIndicating
+                                        , caption =
+                                            if newIndicating then
+                                                c.caption
 
-                                        else
-                                            "Uploading Files"
-                                }
-                                    |> Progress.updateCaptionOnIndicating
-                            )
-                                |> UpdateProgress
-                        }
-                    )
-                , Control.comment "An indicating progress bar visually indicates the current level of progress of a task"
-                , Control.field "States"
-                    (Control.select
-                        { value = Progress.stateToString pm.state
-                        , options = List.map Progress.stateToString [ Default, Active, Success, Warning, Error, Disabled ]
-                        , onChange =
-                            (\prevState ps ->
-                                Progress.stateFromString prevState
-                                    |> Maybe.map
-                                        (\state ->
-                                            { ps
-                                                | state = state
-                                                , caption =
-                                                    case state of
-                                                        Success ->
-                                                            "Everything worked, your file is all ready."
+                                            else
+                                                "Uploading Files"
+                                    }
+                                        |> Progress.updateCaptionOnIndicating
+                                )
+                                    |> UpdateProgress
+                            }
+                        )
+                    , Comment "An indicating progress bar visually indicates the current level of progress of a task"
+                    , Field "States"
+                        (Control.select
+                            { value = Progress.stateToString pm.state
+                            , options = List.map Progress.stateToString [ Default, Active, Success, Warning, Error, Disabled ]
+                            , onChange =
+                                (\prevState ps ->
+                                    Progress.stateFromString prevState
+                                        |> Maybe.map
+                                            (\state ->
+                                                { ps
+                                                    | state = state
+                                                    , caption =
+                                                        case state of
+                                                            Success ->
+                                                                "Everything worked, your file is all ready."
 
-                                                        Warning ->
-                                                            "Your file didn't meet the minimum resolution requirements."
+                                                            Warning ->
+                                                                "Your file didn't meet the minimum resolution requirements."
 
-                                                        Error ->
-                                                            "There was an error."
+                                                            Error ->
+                                                                "There was an error."
 
-                                                        _ ->
-                                                            ps.caption
-                                            }
-                                        )
-                                    |> Maybe.withDefault ps
-                            )
-                                >> UpdateProgress
-                        }
-                    )
-                , Control.comment
-                    (case pm.state of
-                        Active ->
-                            "A progress bar can show activity"
+                                                            _ ->
+                                                                ps.caption
+                                                }
+                                            )
+                                        |> Maybe.withDefault ps
+                                )
+                                    >> UpdateProgress
+                            }
+                        )
+                    , Comment
+                        (case pm.state of
+                            Active ->
+                                "A progress bar can show activity"
 
-                        Success ->
-                            "A progress bar can show a success state"
+                            Success ->
+                                "A progress bar can show a success state"
 
-                        Warning ->
-                            "A progress bar can show a warning state"
+                            Warning ->
+                                "A progress bar can show a warning state"
 
-                        Error ->
-                            "A progress bar can show an error state"
+                            Error ->
+                                "A progress bar can show an error state"
 
-                        Disabled ->
-                            "A progress bar can be disabled"
+                            Disabled ->
+                                "A progress bar can be disabled"
 
-                        _ ->
-                            ""
-                    )
-                ]
-            , Control.list
-                [ Control.header "Content"
-                , Control.field "Unit"
-                    (Control.string
-                        { value = pm.unit
-                        , onInput = (\string ps -> { ps | unit = string }) >> UpdateProgress
-                        , placeholder = ""
-                        }
-                    )
-                , Control.comment "A progress bar can contain a text value indicating current progress"
-                , Control.field "Caption"
-                    (Control.string
-                        { value = pm.caption
-                        , onInput = (\string ps -> { ps | caption = string }) >> UpdateProgress
-                        , placeholder = ""
-                        }
-                    )
-                , Control.comment "A progress element can contain a label"
-                ]
+                            _ ->
+                                ""
+                        )
+                    ]
+              }
+            , { heading = "Content"
+              , controls =
+                    [ Field "Unit"
+                        (Control.string
+                            { value = pm.unit
+                            , onInput = (\string ps -> { ps | unit = string }) >> UpdateProgress
+                            , placeholder = ""
+                            }
+                        )
+                    , Comment "A progress bar can contain a text value indicating current progress"
+                    , Field "Caption"
+                        (Control.string
+                            { value = pm.caption
+                            , onInput = (\string ps -> { ps | caption = string }) >> UpdateProgress
+                            , placeholder = ""
+                            }
+                        )
+                    , Comment "A progress element can contain a label"
+                    ]
+              }
             ]
         }
 
@@ -303,337 +307,397 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                 , p [] [ text "われら連合国の人民は、われらの一生のうち二度まで言語に絶する悲哀を人類に与えた戦争の惨害から将来の世代を救い、基本的人権と人間の尊厳及び価値と男女及び大小各国の同権とに関する信念を改めて確認し、正義と条約その他の国際法の源泉から生ずる義務の尊重とを維持することができる条件を確立し、一層大きな自由の中で社会的進歩と生活水準の向上とを促進すること、並びに、このために、寛容を実行し、且つ、善良な隣人として互に平和に生活し、国際の平和および安全を維持するためにわれらの力を合わせ、共同の利益の場合を除く外は武力を用いないことを原則の受諾と方法の設定によって確保し、すべての人民の経済的及び社会的発達を促進するために国際機構を用いることを決意して、これらの目的を達成するために、われらの努力を結集することに決定した。" ]
                 , p [] [ text "よって、われらの各自の政府は、サンフランシスコ市に会合し、全権委任状を示してそれが良好妥当であると認められた代表者を通じて、この国際連合憲章に同意したので、ここに国際連合という国際機構を設ける。" ]
                 ]
-        , props =
-            [ Control.field "-webkit-font-smoothing"
-                (Control.select
-                    { value = tm.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
-                    , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
-                    , onChange =
-                        (\webkitFontSmoothing m ->
-                            { m
-                                | webkitFontSmoothing =
-                                    case webkitFontSmoothing of
-                                        "auto" ->
-                                            Auto
+        , controlSections =
+            [ { heading = ""
+              , controls =
+                    [ Field "-webkit-font-smoothing"
+                        (Control.select
+                            { value = tm.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
+                            , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
+                            , onChange =
+                                (\webkitFontSmoothing m ->
+                                    { m
+                                        | webkitFontSmoothing =
+                                            case webkitFontSmoothing of
+                                                "auto" ->
+                                                    Auto
 
-                                        "none" ->
-                                            None
+                                                "none" ->
+                                                    None
 
-                                        "antialiased" ->
-                                            Antialiased
+                                                "antialiased" ->
+                                                    Antialiased
 
-                                        "subpixel-antialiased" ->
-                                            SubpixelAntialiased
+                                                "subpixel-antialiased" ->
+                                                    SubpixelAntialiased
 
-                                        _ ->
-                                            m.webkitFontSmoothing
+                                                _ ->
+                                                    m.webkitFontSmoothing
+                                    }
+                                )
+                                    >> UpdateTypography
                             }
                         )
-                            >> UpdateTypography
-                    }
-                )
-            , Control.list
-                [ Control.header "Typography"
-                , Control.field "font-family"
-                    (Control.select
-                        { value = tm.typography.font.families |> String.concat
-                        , options = [ Css.sansSerif.value, Css.serif.value ]
-                        , onChange =
-                            (\fontFamily m ->
-                                { m
-                                    | typography =
-                                        case fontFamily of
-                                            "sans-serif" ->
-                                                m.typography |> Typography.setFontFamilies [ "sans-serif" ]
-
-                                            "serif" ->
-                                                m.typography |> Typography.setFontFamilies [ "serif" ]
-
-                                            _ ->
-                                                m.typography
-                                }
-                            )
-                                >> UpdateTypography
-                        }
-                    )
-                , Control.field "font-size"
-                    (Control.counter
-                        { value = tm.fontSize
-                        , toString = \value -> String.fromFloat value ++ "px"
-                        , onClickPlus =
-                            UpdateTypography
-                                (\m ->
+                    ]
+              }
+            , { heading = "Typography"
+              , controls =
+                    [ Field "font-family"
+                        (Control.select
+                            { value = tm.typography.font.families |> String.concat
+                            , options = [ Css.sansSerif.value, Css.serif.value ]
+                            , onChange =
+                                (\fontFamily m ->
                                     { m
-                                        | fontSize = m.fontSize + 1
-                                        , typography = m.typography |> Typography.setFontSize (px (m.fontSize + 1))
+                                        | typography =
+                                            case fontFamily of
+                                                "sans-serif" ->
+                                                    m.typography |> Typography.setFontFamilies [ "sans-serif" ]
+
+                                                "serif" ->
+                                                    m.typography |> Typography.setFontFamilies [ "serif" ]
+
+                                                _ ->
+                                                    m.typography
                                     }
                                 )
-                        , onClickMinus =
-                            UpdateTypography
-                                (\m ->
+                                    >> UpdateTypography
+                            }
+                        )
+                    , Field "font-size"
+                        (Control.counter
+                            { value = tm.fontSize
+                            , toString = \value -> String.fromFloat value ++ "px"
+                            , onClickPlus =
+                                UpdateTypography
+                                    (\m ->
+                                        { m
+                                            | fontSize = m.fontSize + 1
+                                            , typography = m.typography |> Typography.setFontSize (px (m.fontSize + 1))
+                                        }
+                                    )
+                            , onClickMinus =
+                                UpdateTypography
+                                    (\m ->
+                                        { m
+                                            | fontSize = m.fontSize - 1
+                                            , typography = m.typography |> Typography.setFontSize (px (m.fontSize - 1))
+                                        }
+                                    )
+                            }
+                        )
+                    , Field "font-style"
+                        (Control.radio
+                            { value = tm.typography.font.style |> Maybe.map .value |> Maybe.withDefault "-"
+                            , options = [ Css.normal.value, Css.italic.value ]
+                            , onChange =
+                                (\style m ->
                                     { m
-                                        | fontSize = m.fontSize - 1
-                                        , typography = m.typography |> Typography.setFontSize (px (m.fontSize - 1))
+                                        | typography =
+                                            case style of
+                                                "normal" ->
+                                                    m.typography |> Typography.setFontStyle Css.normal
+
+                                                "italic" ->
+                                                    m.typography |> Typography.setFontStyle Css.italic
+
+                                                _ ->
+                                                    m.typography
                                     }
                                 )
-                        }
-                    )
-                , Control.field "font-style"
-                    (Control.radio
-                        { value = tm.typography.font.style |> Maybe.map .value |> Maybe.withDefault "-"
-                        , options = [ Css.normal.value, Css.italic.value ]
-                        , onChange =
-                            (\style m ->
-                                { m
-                                    | typography =
-                                        case style of
-                                            "normal" ->
-                                                m.typography |> Typography.setFontStyle Css.normal
-
-                                            "italic" ->
-                                                m.typography |> Typography.setFontStyle Css.italic
-
-                                            _ ->
-                                                m.typography
-                                }
-                            )
-                                >> UpdateTypography
-                        }
-                    )
-                , Control.field "font-weight"
-                    (Control.select
-                        { value = tm.typography.font.weight |> Maybe.map .value |> Maybe.withDefault "-"
-                        , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
-                        , onChange =
-                            (\weight m ->
-                                { m
-                                    | typography =
-                                        case weight of
-                                            "lighter" ->
-                                                m.typography |> Typography.setFontWeight Css.lighter
-
-                                            "normal" ->
-                                                m.typography |> Typography.setFontWeight Css.normal
-
-                                            "bold" ->
-                                                m.typography |> Typography.setFontWeight Css.bold
-
-                                            "bolder" ->
-                                                m.typography |> Typography.setFontWeight Css.bolder
-
-                                            _ ->
-                                                m.typography
-                                }
-                            )
-                                >> UpdateTypography
-                        }
-                    )
-                , Control.field "text-align"
-                    (Control.radio
-                        { value = tm.textAlign |> Typography.textAlignToString
-                        , options = [ "left", "center", "right", "justify" ]
-                        , onChange =
-                            (\align m ->
-                                { m
-                                    | textAlign =
-                                        case align of
-                                            "left" ->
-                                                Left
-
-                                            "center" ->
-                                                Center
-
-                                            "right" ->
-                                                Right
-
-                                            "justify" ->
-                                                Justify
-
-                                            _ ->
-                                                m.textAlign
-                                    , typography =
-                                        case align of
-                                            "left" ->
-                                                m.typography |> Typography.setTextAlign Css.left
-
-                                            "center" ->
-                                                m.typography |> Typography.setTextAlign Css.center
-
-                                            "right" ->
-                                                m.typography |> Typography.setTextAlign Css.right
-
-                                            "justify" ->
-                                                m.typography |> Typography.setTextAlign Css.justify
-
-                                            _ ->
-                                                m.typography
-                                }
-                            )
-                                >> UpdateTypography
-                        }
-                    )
-                , Control.field "line-height"
-                    (Control.counter
-                        { value = tm.lineHeight
-                        , toString = \value -> String.fromFloat value
-                        , onClickPlus =
-                            UpdateTypography
-                                (\m ->
+                                    >> UpdateTypography
+                            }
+                        )
+                    , Field "font-weight"
+                        (Control.select
+                            { value = tm.typography.font.weight |> Maybe.map .value |> Maybe.withDefault "-"
+                            , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
+                            , onChange =
+                                (\weight m ->
                                     { m
-                                        | lineHeight = ((m.lineHeight * 10) + 1) / 10
-                                        , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
+                                        | typography =
+                                            case weight of
+                                                "lighter" ->
+                                                    m.typography |> Typography.setFontWeight Css.lighter
+
+                                                "normal" ->
+                                                    m.typography |> Typography.setFontWeight Css.normal
+
+                                                "bold" ->
+                                                    m.typography |> Typography.setFontWeight Css.bold
+
+                                                "bolder" ->
+                                                    m.typography |> Typography.setFontWeight Css.bolder
+
+                                                _ ->
+                                                    m.typography
                                     }
                                 )
-                        , onClickMinus =
-                            UpdateTypography
-                                (\m ->
+                                    >> UpdateTypography
+                            }
+                        )
+                    , Field "text-align"
+                        (Control.radio
+                            { value = tm.textAlign |> Typography.textAlignToString
+                            , options = [ "left", "center", "right", "justify" ]
+                            , onChange =
+                                (\align m ->
                                     { m
-                                        | lineHeight = ((m.lineHeight * 10) - 1) / 10
-                                        , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
+                                        | textAlign =
+                                            case align of
+                                                "left" ->
+                                                    Left
+
+                                                "center" ->
+                                                    Center
+
+                                                "right" ->
+                                                    Right
+
+                                                "justify" ->
+                                                    Justify
+
+                                                _ ->
+                                                    m.textAlign
+                                        , typography =
+                                            case align of
+                                                "left" ->
+                                                    m.typography |> Typography.setTextAlign Css.left
+
+                                                "center" ->
+                                                    m.typography |> Typography.setTextAlign Css.center
+
+                                                "right" ->
+                                                    m.typography |> Typography.setTextAlign Css.right
+
+                                                "justify" ->
+                                                    m.typography |> Typography.setTextAlign Css.justify
+
+                                                _ ->
+                                                    m.typography
                                     }
                                 )
-                        }
-                    )
-                , Control.field "text-decoration"
-                    (Control.radio
-                        { value = tm.typography.textSetting.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
-                        , options = [ Css.none.value, Css.underline.value ]
-                        , onChange =
-                            (\decoration m ->
-                                { m
-                                    | typography =
-                                        case decoration of
-                                            "none" ->
-                                                m.typography |> Typography.setTextDecoration Css.none
-
-                                            "underline" ->
-                                                m.typography |> Typography.setTextDecoration Css.underline
-
-                                            _ ->
-                                                m.typography
-                                }
-                            )
-                                >> UpdateTypography
-                        }
-                    )
-                , Control.field "letter-spacing"
-                    (Control.counter
-                        { value = tm.letterSpacing
-                        , toString = \value -> String.fromFloat value ++ "em"
-                        , onClickPlus =
-                            UpdateTypography
-                                (\m ->
+                                    >> UpdateTypography
+                            }
+                        )
+                    , Field "line-height"
+                        (Control.counter
+                            { value = tm.lineHeight
+                            , toString = \value -> String.fromFloat value
+                            , onClickPlus =
+                                UpdateTypography
+                                    (\m ->
+                                        { m
+                                            | lineHeight = ((m.lineHeight * 10) + 1) / 10
+                                            , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
+                                        }
+                                    )
+                            , onClickMinus =
+                                UpdateTypography
+                                    (\m ->
+                                        { m
+                                            | lineHeight = ((m.lineHeight * 10) - 1) / 10
+                                            , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
+                                        }
+                                    )
+                            }
+                        )
+                    , Field "text-decoration"
+                        (Control.radio
+                            { value = tm.typography.textSetting.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
+                            , options = [ Css.none.value, Css.underline.value ]
+                            , onChange =
+                                (\decoration m ->
                                     { m
-                                        | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
-                                        , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
+                                        | typography =
+                                            case decoration of
+                                                "none" ->
+                                                    m.typography |> Typography.setTextDecoration Css.none
+
+                                                "underline" ->
+                                                    m.typography |> Typography.setTextDecoration Css.underline
+
+                                                _ ->
+                                                    m.typography
                                     }
                                 )
-                        , onClickMinus =
-                            UpdateTypography
-                                (\m ->
+                                    >> UpdateTypography
+                            }
+                        )
+                    , Field "letter-spacing"
+                        (Control.counter
+                            { value = tm.letterSpacing
+                            , toString = \value -> String.fromFloat value ++ "em"
+                            , onClickPlus =
+                                UpdateTypography
+                                    (\m ->
+                                        { m
+                                            | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
+                                            , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
+                                        }
+                                    )
+                            , onClickMinus =
+                                UpdateTypography
+                                    (\m ->
+                                        { m
+                                            | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
+                                            , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
+                                        }
+                                    )
+                            }
+                        )
+                    , Field "text-transform"
+                        (Control.select
+                            { value = tm.typography.textSetting.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
+                            , options = [ Css.none.value, Css.uppercase.value, Css.lowercase.value, Css.capitalize.value ]
+                            , onChange =
+                                (\transform m ->
                                     { m
-                                        | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
-                                        , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
+                                        | typography =
+                                            case transform of
+                                                "none" ->
+                                                    m.typography |> Typography.setTextTransform Css.none
+
+                                                "uppercase" ->
+                                                    m.typography |> Typography.setTextTransform Css.uppercase
+
+                                                "lowercase" ->
+                                                    m.typography |> Typography.setTextTransform Css.lowercase
+
+                                                "capitalize" ->
+                                                    m.typography |> Typography.setTextTransform Css.capitalize
+
+                                                _ ->
+                                                    m.typography
                                     }
                                 )
-                        }
-                    )
-                , Control.field "text-transform"
-                    (Control.select
-                        { value = tm.typography.textSetting.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
-                        , options = [ Css.none.value, Css.uppercase.value, Css.lowercase.value, Css.capitalize.value ]
-                        , onChange =
-                            (\transform m ->
-                                { m
-                                    | typography =
-                                        case transform of
-                                            "none" ->
-                                                m.typography |> Typography.setTextTransform Css.none
+                                    >> UpdateTypography
+                            }
+                        )
+                    ]
+              }
+            , { heading = "TextBlock"
+              , controls =
+                    [ Field "word-break"
+                        (Control.select
+                            { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
+                            , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
+                            , onChange =
+                                (\wordBreak m ->
+                                    { m
+                                        | typography =
+                                            case wordBreak of
+                                                "normal" ->
+                                                    m.typography |> Typography.setWordBreak Normal_WordBreak
 
-                                            "uppercase" ->
-                                                m.typography |> Typography.setTextTransform Css.uppercase
+                                                "break-all" ->
+                                                    m.typography |> Typography.setWordBreak BreakAll
 
-                                            "lowercase" ->
-                                                m.typography |> Typography.setTextTransform Css.lowercase
+                                                "keep-all" ->
+                                                    m.typography |> Typography.setWordBreak KeepAll
 
-                                            "capitalize" ->
-                                                m.typography |> Typography.setTextTransform Css.capitalize
+                                                "auto-phrase" ->
+                                                    m.typography |> Typography.setWordBreak AutoPhrase
 
-                                            _ ->
-                                                m.typography
-                                }
-                            )
-                                >> UpdateTypography
-                        }
-                    )
-                ]
-            , Control.list
-                [ Control.header "TextBlock"
-                , Control.field "word-break"
-                    (Control.select
-                        { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
-                        , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
-                        , onChange =
-                            (\wordBreak m ->
-                                { m
-                                    | typography =
-                                        case wordBreak of
-                                            "normal" ->
-                                                m.typography |> Typography.setWordBreak Normal_WordBreak
+                                                _ ->
+                                                    m.typography
+                                    }
+                                )
+                                    >> UpdateTypography
+                            }
+                        )
+                    , Field "overflow-wrap"
+                        (Control.select
+                            { value = tm.typography.textBlock.overflowWrap |> Maybe.map Typography.overflowWrapToString |> Maybe.withDefault "-"
+                            , options = [ "normal", "break-word", "anywhere" ]
+                            , onChange =
+                                (\overflowWrap m ->
+                                    { m
+                                        | typography =
+                                            case overflowWrap of
+                                                "normal" ->
+                                                    m.typography |> Typography.setOverflowWrap Normal_OverflowWrap
 
-                                            "break-all" ->
-                                                m.typography |> Typography.setWordBreak BreakAll
+                                                "break-word" ->
+                                                    m.typography |> Typography.setOverflowWrap BreakWord
 
-                                            "keep-all" ->
-                                                m.typography |> Typography.setWordBreak KeepAll
+                                                "anywhere" ->
+                                                    m.typography |> Typography.setOverflowWrap Anywhere
 
-                                            "auto-phrase" ->
-                                                m.typography |> Typography.setWordBreak AutoPhrase
-
-                                            _ ->
-                                                m.typography
-                                }
-                            )
-                                >> UpdateTypography
-                        }
-                    )
-                , Control.field "overflow-wrap"
-                    (Control.select
-                        { value = tm.typography.textBlock.overflowWrap |> Maybe.map Typography.overflowWrapToString |> Maybe.withDefault "-"
-                        , options = [ "normal", "break-word", "anywhere" ]
-                        , onChange =
-                            (\overflowWrap m ->
-                                { m
-                                    | typography =
-                                        case overflowWrap of
-                                            "normal" ->
-                                                m.typography |> Typography.setOverflowWrap Normal_OverflowWrap
-
-                                            "break-word" ->
-                                                m.typography |> Typography.setOverflowWrap BreakWord
-
-                                            "anywhere" ->
-                                                m.typography |> Typography.setOverflowWrap Anywhere
-
-                                            _ ->
-                                                m.typography
-                                }
-                            )
-                                >> UpdateTypography
-                        }
-                    )
-                ]
+                                                _ ->
+                                                    m.typography
+                                    }
+                                )
+                                    >> UpdateTypography
+                            }
+                        )
+                    ]
+              }
             ]
         }
+
+
+type Node msg
+    = Comment String
+    | Field String (Control msg)
 
 
 playground :
     { isDarkMode : Bool
     , preview : Html msg
-    , props : List (Control msg)
+    , controlSections : List { heading : String, controls : List (Node msg) }
     }
     -> Html msg
-playground { isDarkMode, preview, props } =
+playground { isDarkMode, preview, controlSections } =
+    let
+        controlSection { heading, controls } =
+            div
+                [ css
+                    [ padding (Css.em 0.75)
+                    , displayFlex
+                    , flexDirection column
+                    , rowGap (Css.em 1)
+                    , borderRadius (Css.em 0.5)
+                    , palette (Palette.controlSection isDarkMode)
+                    ]
+                ]
+                (header
+                    [ css
+                        [ displayFlex
+                        , justifyContent spaceBetween
+                        , alignItems center
+                        , fontWeight bold
+                        , empty [ display none ]
+                        ]
+                    ]
+                    [ text heading ]
+                    :: List.map controlField controls
+                )
+
+        controlField node =
+            case node of
+                Comment str ->
+                    div
+                        [ css
+                            [ palette Palette.textOptional
+                            , empty [ display none ]
+                            ]
+                        ]
+                        [ text str ]
+
+                Field label control ->
+                    div
+                        [ css
+                            [ display grid
+                            , gridTemplateColumns [ fr 1, fr 1 ]
+                            , alignItems center
+                            , columnGap (em 0.25)
+                            ]
+                        ]
+                        [ Html.label [] [ text label ]
+                        , Control.render control
+                        ]
+    in
     section
         [ css
             [ padding4 (Css.em 0.5) (Css.em 0.5) (Css.em 0.5) (Css.em 1.5)
@@ -658,17 +722,10 @@ playground { isDarkMode, preview, props } =
                 , flexDirection column
                 , rowGap (Css.em 0.5)
                 , borderRadius (Css.em 1)
-                , palette (Palette.propsPanel isDarkMode)
-                , children
-                    [ everything
-                        [ padding (Css.em 0.75)
-                        , borderRadius (Css.em 0.5)
-                        , palette (Palette.propsField isDarkMode)
-                        ]
-                    ]
+                , palette (Palette.controlPanel isDarkMode)
                 ]
             ]
-            (List.map Control.render props)
+            (List.map controlSection controlSections)
         ]
 
 
@@ -787,7 +844,7 @@ navigation { url, isDarkMode } items =
             , property "box-shadow" "0 5px 20px hsl(0, 0%, 0%, 0.05)"
             ]
         ]
-        [ label []
+        [ Html.label []
             [ input [ type_ "checkbox", Attributes.checked isDarkMode, onClick ToggleDarkMode ] []
             , text "DarkMode"
             ]
