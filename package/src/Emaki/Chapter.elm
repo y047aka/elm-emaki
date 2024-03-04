@@ -49,7 +49,7 @@ chapter { init, view, controls } =
                     |> Result.withDefault controlInits
                     |> List.map2 (<|) controlViews
                     |> List.map (Styled.li [] << List.singleton)
-                    |> List.indexedMap (\i -> Styled.map (ChapterInternal.UpdateControlAt i))
+                    |> List.indexedMap (\i listItem -> Styled.map (ChapterInternal.UpdateControlAt i) listItem)
                     |> Styled.ul []
                 ]
 
