@@ -8,5 +8,5 @@ type Control props
     = Control
         { init : Value
         , view : Value -> Html Value
-        , updateProp : Value -> props -> props
+        , updateProps : Value -> props -> props
         }

@@ -29,7 +29,7 @@ text r =
                     , value (Result.withDefault r.init (JD.decodeValue JD.string v))
                     ]
                     []
-        , updateProp =
+        , updateProps =
             \value state ->
                 value
                     |> JD.decodeValue JD.string

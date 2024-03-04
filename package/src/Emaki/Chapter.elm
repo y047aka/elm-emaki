@@ -37,7 +37,7 @@ chapter { init, view, controls } =
             List.map (\(ControlInternal.Control r) -> r.view) controls
 
         controlOnChanges =
-            List.map (\(ControlInternal.Control r) -> r.updateProp) controls
+            List.map (\(ControlInternal.Control r) -> r.updateProps) controls
                 |> Array.fromList
 
         chapterView : Model props -> Styled.Html Msg
