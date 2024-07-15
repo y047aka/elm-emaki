@@ -15,8 +15,8 @@ module Emaki.Control exposing
 import Css exposing (..)
 import Css.Extra exposing (grid, gridColumn, gridRow)
 import Css.Global exposing (children, everything, generalSiblings, selector, typeSelector)
-import Css.Palette as Palette exposing (Palette, palette, paletteWithBorder, setBackground, setBorder, setColor)
-import Css.Palette.Extra exposing (paletteByState)
+import Css.Palette as Palette exposing (palette, paletteWithBorder, setBackground, setBorder, setColor)
+import Css.Palette.Extra exposing (PalettesByState, initPalettes, palettesByState)
 import DesignToken.Palette as Palette
 import Html.Styled as Html exposing (Attribute, Html, div, input, text)
 import Html.Styled.Attributes as Attributes exposing (css, for, id, placeholder, selected, type_, value)
@@ -87,7 +87,6 @@ select :
     , options : List String
     , onChange : String -> props -> props
     }
-    -> Control props
 select props =
     { view =
         div
@@ -383,7 +382,7 @@ button_ =
         , padding2 (em 0.75) (em 1.5)
         , borderRadius (em 0.25)
         , property "user-select" "none"
-        , paletteByState defaultPalettes
+        , palettesByState defaultPalettes
         , disabled
             [ cursor default
             , opacity (num 0.45)
@@ -393,7 +392,7 @@ button_ =
         ]
 
 
-defaultPalettes : ( Palette (ColorValue Color), List ( List Style -> Style, Palette (ColorValue Color) ) )
+defaultPalettes : PalettesByState Color
 defaultPalettes =
     let
         default =
@@ -402,12 +401,12 @@ defaultPalettes =
             , border = Nothing
             }
     in
-    ( default
-    , [ ( hover, default |> setBackground (hex "#CACBCD") |> setColor (rgba 0 0 0 0.8) )
-      , ( focus, default |> setBackground (hex "#CACBCD") |> setColor (rgba 0 0 0 0.8) )
-      , ( active, default |> setBackground (hex "#BABBBC") |> setColor (rgba 0 0 0 0.9) )
-      ]
-    )
+    { initPalettes
+        | default = default
+        , hover = Just (default |> setBackground (hex "#CACBCD") |> setColor (rgba 0 0 0 0.8))
+        , focus = Just (default |> setBackground (hex "#CACBCD") |> setColor (rgba 0 0 0 0.8))
+        , active = Just (default |> setBackground (hex "#BABBBC") |> setColor (rgba 0 0 0 0.9))
+    }
 
 
 basicLabel : List (Attribute msg) -> List (Html msg) -> Html msg

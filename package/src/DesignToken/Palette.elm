@@ -15,10 +15,10 @@ module DesignToken.Palette exposing
 
 -}
 
-import Css exposing (Color, Style, hover, rgba)
+import Css exposing (Color, rgba)
 import Css.Color exposing (Hsl360, hsla)
 import Css.Palette exposing (Palette, init, setBackground, setColor)
-import Css.Palette.Extra exposing (light_dark)
+import Css.Palette.Extra exposing (PalettesByState, initPalettes, light_dark)
 import DesignToken.Color exposing (black, grey020, grey030, grey060, grey070, grey085, grey090, grey095, white)
 
 
@@ -66,31 +66,29 @@ navigation isDarkMode =
         }
 
 
-navItem : Bool -> ( Palette Hsl360, List ( List Style -> Style, Palette Hsl360 ) )
-navItem isDarkMode =
+navItem : { isDarkMode : Bool, isSelected : Bool } -> PalettesByState Hsl360
+navItem { isDarkMode, isSelected } =
     light_dark isDarkMode
         { light =
-            ( init |> setColor grey030
-            , [ ( hover, init |> setBackground grey085 |> setColor grey030 ) ]
-            )
+            let
+                default =
+                    init |> setColor grey030
+            in
+            { initPalettes
+                | default = default
+                , selected = Just ( isSelected, default |> setBackground grey090 )
+                , hover = Just (default |> setBackground grey085)
+            }
         , dark =
-            ( init |> setColor grey095
-            , [ ( hover, init |> setBackground grey030 |> setColor white ) ]
-            )
-        }
-
-
-navItemSelected : Bool -> Palette Hsl360
-navItemSelected isDarkMode =
-    light_dark isDarkMode
-        { light =
-            Tuple.first (navItem isDarkMode)
-                |> setBackground grey090
-                |> setColor grey030
-        , dark =
-            Tuple.first (navItem isDarkMode)
-                |> setBackground grey020
-                |> setColor white
+            let
+                default =
+                    init |> setColor white
+            in
+            { initPalettes
+                | default = default
+                , selected = Just ( isSelected, default |> setBackground grey020 )
+                , hover = Just (default |> setBackground grey030)
+            }
         }
 
 
