@@ -6,7 +6,7 @@ import Css exposing (..)
 import Css.Extra exposing (..)
 import Css.Global exposing (Snippet, children, everything)
 import Css.Palette exposing (palette, paletteWithBorder, setColor)
-import Css.Palette.Extra exposing (paletteByState)
+import Css.Palette.Extra exposing (palettesByState)
 import Css.Typography as Typography exposing (OverflowWrap(..), TextAlign(..), Typography, WebkitFontSmoothing(..), WordBreak(..), typography)
 import DesignToken.Color exposing (grey095)
 import DesignToken.Palette as Palette
@@ -807,9 +807,6 @@ where_ selector_ styles =
 navigation : { a | url : Url, isDarkMode : Bool } -> List { b | heading : String, id : String } -> Html Msg
 navigation { url, isDarkMode } items =
     let
-        isSelected id =
-            url.fragment == Just id
-
         listItem { id, heading } =
             li [ css [ listStyle none ] ]
                 [ a
@@ -819,9 +816,12 @@ navigation { url, isDarkMode } items =
                         , padding2 (Css.em 0.5) (Css.em 1)
                         , borderRadius (Css.em 0.5)
                         , textDecoration none
-                        , paletteByState (Palette.navItem isDarkMode)
-                        , batchIf (isSelected id)
-                            [ palette (Palette.navItemSelected isDarkMode) ]
+                        , palettesByState
+                            (Palette.navItem
+                                { isDarkMode = isDarkMode
+                                , isSelected = url.fragment == Just id
+                                }
+                            )
                         ]
                     ]
                     [ text heading ]
