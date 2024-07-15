@@ -160,6 +160,7 @@ progressPlayground : Bool -> Progress.Model -> Html Msg
 progressPlayground isDarkMode pm =
     playground
         { isDarkMode = isDarkMode
+        , toMsg = UpdateProgress
         , preview = Progress.progressWithProps pm
         , controlSections =
             [ { heading = ""
@@ -168,8 +169,8 @@ progressPlayground isDarkMode pm =
                         (Control.counter
                             { value = pm.value
                             , toString = \value -> String.fromFloat value ++ "%"
-                            , onClickPlus = ProgressMsg Progress.CounterPlus
-                            , onClickMinus = ProgressMsg Progress.CounterMinus
+                            , onClickPlus = \ps -> { ps | value = Progress.clampValue (ps.value + 13) }
+                            , onClickMinus = \ps -> { ps | value = Progress.clampValue (ps.value - 11) }
                             }
                         )
                     , Comment "A progress element can contain a bar visually indicating progress"
@@ -181,24 +182,22 @@ progressPlayground isDarkMode pm =
                         (Control.bool
                             { id = "indicating"
                             , value = pm.indicating
-                            , onClick =
-                                (\c ->
+                            , onChange =
+                                \_ ps ->
                                     let
                                         newIndicating =
-                                            not c.indicating
+                                            not ps.indicating
                                     in
-                                    { c
+                                    { ps
                                         | indicating = newIndicating
                                         , caption =
                                             if newIndicating then
-                                                c.caption
+                                                ps.caption
 
                                             else
                                                 "Uploading Files"
                                     }
                                         |> Progress.updateCaptionOnIndicating
-                                )
-                                    |> UpdateProgress
                             }
                         )
                     , Comment "An indicating progress bar visually indicates the current level of progress of a task"
@@ -207,7 +206,7 @@ progressPlayground isDarkMode pm =
                             { value = Progress.stateToString pm.state
                             , options = List.map Progress.stateToString [ Default, Active, Success, Warning, Error, Disabled ]
                             , onChange =
-                                (\prevState ps ->
+                                \prevState ps ->
                                     Progress.stateFromString prevState
                                         |> Maybe.map
                                             (\state ->
@@ -229,8 +228,6 @@ progressPlayground isDarkMode pm =
                                                 }
                                             )
                                         |> Maybe.withDefault ps
-                                )
-                                    >> UpdateProgress
                             }
                         )
                     , Comment
@@ -260,7 +257,7 @@ progressPlayground isDarkMode pm =
                     [ Field "Unit"
                         (Control.string
                             { value = pm.unit
-                            , onInput = (\string ps -> { ps | unit = string }) >> UpdateProgress
+                            , onInput = \string ps -> { ps | unit = string }
                             , placeholder = ""
                             }
                         )
@@ -268,7 +265,7 @@ progressPlayground isDarkMode pm =
                     , Field "Caption"
                         (Control.string
                             { value = pm.caption
-                            , onInput = (\string ps -> { ps | caption = string }) >> UpdateProgress
+                            , onInput = \string ps -> { ps | caption = string }
                             , placeholder = ""
                             }
                         )
@@ -283,6 +280,7 @@ typographyPlayground : Bool -> TypographyModel -> Html Msg
 typographyPlayground isDarkMode tm =
     playground
         { isDarkMode = isDarkMode
+        , toMsg = UpdateTypography
         , preview =
             div
                 [ css
@@ -315,7 +313,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.webkitFontSmoothing |> Typography.webkitFontSmoothingToString
                             , options = [ "auto", "none", "antialiased", "subpixel-antialiased" ]
                             , onChange =
-                                (\webkitFontSmoothing m ->
+                                \webkitFontSmoothing m ->
                                     { m
                                         | webkitFontSmoothing =
                                             case webkitFontSmoothing of
@@ -334,8 +332,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 _ ->
                                                     m.webkitFontSmoothing
                                     }
-                                )
-                                    >> UpdateTypography
                             }
                         )
                     ]
@@ -347,7 +343,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.typography.font.families |> String.concat
                             , options = [ Css.sansSerif.value, Css.serif.value ]
                             , onChange =
-                                (\fontFamily m ->
+                                \fontFamily m ->
                                     { m
                                         | typography =
                                             case fontFamily of
@@ -360,8 +356,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 _ ->
                                                     m.typography
                                     }
-                                )
-                                    >> UpdateTypography
                             }
                         )
                     , Field "font-size"
@@ -369,21 +363,17 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.fontSize
                             , toString = \value -> String.fromFloat value ++ "px"
                             , onClickPlus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | fontSize = m.fontSize + 1
-                                            , typography = m.typography |> Typography.setFontSize (px (m.fontSize + 1))
-                                        }
-                                    )
+                                \m ->
+                                    { m
+                                        | fontSize = m.fontSize + 1
+                                        , typography = m.typography |> Typography.setFontSize (px (m.fontSize + 1))
+                                    }
                             , onClickMinus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | fontSize = m.fontSize - 1
-                                            , typography = m.typography |> Typography.setFontSize (px (m.fontSize - 1))
-                                        }
-                                    )
+                                \m ->
+                                    { m
+                                        | fontSize = m.fontSize - 1
+                                        , typography = m.typography |> Typography.setFontSize (px (m.fontSize - 1))
+                                    }
                             }
                         )
                     , Field "font-style"
@@ -391,7 +381,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.typography.font.style |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.normal.value, Css.italic.value ]
                             , onChange =
-                                (\style m ->
+                                \style m ->
                                     { m
                                         | typography =
                                             case style of
@@ -404,8 +394,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 _ ->
                                                     m.typography
                                     }
-                                )
-                                    >> UpdateTypography
                             }
                         )
                     , Field "font-weight"
@@ -413,7 +401,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.typography.font.weight |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.lighter.value, Css.normal.value, Css.bold.value, Css.bolder.value ]
                             , onChange =
-                                (\weight m ->
+                                \weight m ->
                                     { m
                                         | typography =
                                             case weight of
@@ -432,8 +420,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 _ ->
                                                     m.typography
                                     }
-                                )
-                                    >> UpdateTypography
                             }
                         )
                     , Field "text-align"
@@ -441,7 +427,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.textAlign |> Typography.textAlignToString
                             , options = [ "left", "center", "right", "justify" ]
                             , onChange =
-                                (\align m ->
+                                \align m ->
                                     { m
                                         | textAlign =
                                             case align of
@@ -476,8 +462,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 _ ->
                                                     m.typography
                                     }
-                                )
-                                    >> UpdateTypography
                             }
                         )
                     , Field "line-height"
@@ -485,21 +469,17 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.lineHeight
                             , toString = \value -> String.fromFloat value
                             , onClickPlus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | lineHeight = ((m.lineHeight * 10) + 1) / 10
-                                            , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
-                                        }
-                                    )
+                                \m ->
+                                    { m
+                                        | lineHeight = ((m.lineHeight * 10) + 1) / 10
+                                        , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) + 1) / 10))
+                                    }
                             , onClickMinus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | lineHeight = ((m.lineHeight * 10) - 1) / 10
-                                            , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
-                                        }
-                                    )
+                                \m ->
+                                    { m
+                                        | lineHeight = ((m.lineHeight * 10) - 1) / 10
+                                        , typography = m.typography |> Typography.setLineHeight (num (((m.lineHeight * 10) - 1) / 10))
+                                    }
                             }
                         )
                     , Field "text-decoration"
@@ -507,7 +487,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.typography.textSetting.textDecoration |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.none.value, Css.underline.value ]
                             , onChange =
-                                (\decoration m ->
+                                \decoration m ->
                                     { m
                                         | typography =
                                             case decoration of
@@ -520,8 +500,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 _ ->
                                                     m.typography
                                     }
-                                )
-                                    >> UpdateTypography
                             }
                         )
                     , Field "letter-spacing"
@@ -529,21 +507,17 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.letterSpacing
                             , toString = \value -> String.fromFloat value ++ "em"
                             , onClickPlus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
-                                            , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
-                                        }
-                                    )
+                                \m ->
+                                    { m
+                                        | letterSpacing = ((m.letterSpacing * 100) + 1) / 100
+                                        , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) + 1) / 100))
+                                    }
                             , onClickMinus =
-                                UpdateTypography
-                                    (\m ->
-                                        { m
-                                            | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
-                                            , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
-                                        }
-                                    )
+                                \m ->
+                                    { m
+                                        | letterSpacing = ((m.letterSpacing * 100) - 1) / 100
+                                        , typography = m.typography |> Typography.setLetterSpacing (Css.em (((m.letterSpacing * 100) - 1) / 100))
+                                    }
                             }
                         )
                     , Field "text-transform"
@@ -551,7 +525,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.typography.textSetting.textTransform |> Maybe.map .value |> Maybe.withDefault "-"
                             , options = [ Css.none.value, Css.uppercase.value, Css.lowercase.value, Css.capitalize.value ]
                             , onChange =
-                                (\transform m ->
+                                \transform m ->
                                     { m
                                         | typography =
                                             case transform of
@@ -570,8 +544,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 _ ->
                                                     m.typography
                                     }
-                                )
-                                    >> UpdateTypography
                             }
                         )
                     ]
@@ -583,7 +555,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.typography.textBlock.wordBreak |> Maybe.map Typography.wordBreakToString |> Maybe.withDefault "-"
                             , options = [ "normal", "break-all", "keep-all", "auto-phrase" ]
                             , onChange =
-                                (\wordBreak m ->
+                                \wordBreak m ->
                                     { m
                                         | typography =
                                             case wordBreak of
@@ -602,8 +574,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 _ ->
                                                     m.typography
                                     }
-                                )
-                                    >> UpdateTypography
                             }
                         )
                     , Field "overflow-wrap"
@@ -611,7 +581,7 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                             { value = tm.typography.textBlock.overflowWrap |> Maybe.map Typography.overflowWrapToString |> Maybe.withDefault "-"
                             , options = [ "normal", "break-word", "anywhere" ]
                             , onChange =
-                                (\overflowWrap m ->
+                                \overflowWrap m ->
                                     { m
                                         | typography =
                                             case overflowWrap of
@@ -627,8 +597,6 @@ Have Resolved to Combine our Efforts to Accomplish these Aims""" ]
                                                 _ ->
                                                     m.typography
                                     }
-                                )
-                                    >> UpdateTypography
                             }
                         )
                     ]
@@ -644,34 +612,37 @@ type Node msg
 
 playground :
     { isDarkMode : Bool
+    , toMsg : (a -> a) -> msg
     , preview : Html msg
-    , controlSections : List { heading : String, controls : List (Node msg) }
+    , controlSections : List { heading : String, controls : List (Node a) }
     }
     -> Html msg
-playground { isDarkMode, preview, controlSections } =
+playground { isDarkMode, toMsg, preview, controlSections } =
     let
         controlSection { heading, controls } =
-            div
-                [ css
-                    [ padding (Css.em 0.75)
-                    , displayFlex
-                    , flexDirection column
-                    , rowGap (Css.em 1)
-                    , borderRadius (Css.em 0.5)
-                    , palette (Palette.controlSection isDarkMode)
-                    ]
-                ]
-                (header
+            Html.map toMsg
+                (div
                     [ css
-                        [ displayFlex
-                        , justifyContent spaceBetween
-                        , alignItems center
-                        , fontWeight bold
-                        , empty [ display none ]
+                        [ padding (Css.em 0.75)
+                        , displayFlex
+                        , flexDirection column
+                        , rowGap (Css.em 1)
+                        , borderRadius (Css.em 0.5)
+                        , palette (Palette.controlSection isDarkMode)
                         ]
                     ]
-                    [ text heading ]
-                    :: List.map controlField controls
+                    (header
+                        [ css
+                            [ displayFlex
+                            , justifyContent spaceBetween
+                            , alignItems center
+                            , fontWeight bold
+                            , empty [ display none ]
+                            ]
+                        ]
+                        [ text heading ]
+                        :: List.map controlField controls
+                    )
                 )
 
         controlField node =
@@ -695,7 +666,7 @@ playground { isDarkMode, preview, controlSections } =
                             ]
                         ]
                         [ Html.label [] [ text label ]
-                        , Control.render control
+                        , control.view
                         ]
     in
     section
