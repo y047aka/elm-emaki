@@ -2,7 +2,7 @@ module DesignToken.Palette exposing
     ( light, dark
     , textOptional
     , navigation, navItem, navItemSelected
-    , playground, propsPanel, propsField, formField
+    , playground, controlPanel, controlSection, formField
     )
 
 {-|
@@ -11,7 +11,7 @@ module DesignToken.Palette exposing
 @docs textOptional
 
 @docs navigation, navItem, navItemSelected
-@docs playground, propsPanel, propsField, formField
+@docs playground, controlPanel, controlSection, formField
 
 -}
 
@@ -114,16 +114,16 @@ playground isDarkMode =
         }
 
 
-propsPanel : Bool -> Palette Hsl360
-propsPanel isDarkMode =
+controlPanel : Bool -> Palette Hsl360
+controlPanel isDarkMode =
     light_dark isDarkMode
         { light = { init | background = dark.background |> Maybe.map (setAlpha_fixme 0.1) }
         , dark = { init | background = light.background |> Maybe.map (setAlpha_fixme 0.1) }
         }
 
 
-propsField : Bool -> Palette Hsl360
-propsField isDarkMode =
+controlSection : Bool -> Palette Hsl360
+controlSection isDarkMode =
     light_dark isDarkMode
         { light = { init | background = light.background |> Maybe.map (setAlpha_fixme 0.7) }
         , dark = { init | background = light.background |> Maybe.map (setAlpha_fixme 0.1) }
