@@ -2,9 +2,7 @@ module Emaki.Control exposing
     ( Control
     , StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
     , render
-    , comment, header, string, bool, select, radio, counter, boolAndString
-    , list
-    , field
+    , string, bool, select, radio, counter, boolAndString
     , customize
     )
 
@@ -13,15 +11,13 @@ module Emaki.Control exposing
 @docs Control
 @docs StringControl, BoolControl, SelectControl, RadioControl, CounterControl, BoolAndStringControl
 @docs render
-@docs comment, header, string, bool, select, radio, counter, boolAndString
-@docs list
-@docs field
+@docs string, bool, select, radio, counter, boolAndString
 @docs customize
 
 -}
 
 import Css exposing (..)
-import Css.Extra exposing (columnGap, fr, grid, gridColumn, gridRow, gridTemplateColumns, rowGap)
+import Css.Extra exposing (grid, gridColumn, gridRow)
 import Css.Global exposing (children, everything, generalSiblings, selector, typeSelector)
 import Css.Palette as Palette exposing (palette, paletteWithBorder, setBackground, setBorder, setColor)
 import Css.Palette.Extra exposing (PalettesByState, initPalettes, palettesByState)
@@ -32,16 +28,12 @@ import Html.Styled.Events exposing (onClick, onInput)
 
 
 type Control msg
-    = Comment String
-    | Header String
-    | String (StringControl msg)
+    = String (StringControl msg)
     | Bool (BoolControl msg)
     | Select (SelectControl msg)
     | Radio (RadioControl msg)
     | Counter (CounterControl msg)
     | BoolAndString (BoolAndStringControl msg)
-    | List (List (Control msg))
-    | Field String (Control msg)
     | Customize (Html msg)
 
 
@@ -90,16 +82,6 @@ type alias BoolAndStringControl msg =
     }
 
 
-comment : String -> Control msg
-comment =
-    Comment
-
-
-header : String -> Control msg
-header =
-    Header
-
-
 string : StringControl msg -> Control msg
 string =
     String
@@ -130,16 +112,6 @@ boolAndString =
     BoolAndString
 
 
-list : List (Control msg) -> Control msg
-list =
-    List
-
-
-field : String -> Control msg -> Control msg
-field label props =
-    Field label props
-
-
 customize : Html msg -> Control msg
 customize =
     Customize
@@ -150,23 +122,8 @@ customize =
 
 
 render : Control msg -> Html msg
-render props =
-    case props of
-        Comment str ->
-            div
-                [ css
-                    [ palette Palette.textOptional
-                    , empty [ display none ]
-                    ]
-                ]
-                [ text str ]
-
-        -- TODO: 消す
-        -- https://github.com/y047aka/elm-emaki/pull/29#issue-2128470533
-        Header str ->
-            Html.header [ css [ displayFlex, justifyContent spaceBetween, alignItems center, fontWeight bold ] ]
-                [ text str ]
-
+render control =
+    case control of
         String ps ->
             input
                 [ type_ "text"
@@ -288,23 +245,6 @@ render props =
                     , placeholder ps.placeholder
                     ]
                     []
-                ]
-
-        List childControl ->
-            div [ css [ displayFlex, flexDirection column, rowGap (Css.em 1) ] ]
-                (List.map render childControl)
-
-        Field label ps ->
-            div
-                [ css
-                    [ display grid
-                    , gridTemplateColumns [ fr 1, fr 1 ]
-                    , alignItems center
-                    , columnGap (em 0.25)
-                    ]
-                ]
-                [ Html.label [] [ text label ]
-                , render ps
                 ]
 
         Customize view ->
